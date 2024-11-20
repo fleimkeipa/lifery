@@ -1,0 +1,641 @@
+definitions:
+  controller.AuthResponse:
+    properties:
+      message:
+        type: string
+      token:
+        type: string
+      type:
+        example: basic,oauth2
+        type: string
+      username:
+        type: string
+    type: object
+  controller.FailureResponse:
+    properties:
+      error:
+        type: string
+      message:
+        type: string
+    type: object
+  controller.SuccessResponse:
+    properties:
+      data: {}
+      message:
+        type: string
+    type: object
+  model.EraCreateRequest:
+    properties:
+      name:
+        type: string
+      time_range:
+        type: string
+    type: object
+  model.EraUpdateRequest:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      time_range:
+        type: string
+    type: object
+  model.EventCreateRequest:
+    properties:
+      date:
+        type: string
+      description:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/model.EventItem'
+        type: array
+      name:
+        type: string
+      time_end:
+        type: string
+      time_start:
+        type: string
+    type: object
+  model.EventItem:
+    properties:
+      data:
+        type: string
+      type:
+        $ref: '#/definitions/model.EventType'
+    type: object
+  model.EventType:
+    enum:
+    - 1
+    - 2
+    - 3
+    - 4
+    type: integer
+    x-enum-varnames:
+    - EventTypeString
+    - EventTypePhoto
+    - EventTypeVideo
+    - EventTypeVoiceRecord
+  model.EventUpdateRequest:
+    properties:
+      date:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      items:
+        items:
+          $ref: '#/definitions/model.EventItem'
+        type: array
+      name:
+        type: string
+      time_end:
+        type: string
+      time_start:
+        type: string
+    type: object
+  model.Login:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  model.Register:
+    properties:
+      confirm_password:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      role_id:
+        type: integer
+      username:
+        type: string
+    required:
+    - confirm_password
+    - password
+    - username
+    type: object
+  model.UserCreateRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      role_id:
+        type: integer
+      username:
+        type: string
+    required:
+    - email
+    - password
+    - role_id
+    - username
+    type: object
+info:
+  contact: {}
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: This endpoint allows a user to log in by providing a valid username
+        and password.
+      parameters:
+      - description: User login input
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.Login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully logged in with JWT token
+          schema:
+            $ref: '#/definitions/controller.AuthResponse'
+        "400":
+          description: Error message including details on failure
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+        "500":
+          description: Interval error
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      summary: User login
+      tags:
+      - auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: This endpoint allows a user to log in by providing a valid username
+        and password.
+      parameters:
+      - description: User register input
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.Register'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully registered in with JWT token
+          schema:
+            $ref: '#/definitions/controller.AuthResponse'
+        "400":
+          description: Error message including details on failure
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+        "500":
+          description: Interval error
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      summary: User register
+      tags:
+      - auth
+  /eras:
+    get:
+      consumes:
+      - application/json
+      description: This endpoint retrieves a list of eras.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Eras retrieved successfully
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "400":
+          description: Invalid request data
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+        "500":
+          description: Era retrieval failed
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      summary: Retrieve a list of eras
+      tags:
+      - eras
+    post:
+      consumes:
+      - application/json
+      description: This endpoint creates a new era by binding the incoming JSON request
+        to the EraCreateRequest model.
+      parameters:
+      - description: Era creation input
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/model.EraCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Era created successfully
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "400":
+          description: Invalid request data
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+        "500":
+          description: Era creation failed
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      summary: Create a new era
+      tags:
+      - eras
+  /eras/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: This endpoint deletes an existing era by providing era name or
+        UID.
+      parameters:
+      - description: Era name or UID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Era deleted successfully
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "400":
+          description: Invalid request data
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+        "500":
+          description: Era delete failed
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      summary: Delete an existing era
+      tags:
+      - eras
+    get:
+      consumes:
+      - application/json
+      description: Fetches an era by its unique name or UID from the database.
+      parameters:
+      - description: Era name or UID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Era retrieved successfully
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "400":
+          description: Invalid request data
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+        "500":
+          description: Era retrieval failed
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      summary: Retrieve era by ID
+      tags:
+      - eras
+    patch:
+      consumes:
+      - application/json
+      description: This endpoint updates an existing era by binding the incoming JSON
+        request to the EraUpdateRequest model.
+      parameters:
+      - description: Era update input
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/model.EraUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Era updated successfully
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "400":
+          description: Invalid request data
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+        "500":
+          description: Era update failed
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      summary: Update an existing era
+      tags:
+      - eras
+  /events:
+    post:
+      consumes:
+      - application/json
+      description: This endpoint creates a new event by binding the incoming JSON
+        request to the EventCreateRequest model.
+      parameters:
+      - description: Event creation input
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/model.EventCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Event created successfully
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "400":
+          description: Invalid request data
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+        "500":
+          description: Event creation failed
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      summary: Create a new event
+      tags:
+      - events
+  /events/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: This endpoint deletes an existing event by providing event name
+        or UID.
+      parameters:
+      - description: Event name or UID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Event deleted successfully
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "400":
+          description: Invalid request data
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+        "500":
+          description: Event delete failed
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      summary: Delete an existing event
+      tags:
+      - events
+    get:
+      consumes:
+      - application/json
+      description: Fetches an event by its unique name or UID from the database.
+      parameters:
+      - description: Event name or UID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Event retrieved successfully
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "400":
+          description: Invalid request data
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+        "500":
+          description: Event retrieval failed
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      summary: Retrieve event by ID
+      tags:
+      - events
+    patch:
+      consumes:
+      - application/json
+      description: This endpoint updates an existing event by binding the incoming
+        JSON request to the EventUpdateRequest model.
+      parameters:
+      - description: Event update input
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/model.EventUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Event updated successfully
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "400":
+          description: Invalid request data
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+        "500":
+          description: Event update failed
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      summary: Update an existing event
+      tags:
+      - events
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a filtered and paginated list of users from the database
+        based on query parameters.
+      parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Limit the number of users returned
+        in: query
+        name: limit
+        type: string
+      - description: Number of users to skip for pagination
+        in: query
+        name: skip
+        type: string
+      - description: Filter users by username
+        in: query
+        name: username
+        type: string
+      - description: Filter users by email
+        in: query
+        name: email
+        type: string
+      - description: Filter users by role ID
+        in: query
+        name: role_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response containing the list of users
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "500":
+          description: Interval error
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      summary: List all users
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: This endpoint creates a new user by providing username, email,
+        password, and role ID.
+      parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: User creation input
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: user username
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "400":
+          description: Error message including details on failure
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+        "500":
+          description: Interval error
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      summary: Create creates a new user
+      tags:
+      - users
+  /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: This endpoint deletes a user by providing user id.
+      parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: user username
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "500":
+          description: Interval error
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      summary: DeleteUser deletes an existing user
+      tags:
+      - users
+    get:
+      consumes:
+      - application/json
+      description: Fetches a user by their unique ID from the database.
+      parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response containing the user information
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      summary: Retrieve user by ID
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: This endpoint updates a user by providing username, email, password,
+        and role ID.
+      parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: User update input
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: user username
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "400":
+          description: Error message including details on failure
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+        "500":
+          description: Interval error
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      summary: UpdateUser updates an existing user
+      tags:
+      - users
+swagger: "2.0"
