@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/fleimkeipa/lifery/controller"
+	_ "github.com/fleimkeipa/lifery/docs" // which is the generated folder after swag init
 	"github.com/fleimkeipa/lifery/pkg"
 	"github.com/fleimkeipa/lifery/repositories"
 	"github.com/fleimkeipa/lifery/uc"
@@ -14,6 +15,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/redis/go-redis/v9"
+	echoSwagger "github.com/swaggo/echo-swagger"
 	"go.uber.org/zap"
 )
 
@@ -114,6 +116,9 @@ func loadConfig() {
 func configureEcho(e *echo.Echo) {
 	e.HideBanner = true
 	e.HidePort = true
+
+	// Add Swagger documentation route
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	// Add Recover middleware
 	e.Use(middleware.Recover())
