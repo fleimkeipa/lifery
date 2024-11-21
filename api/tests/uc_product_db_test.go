@@ -22,19 +22,19 @@ func TestEventDBUC_Create(t *testing.T) {
 		cache *uc.EventCacheUC
 	}
 	type tempData struct {
-		brandID int
 		barcode string
+		brandID int
 	}
 	type args struct {
 		ctx   context.Context
 		event *model.EventCreateRequest
 	}
 	tests := []struct {
-		name      string
 		fields    fields
-		tempDatas []tempData
 		args      args
 		want      *model.Event
+		name      string
+		tempDatas []tempData
 		wantErr   bool
 	}{
 		{

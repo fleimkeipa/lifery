@@ -15,8 +15,8 @@ type Register struct {
 	Username        string `json:"username" binding:"required"`
 	Email           string `json:"email"`
 	Password        string `json:"password" binding:"required"`
-	RoleID          uint   `json:"role_id"`
 	ConfirmPassword string `json:"confirm_password" binding:"required"`
+	RoleID          uint   `json:"role_id"`
 }
 
 // VerifyPassword verifies if the given password matches the stored hash.

@@ -18,19 +18,19 @@ func TestEventCacheUC_IsExist(t *testing.T) {
 		repo interfaces.CacheRepository
 	}
 	type tempData struct {
-		brandID int
 		barcode string
+		brandID int
 	}
 	type args struct {
 		ctx     context.Context
-		brandID int
 		barcode string
+		brandID int
 	}
 	tests := []struct {
-		name      string
 		fields    fields
-		tempDatas []tempData
 		args      args
+		name      string
+		tempDatas []tempData
 		want      bool
 	}{
 		{

@@ -24,10 +24,10 @@ func TestEventDBRepository_Create(t *testing.T) {
 		event *model.Event
 	}
 	tests := []struct {
-		name    string
-		fields  fields
 		args    args
+		fields  fields
 		want    *model.Event
+		name    string
 		wantErr bool
 	}{
 		{

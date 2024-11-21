@@ -3,20 +3,20 @@ package model
 import "time"
 
 type Era struct {
-	ID        int64     `json:"id" pg:",pk"`
-	Name      string    `json:"name"`
 	TimeRange time.Time `json:"time_range"`
+	Name      string    `json:"name"`
+	ID        int64     `json:"id" pg:",pk"`
 }
 
 type EraCreateRequest struct {
-	Name      string    `json:"name"`
 	TimeRange time.Time `json:"time_range"`
+	Name      string    `json:"name"`
 }
 
 type EraUpdateRequest struct {
-	ID        int64     `json:"id" pg:",pk"`
-	Name      string    `json:"name"`
 	TimeRange time.Time `json:"time_range"`
+	Name      string    `json:"name"`
+	ID        int64     `json:"id" pg:",pk"`
 }
 
 type EraList struct {
