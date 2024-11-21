@@ -19,6 +19,7 @@ func NewEventController(eventUC *uc.EventUC) *EventController {
 }
 
 // Create handles the creation of a new event.
+//
 //	@Summary		Create a new event
 //	@Description	This endpoint creates a new event by binding the incoming JSON request to the EventCreateRequest model.
 //	@Tags			events
@@ -54,6 +55,7 @@ func (rc *EventController) Create(c echo.Context) error {
 }
 
 // Update handles the update of an existing event.
+//
 //	@Summary		Update an existing event
 //	@Description	This endpoint updates an existing event by binding the incoming JSON request to the EventUpdateRequest model.
 //	@Tags			events
@@ -90,6 +92,7 @@ func (rc *EventController) Update(c echo.Context) error {
 }
 
 // Delete handles the deletion of an existing event.
+//
 //	@Summary		Delete an existing event
 //	@Description	This endpoint deletes an existing event by providing event name or UID.
 //	@Tags			events
@@ -116,6 +119,17 @@ func (rc *EventController) Delete(c echo.Context) error {
 	})
 }
 
+// List handles the retrieval of a list of events.
+//
+//	@Summary		Retrieve a list of events
+//	@Description	This endpoint retrieves a list of events.
+//	@Tags			events
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	SuccessResponse	"Events retrieved successfully"
+//	@Failure		400	{object}	FailureResponse	"Invalid request data"
+//	@Failure		500	{object}	FailureResponse	"Event retrieval failed"
+//	@Router			/events [get]
 func (rc *EventController) List(c echo.Context) error {
 	opts := rc.getEventsFindOpts(c)
 

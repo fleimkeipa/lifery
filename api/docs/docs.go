@@ -317,6 +317,39 @@ const docTemplate = `{
             }
         },
         "/events": {
+            "get": {
+                "description": "This endpoint retrieves a list of events.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "events"
+                ],
+                "summary": "Retrieve a list of events",
+                "responses": {
+                    "200": {
+                        "description": "Events retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/controller.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request data",
+                        "schema": {
+                            "$ref": "#/definitions/controller.FailureResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Event retrieval failed",
+                        "schema": {
+                            "$ref": "#/definitions/controller.FailureResponse"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "This endpoint creates a new event by binding the incoming JSON request to the EventCreateRequest model.",
                 "consumes": [
