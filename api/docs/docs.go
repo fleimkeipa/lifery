@@ -107,6 +107,151 @@ const docTemplate = `{
                 }
             }
         },
+        "/connects": {
+            "post": {
+                "description": "This endpoint creates a new connection by binding the incoming JSON request to the ConnectCreateRequest model.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "connects"
+                ],
+                "summary": "Create creates a new connection",
+                "parameters": [
+                    {
+                        "description": "Connect creation input",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ConnectCreateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Connect created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/controller.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request data",
+                        "schema": {
+                            "$ref": "#/definitions/controller.FailureResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Connect creation failed",
+                        "schema": {
+                            "$ref": "#/definitions/controller.FailureResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/connects/disconnect": {
+            "patch": {
+                "description": "This endpoint disconnects an existing connection by binding the incoming JSON request to the DisconnectRequest model.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "connects"
+                ],
+                "summary": "Disconnects an existing connection",
+                "parameters": [
+                    {
+                        "description": "Disconnect input",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.DisconnectRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Disconnected successfully",
+                        "schema": {
+                            "$ref": "#/definitions/controller.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request data",
+                        "schema": {
+                            "$ref": "#/definitions/controller.FailureResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Disconnect failed",
+                        "schema": {
+                            "$ref": "#/definitions/controller.FailureResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/connects/{id}": {
+            "patch": {
+                "description": "This endpoint updates a connection by binding the incoming JSON request to the ConnectUpdateRequest model.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "connects"
+                ],
+                "summary": "Update updates an existing connection",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Connection ID to update",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Connect update input",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ConnectUpdateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Connect updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/controller.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request data",
+                        "schema": {
+                            "$ref": "#/definitions/controller.FailureResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Connect update failed",
+                        "schema": {
+                            "$ref": "#/definitions/controller.FailureResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/eras": {
             "get": {
                 "description": "This endpoint retrieves a list of eras.",
@@ -691,7 +836,44 @@ const docTemplate = `{
                     }
                 }
             },
-            "put": {
+            "delete": {
+                "description": "This endpoint deletes a user by providing user id.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "DeleteUser deletes an existing user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "Bearer \u003cAdd access token here\u003e",
+                        "description": "Insert your access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "user username",
+                        "schema": {
+                            "$ref": "#/definitions/controller.SuccessResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Interval error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.FailureResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
                 "description": "This endpoint updates a user by providing username, email, password, and role ID.",
                 "consumes": [
                     "application/json"
@@ -733,43 +915,6 @@ const docTemplate = `{
                         "description": "Error message including details on failure",
                         "schema": {
                             "$ref": "#/definitions/controller.FailureResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Interval error",
-                        "schema": {
-                            "$ref": "#/definitions/controller.FailureResponse"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "This endpoint deletes a user by providing user id.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "DeleteUser deletes an existing user",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "Bearer \u003cAdd access token here\u003e",
-                        "description": "Insert your access token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "user username",
-                        "schema": {
-                            "$ref": "#/definitions/controller.SuccessResponse"
                         }
                     },
                     "500": {
@@ -821,6 +966,43 @@ const docTemplate = `{
                 }
             }
         },
+        "model.ConnectCreateRequest": {
+            "type": "object",
+            "required": [
+                "friend_id",
+                "user_id"
+            ],
+            "properties": {
+                "friend_id": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ConnectUpdateRequest": {
+            "type": "object",
+            "required": [
+                "status"
+            ],
+            "properties": {
+                "status": {
+                    "$ref": "#/definitions/model.RequestStatus"
+                }
+            }
+        },
+        "model.DisconnectRequest": {
+            "type": "object",
+            "required": [
+                "friend_id"
+            ],
+            "properties": {
+                "friend_id": {
+                    "type": "string"
+                }
+            }
+        },
         "model.EraCreateRequest": {
             "type": "object",
             "properties": {
@@ -863,6 +1045,9 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
+                },
+                "private": {
+                    "type": "boolean"
                 },
                 "time_end": {
                     "type": "string"
@@ -919,6 +1104,9 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
+                "private": {
+                    "type": "boolean"
+                },
                 "time_end": {
                     "type": "string"
                 },
@@ -966,6 +1154,19 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        },
+        "model.RequestStatus": {
+            "type": "string",
+            "enum": [
+                "approved",
+                "rejected",
+                "pending"
+            ],
+            "x-enum-varnames": [
+                "RequestStatusApproved",
+                "RequestStatusRejected",
+                "RequestStatusPending"
+            ]
         },
         "model.UserCreateRequest": {
             "type": "object",

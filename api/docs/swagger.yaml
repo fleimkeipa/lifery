@@ -24,6 +24,30 @@ definitions:
       message:
         type: string
     type: object
+  model.ConnectCreateRequest:
+    properties:
+      friend_id:
+        type: string
+      user_id:
+        type: string
+    required:
+    - friend_id
+    - user_id
+    type: object
+  model.ConnectUpdateRequest:
+    properties:
+      status:
+        $ref: '#/definitions/model.RequestStatus'
+    required:
+    - status
+    type: object
+  model.DisconnectRequest:
+    properties:
+      friend_id:
+        type: string
+    required:
+    - friend_id
+    type: object
   model.EraCreateRequest:
     properties:
       name:
@@ -52,6 +76,8 @@ definitions:
         type: array
       name:
         type: string
+      private:
+        type: boolean
       time_end:
         type: string
       time_start:
@@ -90,6 +116,8 @@ definitions:
         type: array
       name:
         type: string
+      private:
+        type: boolean
       time_end:
         type: string
       time_start:
@@ -122,6 +150,16 @@ definitions:
     - password
     - username
     type: object
+  model.RequestStatus:
+    enum:
+    - approved
+    - rejected
+    - pending
+    type: string
+    x-enum-varnames:
+    - RequestStatusApproved
+    - RequestStatusRejected
+    - RequestStatusPending
   model.UserCreateRequest:
     properties:
       email:
@@ -203,6 +241,104 @@ paths:
       summary: User register
       tags:
       - auth
+  /connects:
+    post:
+      consumes:
+      - application/json
+      description: This endpoint creates a new connection by binding the incoming
+        JSON request to the ConnectCreateRequest model.
+      parameters:
+      - description: Connect creation input
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/model.ConnectCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Connect created successfully
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "400":
+          description: Invalid request data
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+        "500":
+          description: Connect creation failed
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      summary: Create creates a new connection
+      tags:
+      - connects
+  /connects/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: This endpoint updates a connection by binding the incoming JSON
+        request to the ConnectUpdateRequest model.
+      parameters:
+      - description: Connection ID to update
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Connect update input
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/model.ConnectUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Connect updated successfully
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "400":
+          description: Invalid request data
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+        "500":
+          description: Connect update failed
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      summary: Update updates an existing connection
+      tags:
+      - connects
+  /connects/disconnect:
+    patch:
+      consumes:
+      - application/json
+      description: This endpoint disconnects an existing connection by binding the
+        incoming JSON request to the DisconnectRequest model.
+      parameters:
+      - description: Disconnect input
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/model.DisconnectRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Disconnected successfully
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "400":
+          description: Invalid request data
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+        "500":
+          description: Disconnect failed
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      summary: Disconnects an existing connection
+      tags:
+      - connects
   /eras:
     get:
       consumes:
@@ -624,7 +760,7 @@ paths:
       summary: Retrieve user by ID
       tags:
       - users
-    put:
+    patch:
       consumes:
       - application/json
       description: This endpoint updates a user by providing username, email, password,
