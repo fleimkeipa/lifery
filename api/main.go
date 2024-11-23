@@ -64,6 +64,10 @@ func serveApplication() {
 	userUC := uc.NewUserUC(userRepo)
 	userHandlers := controller.NewUserHandlers(userUC)
 
+	connectRepo := repositories.NewConnectRepository(dbClient)
+	connectUC := uc.NewConnectsUC(userUC, connectRepo)
+	connectController := controller.NewConnectHandlers(connectUC)
+
 	authHandlers := controller.NewAuthHandlers(userUC)
 
 	// Define authentication routes and handlers
@@ -95,12 +99,19 @@ func serveApplication() {
 	erasRoutes.GET("", eraController.List)
 	erasRoutes.GET("/:id", eraController.GetByID)
 
+	// Define connects routes
+	connectsRoutes := viewerRoutes.Group("/connects")
+	connectsRoutes.POST("", connectController.Create)
+	connectsRoutes.PATCH("/:id", connectController.Update)
+	connectsRoutes.GET("", connectController.List)
+	connectsRoutes.PATCH("/disconnect", connectController.Disconnect)
+
 	// Define user routes
 	usersRoutes := adminRoutes.Group("/users")
 	usersRoutes.GET("", userHandlers.List)
 	usersRoutes.GET("/:id", userHandlers.GetByID)
 	usersRoutes.POST("", userHandlers.Create)
-	usersRoutes.PUT("/:id", userHandlers.UpdateUser)
+	usersRoutes.PATCH("/:id", userHandlers.UpdateUser)
 	usersRoutes.DELETE("/:id", userHandlers.DeleteUser)
 
 	e.Logger.Fatal(e.Start(":8080"))
