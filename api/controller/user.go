@@ -69,7 +69,7 @@ func (rc *UserHandlers) Create(c echo.Context) error {
 //	@Success		200				{object}	SuccessResponse			"user username"
 //	@Failure		400				{object}	FailureResponse			"Error message including details on failure"
 //	@Failure		500				{object}	FailureResponse			"Interval error"
-//	@Router			/users/{id} [put]
+//	@Router			/users/{id} [patch]
 func (rc *UserHandlers) UpdateUser(c echo.Context) error {
 	id := c.Param("id")
 	var input model.UserCreateRequest

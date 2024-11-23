@@ -19,6 +19,13 @@ type Register struct {
 	RoleID          uint   `json:"role_id"`
 }
 
+type TokenOwner struct {
+	Username string `json:"username" pg:",unique"`
+	Email    string `json:"email" pg:",unique"`
+	ID       int64  `json:"id" pg:",pk"`
+	RoleID   uint   `json:"role_id"`
+}
+
 // VerifyPassword verifies if the given password matches the stored hash.
 func ValidateUserPassword(hash, password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
