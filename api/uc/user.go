@@ -2,6 +2,7 @@ package uc
 
 import (
 	"context"
+	"strconv"
 	"time"
 
 	"github.com/fleimkeipa/lifery/model"
@@ -60,6 +61,48 @@ func (rc *UserUC) Update(ctx context.Context, userID string, req model.UserCreat
 	return rc.userRepo.Update(ctx, userID, &user)
 }
 
+func (rc *UserUC) AddConnect(ctx context.Context, userID, friendID string) (*model.User, error) {
+	// receiver exist control
+	receiver, err := rc.GetByID(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	// sender exist control
+	sender, err := rc.GetByID(ctx, friendID)
+	if err != nil {
+		return nil, err
+	}
+
+	receiver, err = rc.addConnect(ctx, receiver, int(sender.ID), int(receiver.ID))
+	if err != nil {
+		return nil, err
+	}
+
+	return rc.addConnect(ctx, sender, int(receiver.ID), int(sender.ID))
+}
+
+func (rc *UserUC) DeleteConnect(ctx context.Context, userID, friendID string) (*model.User, error) {
+	// receiver exist control
+	receiver, err := rc.GetByID(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	// sender exist control
+	sender, err := rc.GetByID(ctx, friendID)
+	if err != nil {
+		return nil, err
+	}
+
+	receiver, err = rc.deleteConnect(ctx, receiver, int(sender.ID))
+	if err != nil {
+		return nil, err
+	}
+
+	return rc.deleteConnect(ctx, sender, int(receiver.ID))
+}
+
 func (rc *UserUC) List(ctx context.Context, opts *model.UserFindOpts) (*model.UserList, error) {
 	return rc.userRepo.List(ctx, opts)
 }
@@ -88,4 +131,25 @@ func (rc *UserUC) Exists(ctx context.Context, usernameOrEmail string) (bool, err
 
 func (rc *UserUC) Delete(ctx context.Context, id string) error {
 	return rc.userRepo.Delete(ctx, id)
+}
+
+func (rc *UserUC) addConnect(ctx context.Context, user *model.User, senderID, receiverID int) (*model.User, error) {
+	user.Connects = append(user.Connects, int(senderID))
+
+	strID := strconv.Itoa(receiverID)
+
+	return rc.userRepo.Update(ctx, strID, user)
+}
+
+func (rc *UserUC) deleteConnect(ctx context.Context, user *model.User, userID int) (*model.User, error) {
+	for i, v := range user.Connects {
+		if v == userID {
+			user.Connects = append(user.Connects[:i], user.Connects[i+1:]...)
+			break
+		}
+	}
+
+	strID := strconv.Itoa(userID)
+
+	return rc.userRepo.Update(ctx, strID, user)
 }
