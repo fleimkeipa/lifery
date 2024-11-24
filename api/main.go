@@ -52,20 +52,18 @@ func serveApplication() {
 	eraDBUC := uc.NewEraUC(eraDBRepo)
 	eraController := controller.NewEraController(eraDBUC)
 
+	userDBRepo := repositories.NewUserRepository(dbClient)
+	userUC := uc.NewUserUC(userDBRepo)
+	userController := controller.NewUserHandlers(userUC)
+
 	eventCacheRepo := repositories.NewCacheRepository(redisClient)
 	eventCacheUC := uc.NewEventCacheUC(eventCacheRepo)
-
 	eventDBRepo := repositories.NewEventRepository(dbClient)
-	eventDBUC := uc.NewEventUC(eventDBRepo, eventCacheUC)
-
+	eventDBUC := uc.NewEventUC(eventDBRepo, eventCacheUC, userUC)
 	eventController := controller.NewEventController(eventDBUC)
 
-	userRepo := repositories.NewUserRepository(dbClient)
-	userUC := uc.NewUserUC(userRepo)
-	userHandlers := controller.NewUserHandlers(userUC)
-
-	connectRepo := repositories.NewConnectRepository(dbClient)
-	connectUC := uc.NewConnectsUC(userUC, connectRepo)
+	connectDBRepo := repositories.NewConnectRepository(dbClient)
+	connectUC := uc.NewConnectsUC(userUC, connectDBRepo)
 	connectController := controller.NewConnectHandlers(connectUC)
 
 	authHandlers := controller.NewAuthHandlers(userUC)
@@ -108,11 +106,11 @@ func serveApplication() {
 
 	// Define user routes
 	usersRoutes := adminRoutes.Group("/users")
-	usersRoutes.GET("", userHandlers.List)
-	usersRoutes.GET("/:id", userHandlers.GetByID)
-	usersRoutes.POST("", userHandlers.Create)
-	usersRoutes.PATCH("/:id", userHandlers.UpdateUser)
-	usersRoutes.DELETE("/:id", userHandlers.DeleteUser)
+	usersRoutes.GET("", userController.List)
+	usersRoutes.GET("/:id", userController.GetByID)
+	usersRoutes.POST("", userController.Create)
+	usersRoutes.PATCH("/:id", userController.UpdateUser)
+	usersRoutes.DELETE("/:id", userController.DeleteUser)
 
 	e.Logger.Fatal(e.Start(":8080"))
 }
