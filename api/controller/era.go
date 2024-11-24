@@ -104,9 +104,9 @@ func (rc *EraController) Update(c echo.Context) error {
 //	@Failure		500	{object}	FailureResponse	"Era delete failed"
 //	@Router			/eras/{id} [delete]
 func (rc *EraController) Delete(c echo.Context) error {
-	nameOrUID := c.Param("id")
+	eraID := c.Param("id")
 
-	err := rc.EraDBUC.Delete(c.Request().Context(), nameOrUID)
+	err := rc.EraDBUC.Delete(c.Request().Context(), eraID)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, FailureResponse{
 			Error:   fmt.Sprintf("Failed to retrieve era: %v", err),
@@ -164,9 +164,9 @@ func (rc *EraController) List(c echo.Context) error {
 //	@Failure		500	{object}	FailureResponse	"Era retrieval failed"
 //	@Router			/eras/{id} [get]
 func (rc *EraController) GetByID(c echo.Context) error {
-	nameOrUID := c.Param("id")
+	eraID := c.Param("id")
 
-	era, err := rc.EraDBUC.GetByID(c.Request().Context(), nameOrUID)
+	era, err := rc.EraDBUC.GetByID(c.Request().Context(), eraID)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, FailureResponse{
 			Error:   fmt.Sprintf("Failed to retrieve era: %v", err),

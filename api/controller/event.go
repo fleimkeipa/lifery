@@ -104,9 +104,9 @@ func (rc *EventController) Update(c echo.Context) error {
 //	@Failure		500	{object}	FailureResponse	"Event delete failed"
 //	@Router			/events/{id} [delete]
 func (rc *EventController) Delete(c echo.Context) error {
-	nameOrUID := c.Param("id")
+	eventID := c.Param("id")
 
-	err := rc.EventDBUC.Delete(c.Request().Context(), nameOrUID)
+	err := rc.EventDBUC.Delete(c.Request().Context(), eventID)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, FailureResponse{
 			Error:   fmt.Sprintf("Failed to retrieve event: %v", err),
@@ -164,9 +164,9 @@ func (rc *EventController) List(c echo.Context) error {
 //	@Failure		500	{object}	FailureResponse	"Event retrieval failed"
 //	@Router			/events/{id} [get]
 func (rc *EventController) GetByID(c echo.Context) error {
-	nameOrUID := c.Param("id")
+	eventID := c.Param("id")
 
-	event, err := rc.EventDBUC.GetByID(c.Request().Context(), nameOrUID)
+	event, err := rc.EventDBUC.GetByID(c.Request().Context(), eventID)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, FailureResponse{
 			Error:   fmt.Sprintf("Failed to retrieve event: %v", err),
