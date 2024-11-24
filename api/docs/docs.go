@@ -269,7 +269,13 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Filter eras by name",
-                        "name": "private",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter eras by user id",
+                        "name": "user_id",
                         "in": "query"
                     },
                     {
@@ -1051,7 +1057,10 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
-                "time_range": {
+                "time_end": {
+                    "type": "string"
+                },
+                "time_start": {
                     "type": "string"
                 }
             }
@@ -1065,7 +1074,10 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
-                "time_range": {
+                "time_end": {
+                    "type": "string"
+                },
+                "time_start": {
                     "type": "string"
                 }
             }

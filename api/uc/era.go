@@ -5,6 +5,7 @@ import (
 
 	"github.com/fleimkeipa/lifery/model"
 	"github.com/fleimkeipa/lifery/repositories/interfaces"
+	"github.com/fleimkeipa/lifery/util"
 )
 
 type EraUC struct {
@@ -18,9 +19,13 @@ func NewEraUC(repo interfaces.EraRepository) *EraUC {
 }
 
 func (rc *EraUC) Create(ctx context.Context, req *model.EraCreateRequest) (*model.Era, error) {
+	ownerID := util.GetOwnerIDFromCtx(ctx)
+
 	era := model.Era{
+		TimeStart: req.TimeStart,
+		TimeEnd:   req.TimeEnd,
 		Name:      req.Name,
-		TimeRange: req.TimeRange,
+		OwnerID:   ownerID,
 	}
 
 	return rc.repo.Create(ctx, &era)
@@ -28,14 +33,16 @@ func (rc *EraUC) Create(ctx context.Context, req *model.EraCreateRequest) (*mode
 
 func (rc *EraUC) Update(ctx context.Context, eraID string, req *model.EraUpdateRequest) (*model.Era, error) {
 	// era exist control
-	_, err := rc.GetByID(ctx, eraID)
+	exist, err := rc.GetByID(ctx, eraID)
 	if err != nil {
 		return nil, err
 	}
 
 	era := model.Era{
+		TimeStart: req.TimeStart,
+		TimeEnd:   req.TimeEnd,
 		Name:      req.Name,
-		TimeRange: req.TimeRange,
+		OwnerID:   exist.OwnerID,
 	}
 
 	return rc.repo.Update(ctx, eraID, &era)

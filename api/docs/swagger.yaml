@@ -49,7 +49,9 @@ definitions:
     properties:
       name:
         type: string
-      time_range:
+      time_end:
+        type: string
+      time_start:
         type: string
     type: object
   model.EraUpdateRequest:
@@ -58,7 +60,9 @@ definitions:
         type: integer
       name:
         type: string
-      time_range:
+      time_end:
+        type: string
+      time_start:
         type: string
     type: object
   model.EventCreateRequest:
@@ -344,7 +348,11 @@ paths:
       parameters:
       - description: Filter eras by name
         in: query
-        name: private
+        name: name
+        type: string
+      - description: Filter eras by user id
+        in: query
+        name: user_id
         type: string
       - description: Limit the number of connects returned
         in: query

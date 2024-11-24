@@ -126,7 +126,8 @@ func (rc *EraController) Delete(c echo.Context) error {
 //	@Tags			eras
 //	@Accept			json
 //	@Produce		json
-//	@Param			private	query		string			false	"Filter eras by name"
+//	@Param			name	query		string			false	"Filter eras by name"
+//	@Param			user_id	query		string			false	"Filter eras by user id"
 //	@Param			limit	query		string			false	"Limit the number of connects returned"
 //	@Param			skip	query		string			false	"Number of connects to skip for pagination"
 //	@Success		200		{object}	SuccessResponse	"Eras retrieved successfully"
@@ -183,5 +184,6 @@ func (rc *EraController) getErasFindOpts(c echo.Context) model.EraFindOpts {
 	return model.EraFindOpts{
 		PaginationOpts: getPagination(c),
 		Name:           getFilter(c, "name"),
+		UserID:         getFilter(c, "user_id"),
 	}
 }
