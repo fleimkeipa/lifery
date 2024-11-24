@@ -14,7 +14,6 @@ type ConnectList struct {
 }
 
 type ConnectCreateRequest struct {
-	UserID   string `json:"user_id" binding:"required"`
 	FriendID string `json:"friend_id" binding:"required"`
 }
 
