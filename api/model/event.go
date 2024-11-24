@@ -1,6 +1,8 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 type Event struct {
 	Date      time.Time   `json:"date"`
@@ -9,6 +11,7 @@ type Event struct {
 	Name      string      `json:"name"`
 	Items     []EventItem `json:"items"`
 	ID        int64       `json:"id" pg:",pk"`
+	OwnerID   int64       `json:"owner_id"`
 	Private   bool        `json:"private"`
 }
 
@@ -54,6 +57,7 @@ type EventList struct {
 }
 
 type EventFindOpts struct {
-	SuplierID Filter
+	UserID  Filter
+	Private Filter
 	PaginationOpts
 }
