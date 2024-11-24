@@ -23,23 +23,24 @@ func NewConnectsUC(userUC *UserUC, connectRepo interfaces.ConnectInterfaces) *Co
 }
 
 func (rc *ConnectsUC) Create(ctx context.Context, req model.ConnectCreateRequest) (*model.Connect, error) {
+	ownerID := util.GetStrOwnerIDFromCtx(ctx)
 	connect := model.Connect{
 		Status:   model.RequestStatusPending,
-		UserID:   req.UserID,
+		UserID:   ownerID,
 		FriendID: req.FriendID,
 	}
 
-	if req.UserID == req.FriendID {
+	if ownerID == req.FriendID {
 		return nil, errors.New("cannot connect to self")
 	}
 
 	// owner control
-	if !rc.isOwner(ctx, req.UserID) {
+	if !rc.isOwner(ctx, ownerID) {
 		return nil, errors.New("you can't connect to other users")
 	}
 
 	// receiver exist control
-	receiver, err := rc.userUC.GetByID(ctx, req.UserID)
+	receiver, err := rc.userUC.GetByID(ctx, ownerID)
 	if err != nil {
 		return nil, err
 	}
@@ -81,8 +82,8 @@ func (rc *ConnectsUC) Update(ctx context.Context, id string, req model.ConnectUp
 		return nil, errors.New("invalid status")
 	}
 
-	// owner control
-	if !rc.isOwner(ctx, connect.UserID) {
+	// users can only update their own connects
+	if !rc.isOwner(ctx, connect.FriendID) {
 		return nil, errors.New("you can update only your connects")
 	}
 
@@ -107,9 +108,9 @@ func (rc *ConnectsUC) Update(ctx context.Context, id string, req model.ConnectUp
 }
 
 func (rc *ConnectsUC) Disconnect(ctx context.Context, req model.DisconnectRequest) error {
-	owner := util.GetOwnerFromCtx(ctx)
+	ownerID := util.GetStrOwnerIDFromCtx(ctx)
 
-	_, err := rc.userUC.DeleteConnect(ctx, strconv.Itoa(int(owner.ID)), req.FriendID)
+	_, err := rc.userUC.DeleteConnect(ctx, ownerID, req.FriendID)
 	if err != nil {
 		return err
 	}
@@ -130,8 +131,8 @@ func (rc *ConnectsUC) Delete(ctx context.Context, id string) error {
 }
 
 func (rc *ConnectsUC) isOwner(ctx context.Context, id string) bool {
-	tokenOwner := util.GetOwnerFromCtx(ctx)
-	if id != strconv.Itoa(int(tokenOwner.ID)) {
+	ownerID := util.GetStrOwnerIDFromCtx(ctx)
+	if id != ownerID {
 		return false
 	}
 
