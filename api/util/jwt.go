@@ -18,7 +18,7 @@ import (
 // retrieve JWT key from .env file
 var privateKey = []byte(os.Getenv("JWT_KEY"))
 
-// generate JWT token
+// GenerateJWT generate JWT token
 func GenerateJWT(user *model.User) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id":       strconv.Itoa(int(user.ID)),
@@ -26,7 +26,7 @@ func GenerateJWT(user *model.User) (string, error) {
 		"email":    user.Email,
 		"role":     user.RoleID,
 		"iat":      time.Now().Unix(),
-		"eat":      time.Now().Add(time.Hour * 24).Unix(),
+		"eat":      time.Now().Add(time.Hour * 2).Unix(),
 	})
 
 	return token.SignedString(privateKey)
@@ -39,16 +39,24 @@ func ValidateJWT(c echo.Context) error {
 		return err
 	}
 
-	if !token.Valid {
+	if token == nil || !token.Valid {
 		return errors.New("invalid token")
 	}
 
-	_, ok := token.Claims.(jwt.MapClaims)
-	if ok {
-		return nil
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return errors.New("invalid token claims")
 	}
 
-	return errors.New("invalid token provided")
+	if claims["eat"].(float64) < float64(time.Now().Unix()) {
+		return errors.New("token expired")
+	}
+
+	if claims == nil {
+		return errors.New("invalid token claims. claims is nil")
+	}
+
+	return nil
 }
 
 // validate Admin role
