@@ -103,11 +103,11 @@ func (rc *UserHandlers) UpdateUser(c echo.Context) error {
 //	@Accept			json
 //	@Produce		json
 //	@Param			Authorization	header		string			true	"Insert your access token"	default(Bearer <Add access token here>)
-//	@Param			limit			query		string			false	"Limit the number of users returned"
-//	@Param			skip			query		string			false	"Number of users to skip for pagination"
 //	@Param			username		query		string			false	"Filter users by username"
 //	@Param			email			query		string			false	"Filter users by email"
 //	@Param			role_id			query		string			false	"Filter users by role ID"
+//	@Param			limit			query		string			false	"Limit the number of users returned"
+//	@Param			skip			query		string			false	"Number of users to skip for pagination"
 //	@Success		200				{object}	SuccessResponse	"Successful response containing the list of users"
 //	@Failure		500				{object}	FailureResponse	"Interval error"
 //	@Router			/users [get]

@@ -341,6 +341,19 @@ paths:
       consumes:
       - application/json
       description: This endpoint retrieves a list of eras.
+      parameters:
+      - description: Filter eras by name
+        in: query
+        name: private
+        type: string
+      - description: Limit the number of connects returned
+        in: query
+        name: limit
+        type: string
+      - description: Number of connects to skip for pagination
+        in: query
+        name: skip
+        type: string
       produces:
       - application/json
       responses:
@@ -648,14 +661,6 @@ paths:
         name: Authorization
         required: true
         type: string
-      - description: Limit the number of users returned
-        in: query
-        name: limit
-        type: string
-      - description: Number of users to skip for pagination
-        in: query
-        name: skip
-        type: string
       - description: Filter users by username
         in: query
         name: username
@@ -667,6 +672,14 @@ paths:
       - description: Filter users by role ID
         in: query
         name: role_id
+        type: string
+      - description: Limit the number of users returned
+        in: query
+        name: limit
+        type: string
+      - description: Number of users to skip for pagination
+        in: query
+        name: skip
         type: string
       produces:
       - application/json

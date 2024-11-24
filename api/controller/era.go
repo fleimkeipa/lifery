@@ -19,6 +19,7 @@ func NewEraController(eraUC *uc.EraUC) *EraController {
 }
 
 // Create handles the creation of a new era.
+//
 //	@Summary		Create a new era
 //	@Description	This endpoint creates a new era by binding the incoming JSON request to the EraCreateRequest model.
 //	@Tags			eras
@@ -54,6 +55,7 @@ func (rc *EraController) Create(c echo.Context) error {
 }
 
 // Update handles the update of an existing era.
+//
 //	@Summary		Update an existing era
 //	@Description	This endpoint updates an existing era by binding the incoming JSON request to the EraUpdateRequest model.
 //	@Tags			eras
@@ -90,6 +92,7 @@ func (rc *EraController) Update(c echo.Context) error {
 }
 
 // Delete handles the deletion of an existing era.
+//
 //	@Summary		Delete an existing era
 //	@Description	This endpoint deletes an existing era by providing era name or UID.
 //	@Tags			eras
@@ -117,14 +120,18 @@ func (rc *EraController) Delete(c echo.Context) error {
 }
 
 // List handles the retrieval of a list of eras.
+//
 //	@Summary		Retrieve a list of eras
 //	@Description	This endpoint retrieves a list of eras.
 //	@Tags			eras
 //	@Accept			json
 //	@Produce		json
-//	@Success		200	{object}	SuccessResponse	"Eras retrieved successfully"
-//	@Failure		400	{object}	FailureResponse	"Invalid request data"
-//	@Failure		500	{object}	FailureResponse	"Era retrieval failed"
+//	@Param			private	query		string			false	"Filter eras by name"
+//	@Param			limit	query		string			false	"Limit the number of connects returned"
+//	@Param			skip	query		string			false	"Number of connects to skip for pagination"
+//	@Success		200		{object}	SuccessResponse	"Eras retrieved successfully"
+//	@Failure		400		{object}	FailureResponse	"Invalid request data"
+//	@Failure		500		{object}	FailureResponse	"Era retrieval failed"
 //	@Router			/eras [get]
 func (rc *EraController) List(c echo.Context) error {
 	opts := rc.getErasFindOpts(c)
@@ -144,6 +151,7 @@ func (rc *EraController) List(c echo.Context) error {
 }
 
 // GetByID handles the retrieval of an era by its name or UID.
+//
 //	@Summary		Retrieve era by ID
 //	@Description	Fetches an era by its unique name or UID from the database.
 //	@Tags			eras

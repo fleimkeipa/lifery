@@ -265,6 +265,26 @@ const docTemplate = `{
                     "eras"
                 ],
                 "summary": "Retrieve a list of eras",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Filter eras by name",
+                        "name": "private",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Limit the number of connects returned",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Number of connects to skip for pagination",
+                        "name": "skip",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Eras retrieved successfully",
@@ -720,18 +740,6 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Limit the number of users returned",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Number of users to skip for pagination",
-                        "name": "skip",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
                         "description": "Filter users by username",
                         "name": "username",
                         "in": "query"
@@ -746,6 +754,18 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Filter users by role ID",
                         "name": "role_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Limit the number of users returned",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Number of users to skip for pagination",
+                        "name": "skip",
                         "in": "query"
                     }
                 ],

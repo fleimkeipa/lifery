@@ -138,10 +138,10 @@ func (rc *ConnectHandlers) Disconnect(c echo.Context) error {
 //	@Accept			json
 //	@Produce		json
 //	@Param			Authorization	header		string			true	"Insert your access token"	default(Bearer <Add access token here>)
-//	@Param			limit			query		string			false	"Limit the number of connects returned"
-//	@Param			skip			query		string			false	"Number of connects to skip for pagination"
 //	@Param			status			query		string			false	"Filter connects by status"
 //	@Param			friend_id		query		string			false	"Filter connects by friend ID"
+//	@Param			limit			query		string			false	"Limit the number of connects returned"
+//	@Param			skip			query		string			false	"Number of connects to skip for pagination"
 //	@Success		200				{object}	SuccessResponse	"Successful response containing the list of connects"
 //	@Failure		500				{object}	FailureResponse	"Internal error"
 func (rc *ConnectHandlers) List(c echo.Context) error {
