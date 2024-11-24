@@ -28,11 +28,8 @@ definitions:
     properties:
       friend_id:
         type: string
-      user_id:
-        type: string
     required:
     - friend_id
-    - user_id
     type: object
   model.ConnectUpdateRequest:
     properties:
@@ -485,6 +482,23 @@ paths:
       consumes:
       - application/json
       description: This endpoint retrieves a list of events.
+      parameters:
+      - description: Filter events by user id
+        in: query
+        name: user_id
+        type: string
+      - description: Filter events by private status
+        in: query
+        name: private
+        type: string
+      - description: Limit the number of connects returned
+        in: query
+        name: limit
+        type: string
+      - description: Number of connects to skip for pagination
+        in: query
+        name: skip
+        type: string
       produces:
       - application/json
       responses:

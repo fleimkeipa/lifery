@@ -463,6 +463,32 @@
                     "events"
                 ],
                 "summary": "Retrieve a list of events",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Filter events by user id",
+                        "name": "user_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter events by private status",
+                        "name": "private",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Limit the number of connects returned",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Number of connects to skip for pagination",
+                        "name": "skip",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Events retrieved successfully",
@@ -958,14 +984,10 @@
         "model.ConnectCreateRequest": {
             "type": "object",
             "required": [
-                "friend_id",
-                "user_id"
+                "friend_id"
             ],
             "properties": {
                 "friend_id": {
-                    "type": "string"
-                },
-                "user_id": {
                     "type": "string"
                 }
             }
