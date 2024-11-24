@@ -179,6 +179,6 @@ func (rc *EventController) GetByID(c echo.Context) error {
 func (rc *EventController) getEventsFindOpts(c echo.Context) model.EventFindOpts {
 	return model.EventFindOpts{
 		PaginationOpts: getPagination(c),
-		SuplierID:      getFilter(c, "suplier_id"),
+		UserID:         getFilter(c, "user_id"),
 	}
 }
