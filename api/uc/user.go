@@ -61,6 +61,27 @@ func (rc *UserUC) Update(ctx context.Context, userID string, req model.UserCreat
 	return rc.userRepo.Update(ctx, userID, &user)
 }
 
+func (rc *UserUC) IsConnected(ctx context.Context, userID, friendID string) (bool, error) {
+	// receiver exist control
+	receiver, err := rc.GetByID(ctx, userID)
+	if err != nil {
+		return false, err
+	}
+
+	connects := receiver.Connects
+	if connects == nil || len(connects) == 0 {
+		return false, nil
+	}
+
+	for _, v := range connects {
+		if strconv.Itoa(v) == friendID {
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
 func (rc *UserUC) AddConnect(ctx context.Context, userID, friendID string) (*model.User, error) {
 	// receiver exist control
 	receiver, err := rc.GetByID(ctx, userID)
