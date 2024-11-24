@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"strconv"
 
@@ -21,7 +22,28 @@ func NewEventRepository(db *pg.DB) *EventRepository {
 }
 
 func (rc *EventRepository) Create(ctx context.Context, event *model.Event) (*model.Event, error) {
-	q := rc.db.Model(event)
+	items := []EventItem{}
+	for _, v := range event.Items {
+		items = append(items, EventItem{
+			Data: v.Data,
+			Type: EventType(v.Type),
+		})
+	}
+
+	sqlEvent := Event{
+		Date:      event.Date,
+		TimeStart: event.TimeStart,
+		TimeEnd:   event.TimeEnd,
+		Name:      event.Name,
+		Items:     items,
+		ID:        event.ID,
+		OwnerID:   event.OwnerID,
+		Private: sql.NullBool{
+			Bool:  event.Private,
+			Valid: true,
+		},
+	}
+	q := rc.db.Model(&sqlEvent)
 
 	_, err := q.Insert()
 	if err != nil {
@@ -123,8 +145,12 @@ func (rc *EventRepository) GetByID(ctx context.Context, eventID string) (*model.
 func (rc *EventRepository) fillFilter(opts *model.EventFindOpts) string {
 	filter := ""
 
-	if opts.SuplierID.IsSended {
-		filter = addFilterClause(filter, "category", opts.SuplierID.Value)
+	if opts.UserID.IsSended {
+		filter = addFilterClause(filter, "owner_id", opts.UserID.Value)
+	}
+
+	if opts.Private.IsSended {
+		filter = addFilterClause(filter, "private", opts.Private.Value)
 	}
 
 	return filter
