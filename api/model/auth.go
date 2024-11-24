@@ -20,9 +20,9 @@ type Register struct {
 }
 
 type TokenOwner struct {
-	Username string `json:"username" pg:",unique"`
-	Email    string `json:"email" pg:",unique"`
-	ID       int64  `json:"id" pg:",pk"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	ID       string `json:"id"`
 	RoleID   uint   `json:"role_id"`
 }
 
