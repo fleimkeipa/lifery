@@ -95,12 +95,12 @@ func (rc *UserUC) AddConnect(ctx context.Context, userID, friendID string) (*mod
 		return nil, err
 	}
 
-	receiver, err = rc.addConnect(ctx, receiver, int(sender.ID), int(receiver.ID))
+	receiver, err = rc.addConnect(ctx, receiver, sender.ID, receiver.ID)
 	if err != nil {
 		return nil, err
 	}
 
-	return rc.addConnect(ctx, sender, int(receiver.ID), int(sender.ID))
+	return rc.addConnect(ctx, sender, receiver.ID, sender.ID)
 }
 
 func (rc *UserUC) DeleteConnect(ctx context.Context, userID, friendID string) (*model.User, error) {
@@ -116,12 +116,12 @@ func (rc *UserUC) DeleteConnect(ctx context.Context, userID, friendID string) (*
 		return nil, err
 	}
 
-	receiver, err = rc.deleteConnect(ctx, receiver, int(sender.ID))
+	receiver, err = rc.deleteConnect(ctx, receiver, sender.ID)
 	if err != nil {
 		return nil, err
 	}
 
-	return rc.deleteConnect(ctx, sender, int(receiver.ID))
+	return rc.deleteConnect(ctx, sender, receiver.ID)
 }
 
 func (rc *UserUC) List(ctx context.Context, opts *model.UserFindOpts) (*model.UserList, error) {
@@ -154,23 +154,24 @@ func (rc *UserUC) Delete(ctx context.Context, id string) error {
 	return rc.userRepo.Delete(ctx, id)
 }
 
-func (rc *UserUC) addConnect(ctx context.Context, user *model.User, senderID, receiverID int) (*model.User, error) {
-	user.Connects = append(user.Connects, int(senderID))
+func (rc *UserUC) addConnect(ctx context.Context, user *model.User, senderID, receiverID string) (*model.User, error) {
+	sID, err := strconv.Atoi(senderID)
+	if err != nil {
+		return nil, err
+	}
 
-	strID := strconv.Itoa(receiverID)
+	user.Connects = append(user.Connects, int(sID))
 
-	return rc.userRepo.Update(ctx, strID, user)
+	return rc.userRepo.Update(ctx, receiverID, user)
 }
 
-func (rc *UserUC) deleteConnect(ctx context.Context, user *model.User, userID int) (*model.User, error) {
+func (rc *UserUC) deleteConnect(ctx context.Context, user *model.User, userID string) (*model.User, error) {
 	for i, v := range user.Connects {
-		if v == userID {
+		if strconv.Itoa(v) == userID {
 			user.Connects = append(user.Connects[:i], user.Connects[i+1:]...)
 			break
 		}
 	}
 
-	strID := strconv.Itoa(userID)
-
-	return rc.userRepo.Update(ctx, strID, user)
+	return rc.userRepo.Update(ctx, userID, user)
 }

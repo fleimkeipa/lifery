@@ -21,18 +21,20 @@ func NewUserRepository(db *pg.DB) *UserRepository {
 }
 
 func (rc *UserRepository) Create(ctx context.Context, newUser *model.User) (*model.User, error) {
-	q := rc.db.Model(newUser)
-
 	if newUser.RoleID <= 0 {
 		newUser.RoleID = model.ViewerRole
 	}
+
+	sqlUser := rc.internalToSQL(newUser)
+
+	q := rc.db.Model(sqlUser)
 
 	_, err := q.Insert()
 	if err != nil {
 		return nil, fmt.Errorf("failed to create user: %w", err)
 	}
 
-	return newUser, nil
+	return rc.sqlToInternal(&sqlUser), nil
 }
 
 func (rc *UserRepository) Update(ctx context.Context, userID string, user *model.User) (*model.User, error) {
@@ -40,13 +42,11 @@ func (rc *UserRepository) Update(ctx context.Context, userID string, user *model
 		return nil, fmt.Errorf("user id is empty")
 	}
 
-	uID, err := strconv.ParseInt(userID, 10, 64)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse event id: %w", err)
-	}
-	user.ID = uID
+	user.ID = userID
 
-	q := rc.db.Model(user).WherePK()
+	sqlUser := rc.internalToSQL(user)
+
+	q := rc.db.Model(sqlUser).WherePK()
 
 	result, err := q.Update()
 	if err != nil {
@@ -57,11 +57,11 @@ func (rc *UserRepository) Update(ctx context.Context, userID string, user *model
 		return nil, fmt.Errorf("no user updated")
 	}
 
-	return user, nil
+	return rc.sqlToInternal(&sqlUser), nil
 }
 
 func (rc *UserRepository) Delete(ctx context.Context, id string) error {
-	result, err := rc.db.Model(&model.User{}).Where("id = ?", id).Delete()
+	result, err := rc.db.Model(&User{}).Where("id = ?", id).Delete()
 	if err != nil {
 		return fmt.Errorf("failed to delete user: %w", err)
 	}
@@ -77,7 +77,7 @@ func (rc *UserRepository) List(ctx context.Context, opts *model.UserFindOpts) (*
 		return nil, fmt.Errorf("opts is nil")
 	}
 
-	users := make([]model.User, 0)
+	users := make([]User, 0)
 
 	filter := rc.fillFilter(opts)
 	fields := rc.fillFields(opts)
@@ -98,8 +98,13 @@ func (rc *UserRepository) List(ctx context.Context, opts *model.UserFindOpts) (*
 		return &model.UserList{}, nil
 	}
 
+	internalUsers := make([]model.User, 0)
+	for _, v := range users {
+		internalUsers = append(internalUsers, *rc.sqlToInternal(&v))
+	}
+
 	return &model.UserList{
-		Users: users,
+		Users: internalUsers,
 		Total: count,
 		PaginationOpts: model.PaginationOpts{
 			Skip:  opts.Skip,
@@ -113,7 +118,7 @@ func (rc *UserRepository) GetByID(ctx context.Context, userID string) (*model.Us
 		return nil, fmt.Errorf("invalid user ID: %s", userID)
 	}
 
-	var user model.User
+	var user User
 
 	query := rc.db.Model(&user).Where("id = ?", userID)
 
@@ -121,7 +126,7 @@ func (rc *UserRepository) GetByID(ctx context.Context, userID string) (*model.Us
 		return nil, fmt.Errorf("failed to find user by id [%s]: %w", userID, err)
 	}
 
-	return &user, nil
+	return rc.sqlToInternal(&user), nil
 }
 
 func (rc *UserRepository) GetByUsernameOrEmail(ctx context.Context, usernameOrEmail string) (*model.User, error) {
@@ -129,7 +134,7 @@ func (rc *UserRepository) GetByUsernameOrEmail(ctx context.Context, usernameOrEm
 		return nil, fmt.Errorf("invalid username or email")
 	}
 
-	var user model.User
+	var user User
 
 	query := rc.db.Model(&user)
 
@@ -139,7 +144,7 @@ func (rc *UserRepository) GetByUsernameOrEmail(ctx context.Context, usernameOrEm
 		return nil, fmt.Errorf("failed to get user by [%s]: %w", usernameOrEmail, err)
 	}
 
-	return &user, nil
+	return rc.sqlToInternal(&user), nil
 }
 
 func (rc *UserRepository) Exists(ctx context.Context, usernameOrEmail string) (bool, error) {
@@ -147,7 +152,7 @@ func (rc *UserRepository) Exists(ctx context.Context, usernameOrEmail string) (b
 		return false, fmt.Errorf("invalid username or email")
 	}
 
-	query := rc.db.Model(&model.User{})
+	query := rc.db.Model(&User{})
 
 	query = query.Where("username = ? OR email = ?", usernameOrEmail, usernameOrEmail)
 
@@ -195,4 +200,28 @@ func (rc *UserRepository) fillFields(opts *model.UserFindOpts) []string {
 	}
 
 	return fields
+}
+
+func (rc *UserRepository) internalToSQL(user *model.User) User {
+	uID, _ := strconv.Atoi(user.ID)
+	return User{
+		ID:        uID,
+		Username:  user.Username,
+		Email:     user.Email,
+		RoleID:    user.RoleID,
+		CreatedAt: user.CreatedAt,
+		DeletedAt: user.DeletedAt,
+	}
+}
+
+func (rc *UserRepository) sqlToInternal(user *User) *model.User {
+	uID := strconv.Itoa(user.ID)
+	return &model.User{
+		ID:        uID,
+		Username:  user.Username,
+		Email:     user.Email,
+		RoleID:    user.RoleID,
+		CreatedAt: user.CreatedAt,
+		DeletedAt: user.DeletedAt,
+	}
 }

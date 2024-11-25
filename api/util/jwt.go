@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 
@@ -21,7 +20,7 @@ var privateKey = []byte(os.Getenv("JWT_KEY"))
 // GenerateJWT generate JWT token
 func GenerateJWT(user *model.User) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"id":       strconv.Itoa(int(user.ID)),
+		"id":       user.ID,
 		"username": user.Username,
 		"email":    user.Email,
 		"role":     user.RoleID,
@@ -185,19 +184,8 @@ func GetOwnerFromCtx(ctx context.Context) *model.TokenOwner {
 	return nil
 }
 
-// GetOwnerIDFromCtx returns the owner id from the context int type
-func GetOwnerIDFromCtx(ctx context.Context) int64 {
-	owner, ok := ctx.Value("user").(model.TokenOwner)
-	if ok {
-		intID, _ := strconv.Atoi(owner.ID)
-		return int64(intID)
-	}
-
-	return 0
-}
-
-// GetStrOwnerIDFromCtx returns the owner id from the context string type
-func GetStrOwnerIDFromCtx(ctx context.Context) string {
+// GetOwnerIDFromCtx returns the owner id from the context string type
+func GetOwnerIDFromCtx(ctx context.Context) string {
 	owner, ok := ctx.Value("user").(model.TokenOwner)
 	if ok {
 		return owner.ID

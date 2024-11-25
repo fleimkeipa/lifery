@@ -5,13 +5,13 @@ import "time"
 const ZeroCreds = "zeroCreds"
 
 type User struct {
-	DeletedAt time.Time `json:"deleted_at" pg:",soft_delete"`
+	DeletedAt time.Time `json:"deleted_at"`
 	CreatedAt time.Time `json:"created_at"`
 	Connects  []int     `json:"connects"`
-	Username  string    `json:"username" pg:",unique"`
-	Email     string    `json:"email" pg:",unique"`
+	Username  string    `json:"username"`
+	Email     string    `json:"email"`
 	Password  string    `json:"password"`
-	ID        int64     `json:"id" pg:",pk"`
+	ID        string    `json:"id"`
 	RoleID    uint      `json:"role_id"`
 }
 
