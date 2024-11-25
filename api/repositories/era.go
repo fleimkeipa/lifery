@@ -162,11 +162,12 @@ func (rc *EraRepository) internalToSQL(newEra *model.Era) *era {
 	eID, _ := strconv.Atoi(newEra.ID)
 	ownerID, _ := strconv.Atoi(newEra.OwnerID)
 	return &era{
-		ID:        eID,
 		TimeStart: newEra.TimeStart,
 		TimeEnd:   newEra.TimeEnd,
 		Name:      newEra.Name,
+		Color:     newEra.Color,
 		OwnerID:   ownerID,
+		ID:        eID,
 	}
 }
 
@@ -174,11 +175,12 @@ func (rc *EraRepository) sqlToInternal(newEra *era) *model.Era {
 	eID := strconv.Itoa(newEra.ID)
 	ownerID := strconv.Itoa(newEra.OwnerID)
 	return &model.Era{
-		ID:        eID,
 		TimeStart: newEra.TimeStart,
 		TimeEnd:   newEra.TimeEnd,
 		Name:      newEra.Name,
+		Color:     newEra.Color,
 		OwnerID:   ownerID,
+		ID:        eID,
 	}
 }
 

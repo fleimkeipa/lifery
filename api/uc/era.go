@@ -25,6 +25,7 @@ func (rc *EraUC) Create(ctx context.Context, req *model.EraCreateRequest) (*mode
 		TimeStart: req.TimeStart,
 		TimeEnd:   req.TimeEnd,
 		Name:      req.Name,
+		Color:     req.Color,
 		OwnerID:   ownerID,
 	}
 
@@ -42,6 +43,7 @@ func (rc *EraUC) Update(ctx context.Context, eraID string, req *model.EraUpdateR
 		TimeStart: req.TimeStart,
 		TimeEnd:   req.TimeEnd,
 		Name:      req.Name,
+		Color:     req.Color,
 		OwnerID:   exist.OwnerID,
 	}
 
