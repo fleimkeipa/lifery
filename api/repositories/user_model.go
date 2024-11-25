@@ -2,7 +2,7 @@ package repositories
 
 import "time"
 
-type User struct {
+type user struct {
 	DeletedAt time.Time `json:"deleted_at" pg:",soft_delete"`
 	CreatedAt time.Time `json:"created_at"`
 	Connects  []int     `json:"connects"`

@@ -3,11 +3,13 @@ package repositories
 import (
 	"context"
 	"fmt"
+	"log"
 	"strconv"
 
 	"github.com/fleimkeipa/lifery/model"
 
 	"github.com/go-pg/pg"
+	"github.com/go-pg/pg/orm"
 )
 
 type UserRepository struct {
@@ -15,9 +17,15 @@ type UserRepository struct {
 }
 
 func NewUserRepository(db *pg.DB) *UserRepository {
-	return &UserRepository{
+	rc := &UserRepository{
 		db: db,
 	}
+
+	if err := rc.createSchema(db); err != nil {
+		log.Fatalf("failed to create schema: %v", err)
+	}
+
+	return rc
 }
 
 func (rc *UserRepository) Create(ctx context.Context, newUser *model.User) (*model.User, error) {
@@ -34,7 +42,7 @@ func (rc *UserRepository) Create(ctx context.Context, newUser *model.User) (*mod
 		return nil, fmt.Errorf("failed to create user: %w", err)
 	}
 
-	return rc.sqlToInternal(&sqlUser), nil
+	return rc.sqlToInternal(sqlUser), nil
 }
 
 func (rc *UserRepository) Update(ctx context.Context, userID string, user *model.User) (*model.User, error) {
@@ -57,11 +65,11 @@ func (rc *UserRepository) Update(ctx context.Context, userID string, user *model
 		return nil, fmt.Errorf("no user updated")
 	}
 
-	return rc.sqlToInternal(&sqlUser), nil
+	return rc.sqlToInternal(sqlUser), nil
 }
 
 func (rc *UserRepository) Delete(ctx context.Context, id string) error {
-	result, err := rc.db.Model(&User{}).Where("id = ?", id).Delete()
+	result, err := rc.db.Model(&user{}).Where("id = ?", id).Delete()
 	if err != nil {
 		return fmt.Errorf("failed to delete user: %w", err)
 	}
@@ -77,7 +85,7 @@ func (rc *UserRepository) List(ctx context.Context, opts *model.UserFindOpts) (*
 		return nil, fmt.Errorf("opts is nil")
 	}
 
-	users := make([]User, 0)
+	users := make([]user, 0)
 
 	filter := rc.fillFilter(opts)
 	fields := rc.fillFields(opts)
@@ -118,7 +126,7 @@ func (rc *UserRepository) GetByID(ctx context.Context, userID string) (*model.Us
 		return nil, fmt.Errorf("invalid user ID: %s", userID)
 	}
 
-	var user User
+	var user user
 
 	query := rc.db.Model(&user).Where("id = ?", userID)
 
@@ -134,7 +142,7 @@ func (rc *UserRepository) GetByUsernameOrEmail(ctx context.Context, usernameOrEm
 		return nil, fmt.Errorf("invalid username or email")
 	}
 
-	var user User
+	var user user
 
 	query := rc.db.Model(&user)
 
@@ -152,7 +160,7 @@ func (rc *UserRepository) Exists(ctx context.Context, usernameOrEmail string) (b
 		return false, fmt.Errorf("invalid username or email")
 	}
 
-	query := rc.db.Model(&User{})
+	query := rc.db.Model(&user{})
 
 	query = query.Where("username = ? OR email = ?", usernameOrEmail, usernameOrEmail)
 
@@ -202,26 +210,44 @@ func (rc *UserRepository) fillFields(opts *model.UserFindOpts) []string {
 	return fields
 }
 
-func (rc *UserRepository) internalToSQL(user *model.User) User {
-	uID, _ := strconv.Atoi(user.ID)
-	return User{
+func (rc *UserRepository) internalToSQL(newUser *model.User) *user {
+	uID, _ := strconv.Atoi(newUser.ID)
+	return &user{
+		DeletedAt: newUser.DeletedAt,
+		CreatedAt: newUser.CreatedAt,
+		Connects:  newUser.Connects,
+		Username:  newUser.Username,
+		Email:     newUser.Email,
+		Password:  newUser.Password,
 		ID:        uID,
-		Username:  user.Username,
-		Email:     user.Email,
-		RoleID:    user.RoleID,
-		CreatedAt: user.CreatedAt,
-		DeletedAt: user.DeletedAt,
+		RoleID:    newUser.RoleID,
 	}
 }
 
-func (rc *UserRepository) sqlToInternal(user *User) *model.User {
-	uID := strconv.Itoa(user.ID)
+func (rc *UserRepository) sqlToInternal(newUser *user) *model.User {
+	uID := strconv.Itoa(newUser.ID)
 	return &model.User{
+		DeletedAt: newUser.DeletedAt,
+		CreatedAt: newUser.CreatedAt,
+		Connects:  newUser.Connects,
+		Username:  newUser.Username,
+		Email:     newUser.Email,
+		Password:  newUser.Password,
 		ID:        uID,
-		Username:  user.Username,
-		Email:     user.Email,
-		RoleID:    user.RoleID,
-		CreatedAt: user.CreatedAt,
-		DeletedAt: user.DeletedAt,
+		RoleID:    newUser.RoleID,
 	}
+}
+
+func (rc *UserRepository) createSchema(db *pg.DB) error {
+	model := (*user)(nil)
+
+	opts := &orm.CreateTableOptions{
+		IfNotExists: true,
+	}
+
+	if err := db.Model(model).CreateTable(opts); err != nil {
+		return fmt.Errorf("failed to create table: %w", err)
+	}
+
+	return nil
 }
