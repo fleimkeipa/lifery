@@ -11,8 +11,8 @@ type Event struct {
 	TimeEnd   time.Time    `json:"time_end"`
 	Name      string       `json:"name"`
 	Items     []EventItem  `json:"items"`
-	ID        int64        `json:"id" pg:",pk"`
-	OwnerID   int64        `json:"owner_id"`
+	ID        int          `json:"id" pg:",pk"`
+	OwnerID   int          `json:"owner_id"`
 	Private   sql.NullBool `json:"private"`
 }
 

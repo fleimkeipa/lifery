@@ -10,8 +10,8 @@ type Event struct {
 	TimeEnd   time.Time   `json:"time_end"`
 	Name      string      `json:"name"`
 	Items     []EventItem `json:"items"`
-	ID        int64       `json:"id" pg:",pk"`
-	OwnerID   int64       `json:"owner_id"`
+	ID        string      `json:"id"`
+	OwnerID   string      `json:"owner_id"`
 	Private   bool        `json:"private"`
 }
 

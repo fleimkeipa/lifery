@@ -63,7 +63,7 @@ func (rc *EventUC) Delete(ctx context.Context, id string) error {
 }
 
 func (rc *EventUC) List(ctx context.Context, opts *model.EventFindOpts) (*model.EventList, error) {
-	ownerID := util.GetStrOwnerIDFromCtx(ctx)
+	ownerID := util.GetOwnerIDFromCtx(ctx)
 
 	if !opts.UserID.IsSended {
 		opts.UserID = model.Filter{

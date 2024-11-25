@@ -23,27 +23,8 @@ func NewEventRepository(db *pg.DB) *EventRepository {
 }
 
 func (rc *EventRepository) Create(ctx context.Context, event *model.Event) (*model.Event, error) {
-	items := []EventItem{}
-	for _, v := range event.Items {
-		items = append(items, EventItem{
-			Data: v.Data,
-			Type: EventType(v.Type),
-		})
-	}
+	sqlEvent := rc.internalToSQL(event)
 
-	sqlEvent := Event{
-		Date:      event.Date,
-		TimeStart: event.TimeStart,
-		TimeEnd:   event.TimeEnd,
-		Name:      event.Name,
-		Items:     items,
-		ID:        event.ID,
-		OwnerID:   event.OwnerID,
-		Private: sql.NullBool{
-			Bool:  event.Private,
-			Valid: true,
-		},
-	}
 	q := rc.db.Model(&sqlEvent)
 
 	_, err := q.Insert()
@@ -51,7 +32,7 @@ func (rc *EventRepository) Create(ctx context.Context, event *model.Event) (*mod
 		return nil, fmt.Errorf("failed to create event [%v]: %w", event.Name, err)
 	}
 
-	return event, nil
+	return rc.sqlToInternal(&sqlEvent), nil
 }
 
 func (rc *EventRepository) Update(ctx context.Context, eventID string, event *model.Event) (*model.Event, error) {
@@ -59,34 +40,32 @@ func (rc *EventRepository) Update(ctx context.Context, eventID string, event *mo
 		return nil, fmt.Errorf("event id is empty")
 	}
 
-	eID, err := strconv.ParseInt(eventID, 10, 64)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse event id: %w", err)
-	}
-	event.ID = eID
+	event.ID = eventID
 
-	q := rc.db.Model(event)
+	sqlEvent := rc.internalToSQL(event)
 
-	ownerID := util.GetStrOwnerIDFromCtx(ctx)
+	q := rc.db.Model(sqlEvent)
 
-	q = q.Where("id = ? AND owner_id = ?", eID, ownerID)
+	ownerID := util.GetOwnerIDFromCtx(ctx)
+
+	q = q.Where("id = ? AND owner_id = ?", eventID, ownerID)
 
 	result, err := q.Update()
 	if err != nil {
-		return nil, fmt.Errorf("failed to update event [%v]: %w", event.Name, err)
+		return nil, fmt.Errorf("failed to update event [%v]: %w", sqlEvent.Name, err)
 	}
 
 	if result.RowsAffected() == 0 {
 		return nil, fmt.Errorf("no event updated")
 	}
 
-	return event, nil
+	return rc.sqlToInternal(&sqlEvent), nil
 }
 
 func (rc *EventRepository) Delete(ctx context.Context, id string) error {
-	q := rc.db.Model(&model.Event{})
+	q := rc.db.Model(&Event{})
 
-	ownerID := util.GetStrOwnerIDFromCtx(ctx)
+	ownerID := util.GetOwnerIDFromCtx(ctx)
 
 	q = q.Where("id = ? AND owner_id = ?", id, ownerID)
 
@@ -107,7 +86,7 @@ func (rc *EventRepository) List(ctx context.Context, opts *model.EventFindOpts) 
 		return nil, fmt.Errorf("opts is nil")
 	}
 
-	events := make([]model.Event, 0)
+	events := make([]Event, 0)
 
 	filter := rc.fillFilter(opts)
 	fields := []string{"*"}
@@ -128,8 +107,13 @@ func (rc *EventRepository) List(ctx context.Context, opts *model.EventFindOpts) 
 		return &model.EventList{}, nil
 	}
 
+	internalEvents := make([]model.Event, 0)
+	for _, v := range events {
+		internalEvents = append(internalEvents, *rc.sqlToInternal(&v))
+	}
+
 	return &model.EventList{
-		Events: events,
+		Events: internalEvents,
 		Total:  count,
 		PaginationOpts: model.PaginationOpts{
 			Limit: opts.Limit,
@@ -143,7 +127,7 @@ func (rc *EventRepository) GetByID(ctx context.Context, eventID string) (*model.
 		return nil, fmt.Errorf("invalid event ID: %s", eventID)
 	}
 
-	var event model.Event
+	var event Event
 
 	query := rc.db.Model(&event).Where("id = ?", eventID)
 
@@ -151,7 +135,7 @@ func (rc *EventRepository) GetByID(ctx context.Context, eventID string) (*model.
 		return nil, fmt.Errorf("failed to find event by ID [%s]: %w", eventID, err)
 	}
 
-	return &event, nil
+	return rc.sqlToInternal(&event), nil
 }
 
 func (rc *EventRepository) fillFilter(opts *model.EventFindOpts) string {
@@ -166,4 +150,55 @@ func (rc *EventRepository) fillFilter(opts *model.EventFindOpts) string {
 	}
 
 	return filter
+}
+
+func (rc *EventRepository) internalToSQL(event *model.Event) Event {
+	eID, _ := strconv.Atoi(event.ID)
+	ownerID, _ := strconv.Atoi(event.OwnerID)
+
+	items := []EventItem{}
+	for _, v := range event.Items {
+		items = append(items, EventItem{
+			Data: v.Data,
+			Type: EventType(v.Type),
+		})
+	}
+
+	return Event{
+		Date:      event.Date,
+		TimeStart: event.TimeStart,
+		TimeEnd:   event.TimeEnd,
+		Name:      event.Name,
+		Items:     items,
+		ID:        eID,
+		OwnerID:   ownerID,
+		Private: sql.NullBool{
+			Bool:  event.Private,
+			Valid: true,
+		},
+	}
+}
+
+func (rc *EventRepository) sqlToInternal(event *Event) *model.Event {
+	eID := strconv.Itoa(event.ID)
+	ownerID := strconv.Itoa(event.OwnerID)
+
+	items := []model.EventItem{}
+	for _, v := range event.Items {
+		items = append(items, model.EventItem{
+			Data: v.Data,
+			Type: model.EventType(v.Type),
+		})
+	}
+
+	return &model.Event{
+		Date:      event.Date,
+		TimeStart: event.TimeStart,
+		TimeEnd:   event.TimeEnd,
+		Name:      event.Name,
+		Items:     items,
+		ID:        eID,
+		OwnerID:   ownerID,
+		Private:   event.Private.Bool,
+	}
 }
