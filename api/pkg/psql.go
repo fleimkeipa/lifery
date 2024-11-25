@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/fleimkeipa/lifery/model"
+	"github.com/fleimkeipa/lifery/repositories"
 
 	"github.com/go-pg/pg"
 	"github.com/go-pg/pg/orm"
@@ -39,10 +40,10 @@ func NewPSQLClient() *pg.DB {
 
 func createSchema(db *pg.DB) error {
 	models := []interface{}{
-		(*model.Event)(nil),
-		(*model.Era)(nil),
-		(*model.User)(nil),
-		(*model.Connect)(nil),
+		(*repositories.Event)(nil),
+		(*repositories.Era)(nil),
+		(*repositories.User)(nil),
+		(*repositories.Connect)(nil),
 	}
 
 	for _, model := range models {
