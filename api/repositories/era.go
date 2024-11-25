@@ -22,14 +22,15 @@ func NewEraRepository(db *pg.DB) *EraRepository {
 }
 
 func (rc *EraRepository) Create(ctx context.Context, era *model.Era) (*model.Era, error) {
-	q := rc.db.Model(era)
+	sqlEra := rc.internalToSQL(era)
+	q := rc.db.Model(sqlEra)
 
 	_, err := q.Insert()
 	if err != nil {
 		return nil, fmt.Errorf("failed to create era [%v]: %w", era.Name, err)
 	}
 
-	return era, nil
+	return rc.sqlToInternal(&sqlEra), nil
 }
 
 func (rc *EraRepository) Update(ctx context.Context, eraID string, era *model.Era) (*model.Era, error) {
@@ -37,34 +38,32 @@ func (rc *EraRepository) Update(ctx context.Context, eraID string, era *model.Er
 		return nil, fmt.Errorf("invalid era id [%v]", eraID)
 	}
 
-	eID, err := strconv.ParseInt(eraID, 10, 64)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse era id: %w", err)
-	}
-	era.ID = eID
+	era.ID = eraID
 
-	q := rc.db.Model(era)
+	sqlEra := rc.internalToSQL(era)
 
-	ownerID := util.GetStrOwnerIDFromCtx(ctx)
+	q := rc.db.Model(sqlEra)
 
-	q = q.Where("id = ? AND owner_id = ?", eID, ownerID)
+	ownerID := util.GetOwnerIDFromCtx(ctx)
+
+	q = q.Where("id = ? AND owner_id = ?", eraID, ownerID)
 
 	result, err := q.Update()
 	if err != nil {
-		return nil, fmt.Errorf("failed to update era [%v]: %w", era.Name, err)
+		return nil, fmt.Errorf("failed to update era [%v]: %w", sqlEra.Name, err)
 	}
 
 	if result.RowsAffected() == 0 {
 		return nil, fmt.Errorf("no era updated")
 	}
 
-	return era, nil
+	return rc.sqlToInternal(&sqlEra), nil
 }
 
 func (rc *EraRepository) Delete(ctx context.Context, id string) error {
-	q := rc.db.Model(&model.Era{})
+	q := rc.db.Model(&Era{})
 
-	ownerID := util.GetStrOwnerIDFromCtx(ctx)
+	ownerID := util.GetOwnerIDFromCtx(ctx)
 
 	q = q.Where("id = ? AND owner_id = ?", id, ownerID)
 
@@ -84,7 +83,7 @@ func (rc *EraRepository) List(ctx context.Context, opts *model.EraFindOpts) (*mo
 		return nil, fmt.Errorf("opts is nil")
 	}
 
-	eras := make([]model.Era, 0)
+	eras := make([]Era, 0)
 
 	filter := rc.fillFilter(opts)
 	fields := []string{"*"}
@@ -105,8 +104,13 @@ func (rc *EraRepository) List(ctx context.Context, opts *model.EraFindOpts) (*mo
 		return &model.EraList{}, nil
 	}
 
+	internalEras := make([]model.Era, 0)
+	for _, v := range eras {
+		internalEras = append(internalEras, *rc.sqlToInternal(&v))
+	}
+
 	return &model.EraList{
-		Eras:  eras,
+		Eras:  internalEras,
 		Total: count,
 		PaginationOpts: model.PaginationOpts{
 			Skip:  opts.Skip,
@@ -120,7 +124,7 @@ func (rc *EraRepository) GetByID(ctx context.Context, eraID string) (*model.Era,
 		return nil, fmt.Errorf("invalid era ID: %s", eraID)
 	}
 
-	var era model.Era
+	var era Era
 
 	query := rc.db.Model(era).Where("id = ?", eraID)
 
@@ -128,7 +132,7 @@ func (rc *EraRepository) GetByID(ctx context.Context, eraID string) (*model.Era,
 		return nil, fmt.Errorf("failed to find era by ID [%s]: %w", eraID, err)
 	}
 
-	return &era, nil
+	return rc.sqlToInternal(&era), nil
 }
 
 func (rc *EraRepository) fillFilter(opts *model.EraFindOpts) string {
@@ -143,4 +147,28 @@ func (rc *EraRepository) fillFilter(opts *model.EraFindOpts) string {
 	}
 
 	return filter
+}
+
+func (rc *EraRepository) internalToSQL(era *model.Era) Era {
+	eID, _ := strconv.Atoi(era.ID)
+	ownerID, _ := strconv.Atoi(era.OwnerID)
+	return Era{
+		ID:        eID,
+		TimeStart: era.TimeStart,
+		TimeEnd:   era.TimeEnd,
+		Name:      era.Name,
+		OwnerID:   ownerID,
+	}
+}
+
+func (rc *EraRepository) sqlToInternal(era *Era) *model.Era {
+	eID := strconv.Itoa(era.ID)
+	ownerID := strconv.Itoa(era.OwnerID)
+	return &model.Era{
+		ID:        eID,
+		TimeStart: era.TimeStart,
+		TimeEnd:   era.TimeEnd,
+		Name:      era.Name,
+		OwnerID:   ownerID,
+	}
 }

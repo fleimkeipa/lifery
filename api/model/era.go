@@ -6,8 +6,8 @@ type Era struct {
 	TimeStart time.Time `json:"time_start"`
 	TimeEnd   time.Time `json:"time_end"`
 	Name      string    `json:"name"`
-	OwnerID   int64     `json:"owner_id"`
-	ID        int64     `json:"id" pg:",pk"`
+	OwnerID   string    `json:"owner_id"`
+	ID        string    `json:"id"`
 }
 
 type EraCreateRequest struct {
@@ -20,7 +20,7 @@ type EraUpdateRequest struct {
 	TimeStart time.Time `json:"time_start"`
 	TimeEnd   time.Time `json:"time_end"`
 	Name      string    `json:"name"`
-	ID        int64     `json:"id" pg:",pk"`
+	ID        int64     `json:"id"`
 }
 
 type EraList struct {

@@ -53,7 +53,7 @@ func (rc *EraUC) Delete(ctx context.Context, id string) error {
 }
 
 func (rc *EraUC) List(ctx context.Context, opts *model.EraFindOpts) (*model.EraList, error) {
-	ownerID := util.GetStrOwnerIDFromCtx(ctx)
+	ownerID := util.GetOwnerIDFromCtx(ctx)
 
 	if !opts.UserID.IsSended {
 		opts.UserID = model.Filter{
