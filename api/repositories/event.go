@@ -4,12 +4,14 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"log"
 	"strconv"
 
 	"github.com/fleimkeipa/lifery/model"
 	"github.com/fleimkeipa/lifery/util"
 
 	"github.com/go-pg/pg"
+	"github.com/go-pg/pg/orm"
 )
 
 type EventRepository struct {
@@ -17,22 +19,28 @@ type EventRepository struct {
 }
 
 func NewEventRepository(db *pg.DB) *EventRepository {
-	return &EventRepository{
+	rc := &EventRepository{
 		db: db,
 	}
+
+	if err := rc.createSchema(db); err != nil {
+		log.Fatalf("failed to create schema: %v", err)
+	}
+
+	return rc
 }
 
 func (rc *EventRepository) Create(ctx context.Context, event *model.Event) (*model.Event, error) {
 	sqlEvent := rc.internalToSQL(event)
 
-	q := rc.db.Model(&sqlEvent)
+	q := rc.db.Model(sqlEvent)
 
 	_, err := q.Insert()
 	if err != nil {
 		return nil, fmt.Errorf("failed to create event [%v]: %w", event.Name, err)
 	}
 
-	return rc.sqlToInternal(&sqlEvent), nil
+	return rc.sqlToInternal(sqlEvent), nil
 }
 
 func (rc *EventRepository) Update(ctx context.Context, eventID string, event *model.Event) (*model.Event, error) {
@@ -59,11 +67,11 @@ func (rc *EventRepository) Update(ctx context.Context, eventID string, event *mo
 		return nil, fmt.Errorf("no event updated")
 	}
 
-	return rc.sqlToInternal(&sqlEvent), nil
+	return rc.sqlToInternal(sqlEvent), nil
 }
 
 func (rc *EventRepository) Delete(ctx context.Context, id string) error {
-	q := rc.db.Model(&Event{})
+	q := rc.db.Model(&event{})
 
 	ownerID := util.GetOwnerIDFromCtx(ctx)
 
@@ -86,7 +94,7 @@ func (rc *EventRepository) List(ctx context.Context, opts *model.EventFindOpts) 
 		return nil, fmt.Errorf("opts is nil")
 	}
 
-	events := make([]Event, 0)
+	events := make([]event, 0)
 
 	filter := rc.fillFilter(opts)
 	fields := []string{"*"}
@@ -127,7 +135,7 @@ func (rc *EventRepository) GetByID(ctx context.Context, eventID string) (*model.
 		return nil, fmt.Errorf("invalid event ID: %s", eventID)
 	}
 
-	var event Event
+	var event event
 
 	query := rc.db.Model(&event).Where("id = ?", eventID)
 
@@ -152,39 +160,39 @@ func (rc *EventRepository) fillFilter(opts *model.EventFindOpts) string {
 	return filter
 }
 
-func (rc *EventRepository) internalToSQL(event *model.Event) Event {
-	eID, _ := strconv.Atoi(event.ID)
-	ownerID, _ := strconv.Atoi(event.OwnerID)
+func (rc *EventRepository) internalToSQL(newEvent *model.Event) *event {
+	eID, _ := strconv.Atoi(newEvent.ID)
+	ownerID, _ := strconv.Atoi(newEvent.OwnerID)
 
-	items := []EventItem{}
-	for _, v := range event.Items {
-		items = append(items, EventItem{
+	items := []eventItem{}
+	for _, v := range newEvent.Items {
+		items = append(items, eventItem{
 			Data: v.Data,
-			Type: EventType(v.Type),
+			Type: eventType(v.Type),
 		})
 	}
 
-	return Event{
-		Date:      event.Date,
-		TimeStart: event.TimeStart,
-		TimeEnd:   event.TimeEnd,
-		Name:      event.Name,
+	return &event{
+		Date:      newEvent.Date,
+		TimeStart: newEvent.TimeStart,
+		TimeEnd:   newEvent.TimeEnd,
+		Name:      newEvent.Name,
 		Items:     items,
 		ID:        eID,
 		OwnerID:   ownerID,
 		Private: sql.NullBool{
-			Bool:  event.Private,
+			Bool:  newEvent.Private,
 			Valid: true,
 		},
 	}
 }
 
-func (rc *EventRepository) sqlToInternal(event *Event) *model.Event {
-	eID := strconv.Itoa(event.ID)
-	ownerID := strconv.Itoa(event.OwnerID)
+func (rc *EventRepository) sqlToInternal(newEvent *event) *model.Event {
+	eID := strconv.Itoa(newEvent.ID)
+	ownerID := strconv.Itoa(newEvent.OwnerID)
 
 	items := []model.EventItem{}
-	for _, v := range event.Items {
+	for _, v := range newEvent.Items {
 		items = append(items, model.EventItem{
 			Data: v.Data,
 			Type: model.EventType(v.Type),
@@ -192,13 +200,27 @@ func (rc *EventRepository) sqlToInternal(event *Event) *model.Event {
 	}
 
 	return &model.Event{
-		Date:      event.Date,
-		TimeStart: event.TimeStart,
-		TimeEnd:   event.TimeEnd,
-		Name:      event.Name,
+		Date:      newEvent.Date,
+		TimeStart: newEvent.TimeStart,
+		TimeEnd:   newEvent.TimeEnd,
+		Name:      newEvent.Name,
 		Items:     items,
 		ID:        eID,
 		OwnerID:   ownerID,
-		Private:   event.Private.Bool,
+		Private:   newEvent.Private.Bool,
 	}
+}
+
+func (rc *EventRepository) createSchema(db *pg.DB) error {
+	model := (*event)(nil)
+
+	opts := &orm.CreateTableOptions{
+		IfNotExists: true,
+	}
+
+	if err := db.Model(model).CreateTable(opts); err != nil {
+		return fmt.Errorf("failed to create table: %w", err)
+	}
+
+	return nil
 }

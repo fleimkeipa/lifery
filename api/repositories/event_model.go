@@ -5,27 +5,27 @@ import (
 	"time"
 )
 
-type Event struct {
+type event struct {
 	Date      time.Time    `json:"date"`
 	TimeStart time.Time    `json:"time_start"`
 	TimeEnd   time.Time    `json:"time_end"`
 	Name      string       `json:"name"`
-	Items     []EventItem  `json:"items"`
+	Items     []eventItem  `json:"items"`
 	ID        int          `json:"id" pg:",pk"`
 	OwnerID   int          `json:"owner_id"`
 	Private   sql.NullBool `json:"private"`
 }
 
-type EventType int
+type eventType int
 
 const (
-	EventTypeString EventType = iota + 1
-	EventTypePhoto
-	EventTypeVideo
-	EventTypeVoiceRecord
+	eventTypeString eventType = iota + 1
+	eventTypePhoto
+	eventTypeVideo
+	eventTypeVoiceRecord
 )
 
-type EventItem struct {
+type eventItem struct {
 	Data string    `json:"data"`
-	Type EventType `json:"type"`
+	Type eventType `json:"type"`
 }
