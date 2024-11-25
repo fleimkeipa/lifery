@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/fleimkeipa/lifery/model"
+	"github.com/fleimkeipa/lifery/util"
 
 	"github.com/go-pg/pg"
 )
@@ -42,7 +43,11 @@ func (rc *EraRepository) Update(ctx context.Context, eraID string, era *model.Er
 	}
 	era.ID = eID
 
-	q := rc.db.Model(era).WherePK()
+	q := rc.db.Model(era)
+
+	ownerID := util.GetStrOwnerIDFromCtx(ctx)
+
+	q = q.Where("id = ? AND owner_id = ?", eID, ownerID)
 
 	result, err := q.Update()
 	if err != nil {
@@ -57,7 +62,13 @@ func (rc *EraRepository) Update(ctx context.Context, eraID string, era *model.Er
 }
 
 func (rc *EraRepository) Delete(ctx context.Context, id string) error {
-	result, err := rc.db.Model(&model.Era{}).Where("id = ?", id).Delete()
+	q := rc.db.Model(&model.Era{})
+
+	ownerID := util.GetStrOwnerIDFromCtx(ctx)
+
+	q = q.Where("id = ? AND owner_id = ?", id, ownerID)
+
+	result, err := q.Delete()
 	if err != nil {
 		return fmt.Errorf("failed to delete era: %w", err)
 	}
@@ -125,6 +136,10 @@ func (rc *EraRepository) fillFilter(opts *model.EraFindOpts) string {
 
 	if opts.Name.IsSended {
 		filter = addFilterClause(filter, "name", opts.Name.Value)
+	}
+
+	if opts.UserID.IsSended {
+		filter = addFilterClause(filter, "owner_id", opts.UserID.Value)
 	}
 
 	return filter

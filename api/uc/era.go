@@ -53,6 +53,17 @@ func (rc *EraUC) Delete(ctx context.Context, id string) error {
 }
 
 func (rc *EraUC) List(ctx context.Context, opts *model.EraFindOpts) (*model.EraList, error) {
+	ownerID := util.GetStrOwnerIDFromCtx(ctx)
+
+	if !opts.UserID.IsSended {
+		opts.UserID = model.Filter{
+			Value:    ownerID,
+			IsSended: true,
+		}
+
+		return rc.repo.List(ctx, opts)
+	}
+
 	return rc.repo.List(ctx, opts)
 }
 
