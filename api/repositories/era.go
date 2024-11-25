@@ -3,12 +3,14 @@ package repositories
 import (
 	"context"
 	"fmt"
+	"log"
 	"strconv"
 
 	"github.com/fleimkeipa/lifery/model"
 	"github.com/fleimkeipa/lifery/util"
 
 	"github.com/go-pg/pg"
+	"github.com/go-pg/pg/orm"
 )
 
 type EraRepository struct {
@@ -16,13 +18,20 @@ type EraRepository struct {
 }
 
 func NewEraRepository(db *pg.DB) *EraRepository {
-	return &EraRepository{
+	rc := &EraRepository{
 		db: db,
 	}
+
+	if err := rc.createSchema(db); err != nil {
+		log.Fatalf("failed to create schema: %v", err)
+	}
+
+	return rc
 }
 
 func (rc *EraRepository) Create(ctx context.Context, era *model.Era) (*model.Era, error) {
 	sqlEra := rc.internalToSQL(era)
+
 	q := rc.db.Model(sqlEra)
 
 	_, err := q.Insert()
@@ -30,7 +39,7 @@ func (rc *EraRepository) Create(ctx context.Context, era *model.Era) (*model.Era
 		return nil, fmt.Errorf("failed to create era [%v]: %w", era.Name, err)
 	}
 
-	return rc.sqlToInternal(&sqlEra), nil
+	return rc.sqlToInternal(sqlEra), nil
 }
 
 func (rc *EraRepository) Update(ctx context.Context, eraID string, era *model.Era) (*model.Era, error) {
@@ -57,11 +66,11 @@ func (rc *EraRepository) Update(ctx context.Context, eraID string, era *model.Er
 		return nil, fmt.Errorf("no era updated")
 	}
 
-	return rc.sqlToInternal(&sqlEra), nil
+	return rc.sqlToInternal(sqlEra), nil
 }
 
 func (rc *EraRepository) Delete(ctx context.Context, id string) error {
-	q := rc.db.Model(&Era{})
+	q := rc.db.Model(&era{})
 
 	ownerID := util.GetOwnerIDFromCtx(ctx)
 
@@ -83,7 +92,7 @@ func (rc *EraRepository) List(ctx context.Context, opts *model.EraFindOpts) (*mo
 		return nil, fmt.Errorf("opts is nil")
 	}
 
-	eras := make([]Era, 0)
+	eras := make([]era, 0)
 
 	filter := rc.fillFilter(opts)
 	fields := []string{"*"}
@@ -124,7 +133,7 @@ func (rc *EraRepository) GetByID(ctx context.Context, eraID string) (*model.Era,
 		return nil, fmt.Errorf("invalid era ID: %s", eraID)
 	}
 
-	var era Era
+	var era era
 
 	query := rc.db.Model(era).Where("id = ?", eraID)
 
@@ -149,26 +158,40 @@ func (rc *EraRepository) fillFilter(opts *model.EraFindOpts) string {
 	return filter
 }
 
-func (rc *EraRepository) internalToSQL(era *model.Era) Era {
-	eID, _ := strconv.Atoi(era.ID)
-	ownerID, _ := strconv.Atoi(era.OwnerID)
-	return Era{
+func (rc *EraRepository) internalToSQL(newEra *model.Era) *era {
+	eID, _ := strconv.Atoi(newEra.ID)
+	ownerID, _ := strconv.Atoi(newEra.OwnerID)
+	return &era{
 		ID:        eID,
-		TimeStart: era.TimeStart,
-		TimeEnd:   era.TimeEnd,
-		Name:      era.Name,
+		TimeStart: newEra.TimeStart,
+		TimeEnd:   newEra.TimeEnd,
+		Name:      newEra.Name,
 		OwnerID:   ownerID,
 	}
 }
 
-func (rc *EraRepository) sqlToInternal(era *Era) *model.Era {
-	eID := strconv.Itoa(era.ID)
-	ownerID := strconv.Itoa(era.OwnerID)
+func (rc *EraRepository) sqlToInternal(newEra *era) *model.Era {
+	eID := strconv.Itoa(newEra.ID)
+	ownerID := strconv.Itoa(newEra.OwnerID)
 	return &model.Era{
 		ID:        eID,
-		TimeStart: era.TimeStart,
-		TimeEnd:   era.TimeEnd,
-		Name:      era.Name,
+		TimeStart: newEra.TimeStart,
+		TimeEnd:   newEra.TimeEnd,
+		Name:      newEra.Name,
 		OwnerID:   ownerID,
 	}
+}
+
+func (rc *EraRepository) createSchema(db *pg.DB) error {
+	model := (*era)(nil)
+
+	opts := &orm.CreateTableOptions{
+		IfNotExists: true,
+	}
+
+	if err := db.Model(model).CreateTable(opts); err != nil {
+		return fmt.Errorf("failed to create table: %w", err)
+	}
+
+	return nil
 }
