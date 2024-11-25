@@ -115,7 +115,7 @@ func (rc *EventController) Delete(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
-		Message: "Event retrieved successfully.",
+		Message: "Event deleted successfully.",
 	})
 }
 

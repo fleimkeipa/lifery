@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/fleimkeipa/lifery/model"
+	"github.com/fleimkeipa/lifery/util"
 
 	"github.com/go-pg/pg"
 )
@@ -64,7 +65,11 @@ func (rc *EventRepository) Update(ctx context.Context, eventID string, event *mo
 	}
 	event.ID = eID
 
-	q := rc.db.Model(event).WherePK()
+	q := rc.db.Model(event)
+
+	ownerID := util.GetStrOwnerIDFromCtx(ctx)
+
+	q = q.Where("id = ? AND owner_id = ?", eID, ownerID)
 
 	result, err := q.Update()
 	if err != nil {
@@ -79,10 +84,17 @@ func (rc *EventRepository) Update(ctx context.Context, eventID string, event *mo
 }
 
 func (rc *EventRepository) Delete(ctx context.Context, id string) error {
-	result, err := rc.db.Model(&model.Event{}).Where("id = ?", id).Delete()
+	q := rc.db.Model(&model.Event{})
+
+	ownerID := util.GetStrOwnerIDFromCtx(ctx)
+
+	q = q.Where("id = ? AND owner_id = ?", id, ownerID)
+
+	result, err := q.Delete()
 	if err != nil {
 		return fmt.Errorf("failed to delete event: %w", err)
 	}
+
 	if result.RowsAffected() == 0 {
 		return fmt.Errorf("no event deleted")
 	}
