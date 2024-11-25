@@ -21,14 +21,15 @@ func NewConnectRepository(db *pg.DB) *ConnectRepository {
 }
 
 func (rc *ConnectRepository) Create(ctx context.Context, connect *model.Connect) (*model.Connect, error) {
-	q := rc.db.Model(connect)
+	sqlConnect := rc.internalToSQL(connect)
+	q := rc.db.Model(sqlConnect)
 
 	_, err := q.Insert()
 	if err != nil {
-		return nil, fmt.Errorf("failed to create connect: %w", err)
+		return nil, fmt.Errorf("failed to create connect ID [%v]: %w", connect.ID, err)
 	}
 
-	return connect, nil
+	return rc.sqlToInternal(&sqlConnect), nil
 }
 
 func (rc *ConnectRepository) Update(ctx context.Context, connectID string, connect *model.Connect) (*model.Connect, error) {
@@ -36,28 +37,26 @@ func (rc *ConnectRepository) Update(ctx context.Context, connectID string, conne
 		return nil, fmt.Errorf("connect id is empty")
 	}
 
-	uID, err := strconv.ParseInt(connectID, 10, 64)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse event id: %w", err)
-	}
-	connect.ID = uID
+	connect.ID = connectID
 
-	q := rc.db.Model(connect).WherePK()
+	sqlConnect := rc.internalToSQL(connect)
+
+	q := rc.db.Model(sqlConnect).WherePK()
 
 	result, err := q.Update()
 	if err != nil {
-		return nil, fmt.Errorf("failed to update connect: %w", err)
+		return nil, fmt.Errorf("failed to update connect ID [%v]: %w", connectID, err)
 	}
 
 	if result.RowsAffected() == 0 {
 		return nil, fmt.Errorf("no connect updated")
 	}
 
-	return connect, nil
+	return rc.sqlToInternal(&sqlConnect), nil
 }
 
 func (rc *ConnectRepository) Delete(ctx context.Context, id string) error {
-	result, err := rc.db.Model(&model.Connect{}).Where("id = ?", id).Delete()
+	result, err := rc.db.Model(&Connect{}).Where("id = ?", id).Delete()
 	if err != nil {
 		return fmt.Errorf("failed to delete connect: %w", err)
 	}
@@ -73,7 +72,7 @@ func (rc *ConnectRepository) List(ctx context.Context, opts *model.ConnectFindOp
 		return nil, fmt.Errorf("opts is nil")
 	}
 
-	connects := make([]model.Connect, 0)
+	connects := make([]Connect, 0)
 
 	filter := rc.fillFilter(opts)
 	fields := rc.fillFields(opts)
@@ -94,8 +93,13 @@ func (rc *ConnectRepository) List(ctx context.Context, opts *model.ConnectFindOp
 		return &model.ConnectList{}, nil
 	}
 
+	internalConnects := make([]model.Connect, 0)
+	for _, v := range connects {
+		internalConnects = append(internalConnects, *rc.sqlToInternal(&v))
+	}
+
 	return &model.ConnectList{
-		Connects: connects,
+		Connects: internalConnects,
 		Total:    count,
 		PaginationOpts: model.PaginationOpts{
 			Skip:  opts.Skip,
@@ -104,20 +108,20 @@ func (rc *ConnectRepository) List(ctx context.Context, opts *model.ConnectFindOp
 	}, nil
 }
 
-func (rc *ConnectRepository) GetByID(ctx context.Context, friendRequestID string) (*model.Connect, error) {
-	if friendRequestID == "" || friendRequestID == "0" {
-		return nil, fmt.Errorf("invalid connect ID: %s", friendRequestID)
+func (rc *ConnectRepository) GetByID(ctx context.Context, connectID string) (*model.Connect, error) {
+	if connectID == "" || connectID == "0" {
+		return nil, fmt.Errorf("invalid connect ID: %s", connectID)
 	}
 
-	var friendRequest model.Connect
+	var connect Connect
 
-	query := rc.db.Model(&friendRequest).Where("id = ?", friendRequestID)
+	query := rc.db.Model(&connect).Where("id = ?", connectID)
 
 	if err := query.Select(); err != nil {
-		return nil, fmt.Errorf("failed to find connect by id [%s]: %w", friendRequestID, err)
+		return nil, fmt.Errorf("failed to find connect by id [%s]: %w", connectID, err)
 	}
 
-	return &friendRequest, nil
+	return rc.sqlToInternal(&connect), nil
 }
 
 func (rc *ConnectRepository) fillFilter(opts *model.ConnectFindOpts) string {
@@ -151,4 +155,26 @@ func (rc *ConnectRepository) fillFields(opts *model.ConnectFindOpts) []string {
 	}
 
 	return fields
+}
+
+func (rc *ConnectRepository) internalToSQL(connect *model.Connect) Connect {
+	cID, _ := strconv.Atoi(connect.ID)
+
+	return Connect{
+		ID:       cID,
+		Status:   RequestStatus(connect.Status),
+		UserID:   connect.UserID,
+		FriendID: connect.FriendID,
+	}
+}
+
+func (rc *ConnectRepository) sqlToInternal(connect *Connect) *model.Connect {
+	cID := strconv.Itoa(connect.ID)
+
+	return &model.Connect{
+		ID:       cID,
+		Status:   model.RequestStatus(connect.Status),
+		UserID:   connect.UserID,
+		FriendID: connect.FriendID,
+	}
 }

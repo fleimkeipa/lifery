@@ -1,7 +1,7 @@
 package model
 
 type Connect struct {
-	ID       int64         `json:"id" pg:",pk"`
+	ID       string        `json:"id"`
 	Status   RequestStatus `json:"status"`
 	UserID   string        `json:"user_id"`
 	FriendID string        `json:"friend_id"`

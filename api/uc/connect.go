@@ -23,7 +23,7 @@ func NewConnectsUC(userUC *UserUC, connectRepo interfaces.ConnectInterfaces) *Co
 }
 
 func (rc *ConnectsUC) Create(ctx context.Context, req model.ConnectCreateRequest) (*model.Connect, error) {
-	ownerID := util.GetStrOwnerIDFromCtx(ctx)
+	ownerID := util.GetOwnerIDFromCtx(ctx)
 	connect := model.Connect{
 		Status:   model.RequestStatusPending,
 		UserID:   ownerID,
@@ -108,7 +108,7 @@ func (rc *ConnectsUC) Update(ctx context.Context, id string, req model.ConnectUp
 }
 
 func (rc *ConnectsUC) Disconnect(ctx context.Context, req model.DisconnectRequest) error {
-	ownerID := util.GetStrOwnerIDFromCtx(ctx)
+	ownerID := util.GetOwnerIDFromCtx(ctx)
 
 	_, err := rc.userUC.DeleteConnect(ctx, ownerID, req.FriendID)
 	if err != nil {
@@ -131,7 +131,7 @@ func (rc *ConnectsUC) Delete(ctx context.Context, id string) error {
 }
 
 func (rc *ConnectsUC) isOwner(ctx context.Context, id string) bool {
-	ownerID := util.GetStrOwnerIDFromCtx(ctx)
+	ownerID := util.GetOwnerIDFromCtx(ctx)
 	if id != ownerID {
 		return false
 	}
