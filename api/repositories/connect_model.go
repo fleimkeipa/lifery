@@ -1,16 +1,16 @@
 package repositories
 
-type Connect struct {
+type connect struct {
 	ID       int           `json:"id" pg:",pk"`
-	Status   RequestStatus `json:"status"`
+	Status   requestStatus `json:"status"`
 	UserID   string        `json:"user_id"`
 	FriendID string        `json:"friend_id"`
 }
 
-type RequestStatus string
+type requestStatus string
 
 const (
-	RequestStatusApproved RequestStatus = "approved"
-	RequestStatusRejected RequestStatus = "rejected"
-	RequestStatusPending  RequestStatus = "pending"
+	requestStatusApproved requestStatus = "approved"
+	requestStatusRejected requestStatus = "rejected"
+	requestStatusPending  requestStatus = "pending"
 )

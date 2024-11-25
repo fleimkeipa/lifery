@@ -3,11 +3,13 @@ package repositories
 import (
 	"context"
 	"fmt"
+	"log"
 	"strconv"
 
 	"github.com/fleimkeipa/lifery/model"
 
 	"github.com/go-pg/pg"
+	"github.com/go-pg/pg/orm"
 )
 
 type ConnectRepository struct {
@@ -15,13 +17,20 @@ type ConnectRepository struct {
 }
 
 func NewConnectRepository(db *pg.DB) *ConnectRepository {
-	return &ConnectRepository{
+	rc := &ConnectRepository{
 		db: db,
 	}
+
+	if err := rc.createSchema(db); err != nil {
+		log.Fatalf("failed to create schema: %v", err)
+	}
+
+	return rc
 }
 
 func (rc *ConnectRepository) Create(ctx context.Context, connect *model.Connect) (*model.Connect, error) {
 	sqlConnect := rc.internalToSQL(connect)
+
 	q := rc.db.Model(sqlConnect)
 
 	_, err := q.Insert()
@@ -29,7 +38,7 @@ func (rc *ConnectRepository) Create(ctx context.Context, connect *model.Connect)
 		return nil, fmt.Errorf("failed to create connect ID [%v]: %w", connect.ID, err)
 	}
 
-	return rc.sqlToInternal(&sqlConnect), nil
+	return rc.sqlToInternal(sqlConnect), nil
 }
 
 func (rc *ConnectRepository) Update(ctx context.Context, connectID string, connect *model.Connect) (*model.Connect, error) {
@@ -52,11 +61,11 @@ func (rc *ConnectRepository) Update(ctx context.Context, connectID string, conne
 		return nil, fmt.Errorf("no connect updated")
 	}
 
-	return rc.sqlToInternal(&sqlConnect), nil
+	return rc.sqlToInternal(sqlConnect), nil
 }
 
 func (rc *ConnectRepository) Delete(ctx context.Context, id string) error {
-	result, err := rc.db.Model(&Connect{}).Where("id = ?", id).Delete()
+	result, err := rc.db.Model(&connect{}).Where("id = ?", id).Delete()
 	if err != nil {
 		return fmt.Errorf("failed to delete connect: %w", err)
 	}
@@ -72,7 +81,7 @@ func (rc *ConnectRepository) List(ctx context.Context, opts *model.ConnectFindOp
 		return nil, fmt.Errorf("opts is nil")
 	}
 
-	connects := make([]Connect, 0)
+	connects := make([]connect, 0)
 
 	filter := rc.fillFilter(opts)
 	fields := rc.fillFields(opts)
@@ -113,7 +122,7 @@ func (rc *ConnectRepository) GetByID(ctx context.Context, connectID string) (*mo
 		return nil, fmt.Errorf("invalid connect ID: %s", connectID)
 	}
 
-	var connect Connect
+	var connect connect
 
 	query := rc.db.Model(&connect).Where("id = ?", connectID)
 
@@ -157,24 +166,38 @@ func (rc *ConnectRepository) fillFields(opts *model.ConnectFindOpts) []string {
 	return fields
 }
 
-func (rc *ConnectRepository) internalToSQL(connect *model.Connect) Connect {
-	cID, _ := strconv.Atoi(connect.ID)
+func (rc *ConnectRepository) internalToSQL(newConnect *model.Connect) *connect {
+	cID, _ := strconv.Atoi(newConnect.ID)
 
-	return Connect{
+	return &connect{
 		ID:       cID,
-		Status:   RequestStatus(connect.Status),
-		UserID:   connect.UserID,
-		FriendID: connect.FriendID,
+		Status:   requestStatus(newConnect.Status),
+		UserID:   newConnect.UserID,
+		FriendID: newConnect.FriendID,
 	}
 }
 
-func (rc *ConnectRepository) sqlToInternal(connect *Connect) *model.Connect {
-	cID := strconv.Itoa(connect.ID)
+func (rc *ConnectRepository) sqlToInternal(newConnect *connect) *model.Connect {
+	cID := strconv.Itoa(newConnect.ID)
 
 	return &model.Connect{
 		ID:       cID,
-		Status:   model.RequestStatus(connect.Status),
-		UserID:   connect.UserID,
-		FriendID: connect.FriendID,
+		Status:   model.RequestStatus(newConnect.Status),
+		UserID:   newConnect.UserID,
+		FriendID: newConnect.FriendID,
 	}
+}
+
+func (rc *ConnectRepository) createSchema(db *pg.DB) error {
+	model := (*connect)(nil)
+
+	opts := &orm.CreateTableOptions{
+		IfNotExists: true,
+	}
+
+	if err := db.Model(model).CreateTable(opts); err != nil {
+		return fmt.Errorf("failed to create table: %w", err)
+	}
+
+	return nil
 }
