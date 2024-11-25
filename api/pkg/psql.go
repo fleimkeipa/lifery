@@ -7,11 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/fleimkeipa/lifery/model"
-	"github.com/fleimkeipa/lifery/repositories"
-
 	"github.com/go-pg/pg"
-	"github.com/go-pg/pg/orm"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/wait"
 )
@@ -31,32 +27,7 @@ func NewPSQLClient() *pg.DB {
 	}
 	db := pg.Connect(&opts)
 
-	if err := createSchema(db); err != nil {
-		log.Fatalf("Failed to create schema: %v", err)
-	}
-
 	return db
-}
-
-func createSchema(db *pg.DB) error {
-	models := []interface{}{
-		(*repositories.Event)(nil),
-		(*repositories.Era)(nil),
-		(*repositories.User)(nil),
-		(*repositories.Connect)(nil),
-	}
-
-	for _, model := range models {
-		opts := &orm.CreateTableOptions{
-			IfNotExists: true,
-		}
-
-		if err := db.Model(model).CreateTable(opts); err != nil {
-			return fmt.Errorf("failed to create table: %w", err)
-		}
-	}
-
-	return nil
 }
 
 // GetTestInstance starts a PostgreSQL container for testing and returns a connected pg.DB client along with a cleanup function.
@@ -99,35 +70,9 @@ func GetTestInstance(ctx context.Context) (*pg.DB, func()) {
 	}
 	client := pg.Connect(&opts)
 
-	if err := createTestTables(client); err != nil {
-		log.Fatalf("Failed to create test schema: %v", err)
-	}
-
 	// Return the client and a cleanup function
 	return client, func() {
 		client.Close()
 		psqlClient.Terminate(ctx)
 	}
-}
-
-// createTestTables creates temporary test tables for the provided models.
-func createTestTables(db *pg.DB) error {
-	models := []interface{}{
-		(*model.Event)(nil),
-	}
-
-	for _, model := range models {
-		opts := orm.CreateTableOptions{
-			Temp:        true, // Creates a temporary table for testing purposes.
-			IfNotExists: true,
-		}
-		err := db.
-			Model(model).
-			CreateTable(&opts)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
 }
