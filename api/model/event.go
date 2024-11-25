@@ -46,7 +46,7 @@ type EventUpdateRequest struct {
 	Name        string      `json:"name"`
 	Description string      `json:"description"`
 	Items       []EventItem `json:"items"`
-	ID          int64       `json:"id" pg:",pk"`
+	ID          int64       `json:"id"`
 	Private     bool        `json:"private"`
 }
 
