@@ -3,8 +3,8 @@ package repositories
 type connect struct {
 	ID       int           `json:"id" pg:",pk"`
 	Status   requestStatus `json:"status"`
-	UserID   string        `json:"user_id"`
-	FriendID string        `json:"friend_id"`
+	UserID   int           `json:"user_id"`
+	FriendID int           `json:"friend_id"`
 }
 
 type requestStatus string

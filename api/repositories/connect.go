@@ -168,23 +168,27 @@ func (rc *ConnectRepository) fillFields(opts *model.ConnectFindOpts) []string {
 
 func (rc *ConnectRepository) internalToSQL(newConnect *model.Connect) *connect {
 	cID, _ := strconv.Atoi(newConnect.ID)
+	userID, _ := strconv.Atoi(newConnect.UserID)
+	friendID, _ := strconv.Atoi(newConnect.FriendID)
 
 	return &connect{
 		ID:       cID,
 		Status:   requestStatus(newConnect.Status),
-		UserID:   newConnect.UserID,
-		FriendID: newConnect.FriendID,
+		UserID:   userID,
+		FriendID: friendID,
 	}
 }
 
 func (rc *ConnectRepository) sqlToInternal(newConnect *connect) *model.Connect {
 	cID := strconv.Itoa(newConnect.ID)
+	userID := strconv.Itoa(newConnect.UserID)
+	friendID := strconv.Itoa(newConnect.FriendID)
 
 	return &model.Connect{
 		ID:       cID,
 		Status:   model.RequestStatus(newConnect.Status),
-		UserID:   newConnect.UserID,
-		FriendID: newConnect.FriendID,
+		UserID:   userID,
+		FriendID: friendID,
 	}
 }
 
