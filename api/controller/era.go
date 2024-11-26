@@ -115,7 +115,7 @@ func (rc *EraController) Delete(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
-		Message: "Era retrieved successfully.",
+		Message: "Era deleted successfully.",
 	})
 }
 
