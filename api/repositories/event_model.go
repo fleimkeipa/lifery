@@ -12,7 +12,8 @@ type event struct {
 	Name      string       `json:"name"`
 	Items     []eventItem  `json:"items"`
 	ID        int          `json:"id" pg:",pk"`
-	OwnerID   int          `json:"owner_id"`
+	OwnerID   int          `json:"owner_id" pg:",notnull"`
+	Owner     *user        `json:"owner" pg:"rel:has-one"`
 	Private   sql.NullBool `json:"private"`
 }
 

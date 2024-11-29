@@ -215,7 +215,8 @@ func (rc *EventRepository) createSchema(db *pg.DB) error {
 	model := (*event)(nil)
 
 	opts := &orm.CreateTableOptions{
-		IfNotExists: true,
+		IfNotExists:   true,
+		FKConstraints: true,
 	}
 
 	if err := db.Model(model).CreateTable(opts); err != nil {
