@@ -133,15 +133,17 @@ func (rc *EraRepository) GetByID(ctx context.Context, eraID string) (*model.Era,
 		return nil, fmt.Errorf("invalid era ID: %s", eraID)
 	}
 
-	var era era
+	resp := new(eraGetResponse)
 
-	query := rc.db.Model(era).Where("id = ?", eraID)
-
-	if err := query.Select(); err != nil {
+	err := rc.db.Model(&era{}).
+		Relation("Owner").
+		Where("era.id = ?", eraID).
+		Select(resp)
+	if err != nil {
 		return nil, fmt.Errorf("failed to find era by ID [%s]: %w", eraID, err)
 	}
 
-	return rc.sqlToInternal(&era), nil
+	return rc.sqlToInternal2(resp), nil
 }
 
 func (rc *EraRepository) fillFilter(opts *model.EraFindOpts) string {
@@ -184,15 +186,29 @@ func (rc *EraRepository) sqlToInternal(newEra *era) *model.Era {
 	}
 }
 
+func (rc *EraRepository) sqlToInternal2(newEra *eraGetResponse) *model.Era {
+	eID := strconv.Itoa(newEra.ID)
+	ownerID := strconv.Itoa(newEra.OwnerID)
+	return &model.Era{
+		TimeStart: newEra.TimeStart,
+		TimeEnd:   newEra.TimeEnd,
+		Name:      newEra.Name,
+		Color:     newEra.Color,
+		OwnerID:   ownerID,
+		ID:        eID,
+	}
+}
+
 func (rc *EraRepository) createSchema(db *pg.DB) error {
 	model := (*era)(nil)
 
 	opts := &orm.CreateTableOptions{
-		IfNotExists: true,
+		IfNotExists:   true,
+		FKConstraints: true,
 	}
 
 	if err := db.Model(model).CreateTable(opts); err != nil {
-		return fmt.Errorf("failed to create table: %w", err)
+		return fmt.Errorf("failed to create era table: %w", err)
 	}
 
 	return nil

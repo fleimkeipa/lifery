@@ -242,11 +242,12 @@ func (rc *UserRepository) createSchema(db *pg.DB) error {
 	model := (*user)(nil)
 
 	opts := &orm.CreateTableOptions{
-		IfNotExists: true,
+		IfNotExists:   true,
+		FKConstraints: true,
 	}
 
 	if err := db.Model(model).CreateTable(opts); err != nil {
-		return fmt.Errorf("failed to create table: %w", err)
+		return fmt.Errorf("failed to create user table: %w", err)
 	}
 
 	return nil
