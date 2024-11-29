@@ -196,7 +196,8 @@ func (rc *ConnectRepository) createSchema(db *pg.DB) error {
 	model := (*connect)(nil)
 
 	opts := &orm.CreateTableOptions{
-		IfNotExists: true,
+		IfNotExists:   true,
+		FKConstraints: true,
 	}
 
 	if err := db.Model(model).CreateTable(opts); err != nil {
