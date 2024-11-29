@@ -135,15 +135,15 @@ func (rc *EventRepository) GetByID(ctx context.Context, eventID string) (*model.
 		return nil, fmt.Errorf("invalid event ID: %s", eventID)
 	}
 
-	var event event
+	event := new(event)
 
-	query := rc.db.Model(&event).Where("id = ?", eventID)
+	query := rc.db.Model(event).Where("id = ?", eventID)
 
-	if err := query.Select(&event); err != nil {
+	if err := query.Select(); err != nil {
 		return nil, fmt.Errorf("failed to find event by ID [%s]: %w", eventID, err)
 	}
 
-	return rc.sqlToInternal(&event), nil
+	return rc.sqlToInternal(event), nil
 }
 
 func (rc *EventRepository) fillFilter(opts *model.EventFindOpts) string {
@@ -219,7 +219,7 @@ func (rc *EventRepository) createSchema(db *pg.DB) error {
 	}
 
 	if err := db.Model(model).CreateTable(opts); err != nil {
-		return fmt.Errorf("failed to create table: %w", err)
+		return fmt.Errorf("failed to create event table: %w", err)
 	}
 
 	return nil

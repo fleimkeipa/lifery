@@ -48,13 +48,13 @@ func serveApplication() {
 	// Initialize Redis client
 	redisClient := initCache()
 
-	eraDBRepo := repositories.NewEraRepository(dbClient)
-	eraDBUC := uc.NewEraUC(eraDBRepo)
-	eraController := controller.NewEraController(eraDBUC)
-
 	userDBRepo := repositories.NewUserRepository(dbClient)
 	userUC := uc.NewUserUC(userDBRepo)
 	userController := controller.NewUserHandlers(userUC)
+
+	eraDBRepo := repositories.NewEraRepository(dbClient)
+	eraDBUC := uc.NewEraUC(eraDBRepo)
+	eraController := controller.NewEraController(eraDBUC)
 
 	eventCacheRepo := repositories.NewCacheRepository(redisClient)
 	eventCacheUC := uc.NewEventCacheUC(eventCacheRepo)

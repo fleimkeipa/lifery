@@ -122,15 +122,15 @@ func (rc *ConnectRepository) GetByID(ctx context.Context, connectID string) (*mo
 		return nil, fmt.Errorf("invalid connect ID: %s", connectID)
 	}
 
-	var connect connect
+	connect := new(connect)
 
-	query := rc.db.Model(&connect).Where("id = ?", connectID)
+	query := rc.db.Model(connect).Where("id = ?", connectID)
 
 	if err := query.Select(); err != nil {
 		return nil, fmt.Errorf("failed to find connect by id [%s]: %w", connectID, err)
 	}
 
-	return rc.sqlToInternal(&connect), nil
+	return rc.sqlToInternal(connect), nil
 }
 
 func (rc *ConnectRepository) fillFilter(opts *model.ConnectFindOpts) string {
@@ -200,7 +200,7 @@ func (rc *ConnectRepository) createSchema(db *pg.DB) error {
 	}
 
 	if err := db.Model(model).CreateTable(opts); err != nil {
-		return fmt.Errorf("failed to create table: %w", err)
+		return fmt.Errorf("failed to create connect table: %w", err)
 	}
 
 	return nil

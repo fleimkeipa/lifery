@@ -99,7 +99,7 @@ func (rc *AuthHandlers) Register(c echo.Context) error {
 		})
 	}
 
-	return c.JSON(http.StatusOK, AuthResponse{
+	return c.JSON(http.StatusCreated, AuthResponse{
 		Token:    jwt,
 		Type:     "basic",
 		Username: input.Username,
