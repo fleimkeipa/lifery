@@ -106,8 +106,7 @@ func (rc *EraController) Update(c echo.Context) error {
 func (rc *EraController) Delete(c echo.Context) error {
 	eraID := c.Param("id")
 
-	err := rc.EraDBUC.Delete(c.Request().Context(), eraID)
-	if err != nil {
+	if err := rc.EraDBUC.Delete(c.Request().Context(), eraID); err != nil {
 		return c.JSON(http.StatusBadRequest, FailureResponse{
 			Error:   fmt.Sprintf("Failed to retrieve era: %v", err),
 			Message: "Error fetching the era details. Please verify the era name or UID and try again.",

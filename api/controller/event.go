@@ -106,8 +106,7 @@ func (rc *EventController) Update(c echo.Context) error {
 func (rc *EventController) Delete(c echo.Context) error {
 	eventID := c.Param("id")
 
-	err := rc.EventDBUC.Delete(c.Request().Context(), eventID)
-	if err != nil {
+	if err := rc.EventDBUC.Delete(c.Request().Context(), eventID); err != nil {
 		return c.JSON(http.StatusBadRequest, FailureResponse{
 			Error:   fmt.Sprintf("Failed to retrieve event: %v", err),
 			Message: "Error fetching the event details. Please verify the event name or UID and try again.",

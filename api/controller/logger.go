@@ -41,8 +41,7 @@ func (rc *Logger) LoggerMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		// Wrap the original response writer to intercept the response body
 		res := c.Response()
 
-		rawPath := c.Path()
-		if rawPath == "/swagger/*" {
+		if rawPath := c.Path(); rawPath == "/swagger/*" {
 			return next(c)
 		}
 

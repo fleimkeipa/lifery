@@ -42,7 +42,7 @@ func (rc *ConnectHandlers) Create(c echo.Context) error {
 		})
 	}
 
-	user, err := rc.connectUC.Create(c.Request().Context(), input)
+	connect, err := rc.connectUC.Create(c.Request().Context(), input)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, FailureResponse{
 			Error:   fmt.Sprintf("Failed to create user: %v", err),
@@ -51,7 +51,7 @@ func (rc *ConnectHandlers) Create(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusCreated, SuccessResponse{
-		Data:    user.Status,
+		Data:    connect.Status,
 		Message: "Connect created successfully.",
 	})
 }
@@ -80,7 +80,7 @@ func (rc *ConnectHandlers) Update(c echo.Context) error {
 		})
 	}
 
-	user, err := rc.connectUC.Update(c.Request().Context(), id, input)
+	connect, err := rc.connectUC.Update(c.Request().Context(), id, input)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, FailureResponse{
 			Error:   fmt.Sprintf("Failed to update user: %v", err),
@@ -89,7 +89,7 @@ func (rc *ConnectHandlers) Update(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
-		Data:    user.Status,
+		Data:    connect.Status,
 		Message: "Connect updated successfully.",
 	})
 }
@@ -116,8 +116,7 @@ func (rc *ConnectHandlers) Disconnect(c echo.Context) error {
 		})
 	}
 
-	err := rc.connectUC.Disconnect(c.Request().Context(), input)
-	if err != nil {
+	if err := rc.connectUC.Disconnect(c.Request().Context(), input); err != nil {
 		return c.JSON(http.StatusInternalServerError, FailureResponse{
 			Error:   fmt.Sprintf("Failed to disconnect: %v", err),
 			Message: "Failed to disconnect. Please check the provided details and try again.",
