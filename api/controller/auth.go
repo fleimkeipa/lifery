@@ -95,7 +95,7 @@ func (rc *AuthHandlers) Register(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, FailureResponse{
 			Error:   fmt.Sprintf("Failed to generate JWT: %v", err),
-			Message: "Login failed. Please try again later.",
+			Message: "Register failed. Please try again later.",
 		})
 	}
 
