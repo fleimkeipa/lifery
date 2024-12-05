@@ -47,6 +47,8 @@ definitions:
     type: object
   model.EraCreateRequest:
     properties:
+      color:
+        type: string
       name:
         type: string
       time_end:
@@ -56,6 +58,8 @@ definitions:
     type: object
   model.EraUpdateRequest:
     properties:
+      color:
+        type: string
       id:
         type: integer
       name:
@@ -77,12 +81,12 @@ definitions:
         type: array
       name:
         type: string
-      private:
-        type: boolean
       time_end:
         type: string
       time_start:
         type: string
+      visibility:
+        $ref: '#/definitions/model.Visibility'
     type: object
   model.EventItem:
     properties:
@@ -117,12 +121,12 @@ definitions:
         type: array
       name:
         type: string
-      private:
-        type: boolean
       time_end:
         type: string
       time_start:
         type: string
+      visibility:
+        $ref: '#/definitions/model.Visibility'
     type: object
   model.Login:
     properties:
@@ -177,6 +181,16 @@ definitions:
     - role_id
     - username
     type: object
+  model.Visibility:
+    enum:
+    - 1
+    - 2
+    - 3
+    type: integer
+    x-enum-varnames:
+    - EventVisibilityPublic
+    - EventVisibilityPrivate
+    - EventVisibilityJustMe
 info:
   contact: {}
 paths:

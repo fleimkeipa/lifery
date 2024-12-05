@@ -1054,6 +1054,9 @@ const docTemplate = `{
         "model.EraCreateRequest": {
             "type": "object",
             "properties": {
+                "color": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -1068,6 +1071,9 @@ const docTemplate = `{
         "model.EraUpdateRequest": {
             "type": "object",
             "properties": {
+                "color": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -1100,14 +1106,14 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
-                "private": {
-                    "type": "boolean"
-                },
                 "time_end": {
                     "type": "string"
                 },
                 "time_start": {
                     "type": "string"
+                },
+                "visibility": {
+                    "$ref": "#/definitions/model.Visibility"
                 }
             }
         },
@@ -1158,14 +1164,14 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
-                "private": {
-                    "type": "boolean"
-                },
                 "time_end": {
                     "type": "string"
                 },
                 "time_start": {
                     "type": "string"
+                },
+                "visibility": {
+                    "$ref": "#/definitions/model.Visibility"
                 }
             }
         },
@@ -1244,6 +1250,19 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        },
+        "model.Visibility": {
+            "type": "integer",
+            "enum": [
+                1,
+                2,
+                3
+            ],
+            "x-enum-varnames": [
+                "EventVisibilityPublic",
+                "EventVisibilityPrivate",
+                "EventVisibilityJustMe"
+            ]
         }
     }
 }`

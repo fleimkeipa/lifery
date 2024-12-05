@@ -26,13 +26,13 @@ func (rc *EventUC) Create(ctx context.Context, req *model.EventCreateRequest) (*
 	ownerID := util.GetOwnerIDFromCtx(ctx)
 
 	event := model.Event{
-		Date:      req.Date,
-		TimeStart: req.TimeStart,
-		TimeEnd:   req.TimeEnd,
-		Name:      req.Name,
-		Items:     req.Items,
-		OwnerID:   ownerID,
-		Private:   req.Private,
+		Date:       req.Date,
+		TimeStart:  req.TimeStart,
+		TimeEnd:    req.TimeEnd,
+		Name:       req.Name,
+		Items:      req.Items,
+		OwnerID:    ownerID,
+		Visibility: req.Visibility,
 	}
 
 	return rc.repo.Create(ctx, &event)
@@ -46,13 +46,13 @@ func (rc *EventUC) Update(ctx context.Context, eventID string, req *model.EventU
 	}
 
 	event := model.Event{
-		Date:      req.Date,
-		TimeStart: req.TimeStart,
-		TimeEnd:   req.TimeEnd,
-		Name:      req.Name,
-		Items:     req.Items,
-		OwnerID:   exist.OwnerID,
-		Private:   req.Private,
+		Date:       req.Date,
+		TimeStart:  req.TimeStart,
+		TimeEnd:    req.TimeEnd,
+		Name:       req.Name,
+		Items:      req.Items,
+		OwnerID:    exist.OwnerID,
+		Visibility: req.Visibility,
 	}
 
 	return rc.repo.Update(ctx, eventID, &event)

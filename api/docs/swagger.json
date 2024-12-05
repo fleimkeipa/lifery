@@ -1043,6 +1043,9 @@
         "model.EraCreateRequest": {
             "type": "object",
             "properties": {
+                "color": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -1057,6 +1060,9 @@
         "model.EraUpdateRequest": {
             "type": "object",
             "properties": {
+                "color": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -1089,14 +1095,14 @@
                 "name": {
                     "type": "string"
                 },
-                "private": {
-                    "type": "boolean"
-                },
                 "time_end": {
                     "type": "string"
                 },
                 "time_start": {
                     "type": "string"
+                },
+                "visibility": {
+                    "$ref": "#/definitions/model.Visibility"
                 }
             }
         },
@@ -1147,14 +1153,14 @@
                 "name": {
                     "type": "string"
                 },
-                "private": {
-                    "type": "boolean"
-                },
                 "time_end": {
                     "type": "string"
                 },
                 "time_start": {
                     "type": "string"
+                },
+                "visibility": {
+                    "$ref": "#/definitions/model.Visibility"
                 }
             }
         },
@@ -1233,6 +1239,19 @@
                     "type": "string"
                 }
             }
+        },
+        "model.Visibility": {
+            "type": "integer",
+            "enum": [
+                1,
+                2,
+                3
+            ],
+            "x-enum-varnames": [
+                "EventVisibilityPublic",
+                "EventVisibilityPrivate",
+                "EventVisibilityJustMe"
+            ]
         }
     }
 }

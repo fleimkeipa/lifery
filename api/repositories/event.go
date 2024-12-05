@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"log"
 	"strconv"
@@ -173,17 +172,14 @@ func (rc *EventRepository) internalToSQL(newEvent *model.Event) *event {
 	}
 
 	return &event{
-		Date:      newEvent.Date,
-		TimeStart: newEvent.TimeStart,
-		TimeEnd:   newEvent.TimeEnd,
-		Name:      newEvent.Name,
-		Items:     items,
-		ID:        eID,
-		OwnerID:   ownerID,
-		Private: sql.NullBool{
-			Bool:  newEvent.Private,
-			Valid: true,
-		},
+		Date:       newEvent.Date,
+		TimeStart:  newEvent.TimeStart,
+		TimeEnd:    newEvent.TimeEnd,
+		Name:       newEvent.Name,
+		Items:      items,
+		ID:         eID,
+		OwnerID:    ownerID,
+		Visibility: visibility(newEvent.Visibility),
 	}
 }
 
@@ -200,14 +196,14 @@ func (rc *EventRepository) sqlToInternal(newEvent *event) *model.Event {
 	}
 
 	return &model.Event{
-		Date:      newEvent.Date,
-		TimeStart: newEvent.TimeStart,
-		TimeEnd:   newEvent.TimeEnd,
-		Name:      newEvent.Name,
-		Items:     items,
-		ID:        eID,
-		OwnerID:   ownerID,
-		Private:   newEvent.Private.Bool,
+		Date:       newEvent.Date,
+		TimeStart:  newEvent.TimeStart,
+		TimeEnd:    newEvent.TimeEnd,
+		Name:       newEvent.Name,
+		Items:      items,
+		ID:         eID,
+		OwnerID:    ownerID,
+		Visibility: model.Visibility(newEvent.Visibility),
 	}
 }
 
