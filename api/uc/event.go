@@ -14,14 +14,12 @@ import (
 type EventUC struct {
 	repo   interfaces.EventRepository
 	userUC *UserUC
-	cache  *EventCacheUC
 }
 
-func NewEventUC(repo interfaces.EventRepository, cache *EventCacheUC, userUC *UserUC) *EventUC {
+func NewEventUC(repo interfaces.EventRepository, userUC *UserUC) *EventUC {
 	return &EventUC{
 		repo:   repo,
 		userUC: userUC,
-		cache:  cache,
 	}
 }
 

@@ -19,7 +19,6 @@ func TestEventDBUC_Create(t *testing.T) {
 
 	type fields struct {
 		repo   interfaces.EventRepository
-		cache  *uc.EventCacheUC
 		userUC *uc.UserUC
 	}
 	type tempData struct {
@@ -42,7 +41,6 @@ func TestEventDBUC_Create(t *testing.T) {
 			name: "correct - not exist",
 			fields: fields{
 				repo:   repositories.NewEventRepository(testDB),
-				cache:  uc.NewEventCacheUC(repositories.NewCacheRepository(testCache)),
 				userUC: uc.NewUserUC(repositories.NewUserRepository(testDB)),
 			},
 			args: args{
@@ -59,8 +57,7 @@ func TestEventDBUC_Create(t *testing.T) {
 		{
 			name: "correct - exist",
 			fields: fields{
-				repo:  repositories.NewEventRepository(testDB),
-				cache: uc.NewEventCacheUC(repositories.NewCacheRepository(testCache)),
+				repo: repositories.NewEventRepository(testDB),
 			},
 			tempDatas: []tempData{
 				{
@@ -81,11 +78,7 @@ func TestEventDBUC_Create(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			for _, v := range tt.tempDatas {
-				cacheID := uc.EventCacheID(v.brandID, v.barcode)
-				addTestCacheData(tt.args.ctx, cacheID, v.barcode)
-			}
-			rc := uc.NewEventUC(tt.fields.repo, tt.fields.cache, tt.fields.userUC)
+			rc := uc.NewEventUC(tt.fields.repo, tt.fields.userUC)
 			got, err := rc.Create(tt.args.ctx, tt.args.event)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("EventDBUC.Create() error = %v, wantErr %v", err, tt.wantErr)

@@ -14,7 +14,6 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/redis/go-redis/v9"
 	echoSwagger "github.com/swaggo/echo-swagger"
 	"go.uber.org/zap"
 )
@@ -45,9 +44,6 @@ func serveApplication() {
 	dbClient := initDB()
 	defer dbClient.Close() // Clean up db connections at the end
 
-	// Initialize Redis client
-	redisClient := initCache()
-
 	userDBRepo := repositories.NewUserRepository(dbClient)
 	userUC := uc.NewUserUC(userDBRepo)
 	userController := controller.NewUserHandlers(userUC)
@@ -56,10 +52,8 @@ func serveApplication() {
 	eraDBUC := uc.NewEraUC(eraDBRepo)
 	eraController := controller.NewEraController(eraDBUC)
 
-	eventCacheRepo := repositories.NewCacheRepository(redisClient)
-	eventCacheUC := uc.NewEventCacheUC(eventCacheRepo)
 	eventDBRepo := repositories.NewEventRepository(dbClient)
-	eventDBUC := uc.NewEventUC(eventDBRepo, eventCacheUC, userUC)
+	eventDBUC := uc.NewEventUC(eventDBRepo, userUC)
 	eventController := controller.NewEventController(eventDBUC)
 
 	connectDBRepo := repositories.NewConnectRepository(dbClient)
@@ -171,15 +165,4 @@ func initDB() *pg.DB {
 
 	log.Println("PostgreSQL client initialized successfully")
 	return db
-}
-
-// Initializes the Cache client
-func initCache() *redis.Client {
-	cache := pkg.NewRedisClient()
-	if cache == nil {
-		log.Fatal("Failed to initialize Cache client")
-	}
-
-	log.Println("Cache client initialized successfully")
-	return cache
 }
