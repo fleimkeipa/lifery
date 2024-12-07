@@ -1,10 +1,10 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/fleimkeipa/lifery/model"
-	"github.com/fleimkeipa/lifery/pkg"
 	"github.com/fleimkeipa/lifery/uc"
 
 	"github.com/labstack/echo/v4"
@@ -35,12 +35,10 @@ func (rc *EraController) Create(c echo.Context) error {
 	var request model.EraCreateRequest
 
 	if err := c.Bind(&request); err != nil {
-		err := pkg.NewError(
-			err,
-			"Invalid request format. Please check the input data and try again.",
-			http.StatusBadRequest,
-		)
-		return HandleEchoError(c, err)
+		return c.JSON(http.StatusBadRequest, FailureResponse{
+			Error:   fmt.Sprintf("Failed to bind request: %v", err),
+			Message: "Invalid request data. Please check your input and try again.",
+		})
 	}
 
 	era, err := rc.EraDBUC.Create(c.Request().Context(), &request)
@@ -72,12 +70,10 @@ func (rc *EraController) Update(c echo.Context) error {
 	var request model.EraUpdateRequest
 
 	if err := c.Bind(&request); err != nil {
-		err := pkg.NewError(
-			err,
-			"Invalid request format. Please check the input data and try again.",
-			http.StatusBadRequest,
-		)
-		return HandleEchoError(c, err)
+		return c.JSON(http.StatusBadRequest, FailureResponse{
+			Error:   fmt.Sprintf("Failed to bind request: %v", err),
+			Message: "Invalid request data. Please check your input and try again.",
+		})
 	}
 
 	era, err := rc.EraDBUC.Update(c.Request().Context(), eraID, &request)

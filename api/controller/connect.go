@@ -1,10 +1,10 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/fleimkeipa/lifery/model"
-	"github.com/fleimkeipa/lifery/pkg"
 	"github.com/fleimkeipa/lifery/uc"
 
 	"github.com/labstack/echo/v4"
@@ -37,12 +37,10 @@ func (rc *ConnectHandlers) Create(c echo.Context) error {
 	var input model.ConnectCreateRequest
 
 	if err := c.Bind(&input); err != nil {
-		err := pkg.NewError(
-			err,
-			"Invalid request format. Please check the input data and try again.",
-			http.StatusBadRequest,
-		)
-		return HandleEchoError(c, err)
+		return c.JSON(http.StatusBadRequest, FailureResponse{
+			Error:   fmt.Sprintf("Failed to bind request: %v", err),
+			Message: "Invalid request data. Please check your input and try again.",
+		})
 	}
 
 	connect, err := rc.connectUC.Create(c.Request().Context(), input)
@@ -75,12 +73,10 @@ func (rc *ConnectHandlers) Update(c echo.Context) error {
 	var input model.ConnectUpdateRequest
 
 	if err := c.Bind(&input); err != nil {
-		err := pkg.NewError(
-			err,
-			"Invalid request format. Please check the input data and try again.",
-			http.StatusBadRequest,
-		)
-		return HandleEchoError(c, err)
+		return c.JSON(http.StatusBadRequest, FailureResponse{
+			Error:   fmt.Sprintf("Failed to bind request: %v", err),
+			Message: "Invalid request data. Please check your input and try again.",
+		})
 	}
 
 	connect, err := rc.connectUC.Update(c.Request().Context(), id, input)
@@ -111,12 +107,10 @@ func (rc *ConnectHandlers) Disconnect(c echo.Context) error {
 	var input model.DisconnectRequest
 
 	if err := c.Bind(&input); err != nil {
-		err := pkg.NewError(
-			err,
-			"Invalid request format. Please check the input data and try again.",
-			http.StatusBadRequest,
-		)
-		return HandleEchoError(c, err)
+		return c.JSON(http.StatusBadRequest, FailureResponse{
+			Error:   fmt.Sprintf("Failed to bind request: %v", err),
+			Message: "Invalid request data. Please check your input and try again.",
+		})
 	}
 
 	if err := rc.connectUC.Disconnect(c.Request().Context(), input); err != nil {
