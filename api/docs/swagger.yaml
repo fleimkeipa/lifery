@@ -263,12 +263,6 @@ paths:
       description: This endpoint creates a new connection by binding the incoming
         JSON request to the ConnectCreateRequest model.
       parameters:
-      - default: Bearer <Add access token here>
-        description: Insert your access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
       - description: Connect creation input
         in: body
         name: Body
@@ -290,6 +284,8 @@ paths:
           description: Connect creation failed
           schema:
             $ref: '#/definitions/controller.FailureResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Create creates a new connection
       tags:
       - connects
@@ -300,12 +296,6 @@ paths:
       description: This endpoint updates a connection by binding the incoming JSON
         request to the ConnectUpdateRequest model.
       parameters:
-      - default: Bearer <Add access token here>
-        description: Insert your access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
       - description: Connection ID to update
         in: path
         name: id
@@ -332,6 +322,8 @@ paths:
           description: Connect update failed
           schema:
             $ref: '#/definitions/controller.FailureResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Update updates an existing connection
       tags:
       - connects
@@ -342,12 +334,6 @@ paths:
       description: This endpoint disconnects an existing connection by binding the
         incoming JSON request to the DisconnectRequest model.
       parameters:
-      - default: Bearer <Add access token here>
-        description: Insert your access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
       - description: Disconnect input
         in: body
         name: Body
@@ -369,6 +355,8 @@ paths:
           description: Disconnect failed
           schema:
             $ref: '#/definitions/controller.FailureResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Disconnects an existing connection
       tags:
       - connects
@@ -423,12 +411,6 @@ paths:
       description: This endpoint creates a new era by binding the incoming JSON request
         to the EraCreateRequest model.
       parameters:
-      - default: Bearer <Add access token here>
-        description: Insert your access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
       - description: Era creation input
         in: body
         name: Body
@@ -450,6 +432,8 @@ paths:
           description: Era creation failed
           schema:
             $ref: '#/definitions/controller.FailureResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Create a new era
       tags:
       - eras
@@ -460,12 +444,6 @@ paths:
       description: This endpoint deletes an existing era by providing era name or
         UID.
       parameters:
-      - default: Bearer <Add access token here>
-        description: Insert your access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
       - description: Era name or UID
         in: path
         name: id
@@ -486,6 +464,8 @@ paths:
           description: Era delete failed
           schema:
             $ref: '#/definitions/controller.FailureResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Delete an existing era
       tags:
       - eras
@@ -494,12 +474,6 @@ paths:
       - application/json
       description: Fetches an era by its unique name or UID from the database.
       parameters:
-      - default: Bearer <Add access token here>
-        description: Insert your access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
       - description: Era name or UID
         in: path
         name: id
@@ -520,6 +494,8 @@ paths:
           description: Era retrieval failed
           schema:
             $ref: '#/definitions/controller.FailureResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Retrieve era by ID
       tags:
       - eras
@@ -529,12 +505,6 @@ paths:
       description: This endpoint updates an existing era by binding the incoming JSON
         request to the EraUpdateRequest model.
       parameters:
-      - default: Bearer <Add access token here>
-        description: Insert your access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
       - description: Era update input
         in: body
         name: Body
@@ -556,6 +526,8 @@ paths:
           description: Era update failed
           schema:
             $ref: '#/definitions/controller.FailureResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Update an existing era
       tags:
       - eras
@@ -611,12 +583,6 @@ paths:
       description: This endpoint creates a new event by binding the incoming JSON
         request to the EventCreateRequest model.
       parameters:
-      - default: Bearer <Add access token here>
-        description: Insert your access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
       - description: Event creation input
         in: body
         name: Body
@@ -638,6 +604,8 @@ paths:
           description: Event creation failed
           schema:
             $ref: '#/definitions/controller.FailureResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Create a new event
       tags:
       - events
@@ -648,12 +616,6 @@ paths:
       description: This endpoint deletes an existing event by providing event name
         or UID.
       parameters:
-      - default: Bearer <Add access token here>
-        description: Insert your access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
       - description: Event name or UID
         in: path
         name: id
@@ -674,6 +636,8 @@ paths:
           description: Event delete failed
           schema:
             $ref: '#/definitions/controller.FailureResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Delete an existing event
       tags:
       - events
@@ -682,12 +646,6 @@ paths:
       - application/json
       description: Fetches an event by its unique name or UID from the database.
       parameters:
-      - default: Bearer <Add access token here>
-        description: Insert your access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
       - description: Event name or UID
         in: path
         name: id
@@ -708,6 +666,8 @@ paths:
           description: Event retrieval failed
           schema:
             $ref: '#/definitions/controller.FailureResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Retrieve event by ID
       tags:
       - events
@@ -717,12 +677,6 @@ paths:
       description: This endpoint updates an existing event by binding the incoming
         JSON request to the EventUpdateRequest model.
       parameters:
-      - default: Bearer <Add access token here>
-        description: Insert your access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
       - description: Event update input
         in: body
         name: Body
@@ -744,6 +698,8 @@ paths:
           description: Event update failed
           schema:
             $ref: '#/definitions/controller.FailureResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Update an existing event
       tags:
       - events
@@ -754,12 +710,6 @@ paths:
       description: Retrieves a filtered and paginated list of users from the database
         based on query parameters.
       parameters:
-      - default: Bearer <Add access token here>
-        description: Insert your access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
       - description: Filter users by username
         in: query
         name: username
@@ -791,6 +741,8 @@ paths:
           description: Interval error
           schema:
             $ref: '#/definitions/controller.FailureResponse'
+      security:
+      - ApiKeyAuth: []
       summary: List all users
       tags:
       - users
@@ -800,12 +752,6 @@ paths:
       description: This endpoint creates a new user by providing username, email,
         password, and role ID.
       parameters:
-      - default: Bearer <Add access token here>
-        description: Insert your access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
       - description: User creation input
         in: body
         name: body
@@ -827,6 +773,8 @@ paths:
           description: Interval error
           schema:
             $ref: '#/definitions/controller.FailureResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Create creates a new user
       tags:
       - users
@@ -835,13 +783,6 @@ paths:
       consumes:
       - application/json
       description: This endpoint deletes a user by providing user id.
-      parameters:
-      - default: Bearer <Add access token here>
-        description: Insert your access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -853,6 +794,8 @@ paths:
           description: Interval error
           schema:
             $ref: '#/definitions/controller.FailureResponse'
+      security:
+      - ApiKeyAuth: []
       summary: DeleteUser deletes an existing user
       tags:
       - users
@@ -861,12 +804,6 @@ paths:
       - application/json
       description: Fetches a user by their unique ID from the database.
       parameters:
-      - default: Bearer <Add access token here>
-        description: Insert your access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
       - description: User ID
         in: path
         name: id
@@ -883,6 +820,8 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/controller.FailureResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Retrieve user by ID
       tags:
       - users
@@ -892,12 +831,6 @@ paths:
       description: This endpoint updates a user by providing username, email, password,
         and role ID.
       parameters:
-      - default: Bearer <Add access token here>
-        description: Insert your access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
       - description: User update input
         in: body
         name: body
@@ -919,7 +852,15 @@ paths:
           description: Interval error
           schema:
             $ref: '#/definitions/controller.FailureResponse'
+      security:
+      - ApiKeyAuth: []
       summary: UpdateUser updates an existing user
       tags:
       - users
+securityDefinitions:
+  ApiKeyAuth:
+    description: Type \"Bearer \" and then your API Token
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

@@ -109,6 +109,11 @@ const docTemplate = `{
         },
         "/connects": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "This endpoint creates a new connection by binding the incoming JSON request to the ConnectCreateRequest model.",
                 "consumes": [
                     "application/json"
@@ -121,14 +126,6 @@ const docTemplate = `{
                 ],
                 "summary": "Create creates a new connection",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "default": "Bearer \u003cAdd access token here\u003e",
-                        "description": "Insert your access token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "description": "Connect creation input",
                         "name": "Body",
@@ -163,6 +160,11 @@ const docTemplate = `{
         },
         "/connects/disconnect": {
             "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "This endpoint disconnects an existing connection by binding the incoming JSON request to the DisconnectRequest model.",
                 "consumes": [
                     "application/json"
@@ -175,14 +177,6 @@ const docTemplate = `{
                 ],
                 "summary": "Disconnects an existing connection",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "default": "Bearer \u003cAdd access token here\u003e",
-                        "description": "Insert your access token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "description": "Disconnect input",
                         "name": "Body",
@@ -217,6 +211,11 @@ const docTemplate = `{
         },
         "/connects/{id}": {
             "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "This endpoint updates a connection by binding the incoming JSON request to the ConnectUpdateRequest model.",
                 "consumes": [
                     "application/json"
@@ -229,14 +228,6 @@ const docTemplate = `{
                 ],
                 "summary": "Update updates an existing connection",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "default": "Bearer \u003cAdd access token here\u003e",
-                        "description": "Insert your access token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "Connection ID to update",
@@ -344,6 +335,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "This endpoint creates a new era by binding the incoming JSON request to the EraCreateRequest model.",
                 "consumes": [
                     "application/json"
@@ -356,14 +352,6 @@ const docTemplate = `{
                 ],
                 "summary": "Create a new era",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "default": "Bearer \u003cAdd access token here\u003e",
-                        "description": "Insert your access token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "description": "Era creation input",
                         "name": "Body",
@@ -398,6 +386,11 @@ const docTemplate = `{
         },
         "/eras/{id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Fetches an era by its unique name or UID from the database.",
                 "consumes": [
                     "application/json"
@@ -410,14 +403,6 @@ const docTemplate = `{
                 ],
                 "summary": "Retrieve era by ID",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "default": "Bearer \u003cAdd access token here\u003e",
-                        "description": "Insert your access token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "Era name or UID",
@@ -448,6 +433,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "This endpoint deletes an existing era by providing era name or UID.",
                 "consumes": [
                     "application/json"
@@ -460,14 +450,6 @@ const docTemplate = `{
                 ],
                 "summary": "Delete an existing era",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "default": "Bearer \u003cAdd access token here\u003e",
-                        "description": "Insert your access token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "Era name or UID",
@@ -498,6 +480,11 @@ const docTemplate = `{
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "This endpoint updates an existing era by binding the incoming JSON request to the EraUpdateRequest model.",
                 "consumes": [
                     "application/json"
@@ -510,14 +497,6 @@ const docTemplate = `{
                 ],
                 "summary": "Update an existing era",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "default": "Bearer \u003cAdd access token here\u003e",
-                        "description": "Insert your access token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "description": "Era update input",
                         "name": "Body",
@@ -618,6 +597,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "This endpoint creates a new event by binding the incoming JSON request to the EventCreateRequest model.",
                 "consumes": [
                     "application/json"
@@ -630,14 +614,6 @@ const docTemplate = `{
                 ],
                 "summary": "Create a new event",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "default": "Bearer \u003cAdd access token here\u003e",
-                        "description": "Insert your access token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "description": "Event creation input",
                         "name": "Body",
@@ -672,6 +648,11 @@ const docTemplate = `{
         },
         "/events/{id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Fetches an event by its unique name or UID from the database.",
                 "consumes": [
                     "application/json"
@@ -684,14 +665,6 @@ const docTemplate = `{
                 ],
                 "summary": "Retrieve event by ID",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "default": "Bearer \u003cAdd access token here\u003e",
-                        "description": "Insert your access token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "Event name or UID",
@@ -722,6 +695,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "This endpoint deletes an existing event by providing event name or UID.",
                 "consumes": [
                     "application/json"
@@ -734,14 +712,6 @@ const docTemplate = `{
                 ],
                 "summary": "Delete an existing event",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "default": "Bearer \u003cAdd access token here\u003e",
-                        "description": "Insert your access token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "Event name or UID",
@@ -772,6 +742,11 @@ const docTemplate = `{
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "This endpoint updates an existing event by binding the incoming JSON request to the EventUpdateRequest model.",
                 "consumes": [
                     "application/json"
@@ -784,14 +759,6 @@ const docTemplate = `{
                 ],
                 "summary": "Update an existing event",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "default": "Bearer \u003cAdd access token here\u003e",
-                        "description": "Insert your access token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "description": "Event update input",
                         "name": "Body",
@@ -826,6 +793,11 @@ const docTemplate = `{
         },
         "/users": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Retrieves a filtered and paginated list of users from the database based on query parameters.",
                 "consumes": [
                     "application/json"
@@ -838,14 +810,6 @@ const docTemplate = `{
                 ],
                 "summary": "List all users",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "default": "Bearer \u003cAdd access token here\u003e",
-                        "description": "Insert your access token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "Filter users by username",
@@ -893,6 +857,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "This endpoint creates a new user by providing username, email, password, and role ID.",
                 "consumes": [
                     "application/json"
@@ -905,14 +874,6 @@ const docTemplate = `{
                 ],
                 "summary": "Create creates a new user",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "default": "Bearer \u003cAdd access token here\u003e",
-                        "description": "Insert your access token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "description": "User creation input",
                         "name": "body",
@@ -947,6 +908,11 @@ const docTemplate = `{
         },
         "/users/{id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Fetches a user by their unique ID from the database.",
                 "consumes": [
                     "application/json"
@@ -959,14 +925,6 @@ const docTemplate = `{
                 ],
                 "summary": "Retrieve user by ID",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "default": "Bearer \u003cAdd access token here\u003e",
-                        "description": "Insert your access token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "User ID",
@@ -991,6 +949,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "This endpoint deletes a user by providing user id.",
                 "consumes": [
                     "application/json"
@@ -1002,16 +965,6 @@ const docTemplate = `{
                     "users"
                 ],
                 "summary": "DeleteUser deletes an existing user",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "Bearer \u003cAdd access token here\u003e",
-                        "description": "Insert your access token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "user username",
@@ -1028,6 +981,11 @@ const docTemplate = `{
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "This endpoint updates a user by providing username, email, password, and role ID.",
                 "consumes": [
                     "application/json"
@@ -1040,14 +998,6 @@ const docTemplate = `{
                 ],
                 "summary": "UpdateUser updates an existing user",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "default": "Bearer \u003cAdd access token here\u003e",
-                        "description": "Insert your access token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "description": "User update input",
                         "name": "body",
@@ -1365,6 +1315,14 @@ const docTemplate = `{
                 "EventVisibilityPrivate",
                 "EventVisibilityJustMe"
             ]
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "description": "Type \\\"Bearer \\\" and then your API Token",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`
