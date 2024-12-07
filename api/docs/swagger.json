@@ -492,25 +492,25 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Filter events by user id",
+                        "description": "Filter events by user id, returns owners events if not provided",
                         "name": "user_id",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Filter events by visibility status",
+                        "description": "Filter events by visibility status (public:1, private:2, just me:3)",
                         "name": "visibility",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Limit the number of connects returned",
+                        "description": "Limit the number of events returned",
                         "name": "limit",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Number of connects to skip for pagination",
+                        "description": "Number of events to skip for pagination",
                         "name": "skip",
                         "in": "query"
                     }
