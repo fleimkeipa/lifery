@@ -18,6 +18,10 @@ import (
 	"go.uber.org/zap"
 )
 
+// @securityDefinitions.apikey	ApiKeyAuth
+// @in							header
+// @name						Authorization
+// @description				Type \"Bearer \" and then your API Token
 func main() {
 	// Start the application
 	serveApplication()
