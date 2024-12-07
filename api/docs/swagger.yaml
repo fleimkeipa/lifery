@@ -263,6 +263,12 @@ paths:
       description: This endpoint creates a new connection by binding the incoming
         JSON request to the ConnectCreateRequest model.
       parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Connect creation input
         in: body
         name: Body
@@ -294,6 +300,12 @@ paths:
       description: This endpoint updates a connection by binding the incoming JSON
         request to the ConnectUpdateRequest model.
       parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Connection ID to update
         in: path
         name: id
@@ -330,6 +342,12 @@ paths:
       description: This endpoint disconnects an existing connection by binding the
         incoming JSON request to the DisconnectRequest model.
       parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Disconnect input
         in: body
         name: Body
@@ -360,6 +378,11 @@ paths:
       - application/json
       description: This endpoint retrieves a list of eras.
       parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        type: string
       - description: Filter eras by name
         in: query
         name: name
@@ -400,6 +423,12 @@ paths:
       description: This endpoint creates a new era by binding the incoming JSON request
         to the EraCreateRequest model.
       parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Era creation input
         in: body
         name: Body
@@ -431,6 +460,12 @@ paths:
       description: This endpoint deletes an existing era by providing era name or
         UID.
       parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Era name or UID
         in: path
         name: id
@@ -459,6 +494,12 @@ paths:
       - application/json
       description: Fetches an era by its unique name or UID from the database.
       parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Era name or UID
         in: path
         name: id
@@ -488,6 +529,12 @@ paths:
       description: This endpoint updates an existing era by binding the incoming JSON
         request to the EraUpdateRequest model.
       parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Era update input
         in: body
         name: Body
@@ -518,6 +565,11 @@ paths:
       - application/json
       description: This endpoint retrieves a list of events.
       parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        type: string
       - description: Filter events by user id, returns owners events if not provided
         in: query
         name: user_id
@@ -559,6 +611,12 @@ paths:
       description: This endpoint creates a new event by binding the incoming JSON
         request to the EventCreateRequest model.
       parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Event creation input
         in: body
         name: Body
@@ -590,6 +648,12 @@ paths:
       description: This endpoint deletes an existing event by providing event name
         or UID.
       parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Event name or UID
         in: path
         name: id
@@ -618,6 +682,12 @@ paths:
       - application/json
       description: Fetches an event by its unique name or UID from the database.
       parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Event name or UID
         in: path
         name: id
@@ -647,6 +717,12 @@ paths:
       description: This endpoint updates an existing event by binding the incoming
         JSON request to the EventUpdateRequest model.
       parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Event update input
         in: body
         name: Body

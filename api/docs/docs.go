@@ -122,6 +122,14 @@ const docTemplate = `{
                 "summary": "Create creates a new connection",
                 "parameters": [
                     {
+                        "type": "string",
+                        "default": "Bearer \u003cAdd access token here\u003e",
+                        "description": "Insert your access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "description": "Connect creation input",
                         "name": "Body",
                         "in": "body",
@@ -168,6 +176,14 @@ const docTemplate = `{
                 "summary": "Disconnects an existing connection",
                 "parameters": [
                     {
+                        "type": "string",
+                        "default": "Bearer \u003cAdd access token here\u003e",
+                        "description": "Insert your access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "description": "Disconnect input",
                         "name": "Body",
                         "in": "body",
@@ -213,6 +229,14 @@ const docTemplate = `{
                 ],
                 "summary": "Update updates an existing connection",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "default": "Bearer \u003cAdd access token here\u003e",
+                        "description": "Insert your access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Connection ID to update",
@@ -266,6 +290,13 @@ const docTemplate = `{
                 ],
                 "summary": "Retrieve a list of eras",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "default": "Bearer \u003cAdd access token here\u003e",
+                        "description": "Insert your access token",
+                        "name": "Authorization",
+                        "in": "header"
+                    },
                     {
                         "type": "string",
                         "description": "Filter eras by name",
@@ -326,6 +357,14 @@ const docTemplate = `{
                 "summary": "Create a new era",
                 "parameters": [
                     {
+                        "type": "string",
+                        "default": "Bearer \u003cAdd access token here\u003e",
+                        "description": "Insert your access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "description": "Era creation input",
                         "name": "Body",
                         "in": "body",
@@ -373,6 +412,14 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "Bearer \u003cAdd access token here\u003e",
+                        "description": "Insert your access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "Era name or UID",
                         "name": "id",
                         "in": "path",
@@ -415,6 +462,14 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "Bearer \u003cAdd access token here\u003e",
+                        "description": "Insert your access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "Era name or UID",
                         "name": "id",
                         "in": "path",
@@ -455,6 +510,14 @@ const docTemplate = `{
                 ],
                 "summary": "Update an existing era",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "default": "Bearer \u003cAdd access token here\u003e",
+                        "description": "Insert your access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "Era update input",
                         "name": "Body",
@@ -501,6 +564,13 @@ const docTemplate = `{
                 ],
                 "summary": "Retrieve a list of events",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "default": "Bearer \u003cAdd access token here\u003e",
+                        "description": "Insert your access token",
+                        "name": "Authorization",
+                        "in": "header"
+                    },
                     {
                         "type": "string",
                         "description": "Filter events by user id, returns owners events if not provided",
@@ -561,6 +631,14 @@ const docTemplate = `{
                 "summary": "Create a new event",
                 "parameters": [
                     {
+                        "type": "string",
+                        "default": "Bearer \u003cAdd access token here\u003e",
+                        "description": "Insert your access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "description": "Event creation input",
                         "name": "Body",
                         "in": "body",
@@ -608,6 +686,14 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "Bearer \u003cAdd access token here\u003e",
+                        "description": "Insert your access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "Event name or UID",
                         "name": "id",
                         "in": "path",
@@ -650,6 +736,14 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "Bearer \u003cAdd access token here\u003e",
+                        "description": "Insert your access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "Event name or UID",
                         "name": "id",
                         "in": "path",
@@ -690,6 +784,14 @@ const docTemplate = `{
                 ],
                 "summary": "Update an existing event",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "default": "Bearer \u003cAdd access token here\u003e",
+                        "description": "Insert your access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "Event update input",
                         "name": "Body",

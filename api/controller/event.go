@@ -25,10 +25,11 @@ func NewEventController(eventUC *uc.EventUC) *EventController {
 //	@Tags			events
 //	@Accept			json
 //	@Produce		json
-//	@Param			Body	body		model.EventCreateRequest	true	"Event creation input"
-//	@Success		201		{object}	SuccessResponse				"Event created successfully"
-//	@Failure		400		{object}	FailureResponse				"Invalid request data"
-//	@Failure		500		{object}	FailureResponse				"Event creation failed"
+//	@Param			Authorization	header		string						true	"Insert your access token"	default(Bearer <Add access token here>)
+//	@Param			Body			body		model.EventCreateRequest	true	"Event creation input"
+//	@Success		201				{object}	SuccessResponse				"Event created successfully"
+//	@Failure		400				{object}	FailureResponse				"Invalid request data"
+//	@Failure		500				{object}	FailureResponse				"Event creation failed"
 //	@Router			/events [post]
 func (rc *EventController) Create(c echo.Context) error {
 	var request model.EventCreateRequest
@@ -60,10 +61,11 @@ func (rc *EventController) Create(c echo.Context) error {
 //	@Tags			events
 //	@Accept			json
 //	@Produce		json
-//	@Param			Body	body		model.EventUpdateRequest	true	"Event update input"
-//	@Success		200		{object}	SuccessResponse				"Event updated successfully"
-//	@Failure		400		{object}	FailureResponse				"Invalid request data"
-//	@Failure		500		{object}	FailureResponse				"Event update failed"
+//	@Param			Authorization	header		string						true	"Insert your access token"	default(Bearer <Add access token here>)
+//	@Param			Body			body		model.EventUpdateRequest	true	"Event update input"
+//	@Success		200				{object}	SuccessResponse				"Event updated successfully"
+//	@Failure		400				{object}	FailureResponse				"Invalid request data"
+//	@Failure		500				{object}	FailureResponse				"Event update failed"
 //	@Router			/events/{id} [patch]
 func (rc *EventController) Update(c echo.Context) error {
 	eventID := c.Param("id")
@@ -96,10 +98,11 @@ func (rc *EventController) Update(c echo.Context) error {
 //	@Tags			events
 //	@Accept			json
 //	@Produce		json
-//	@Param			id	path		string			true	"Event name or UID"
-//	@Success		200	{object}	SuccessResponse	"Event deleted successfully"
-//	@Failure		400	{object}	FailureResponse	"Invalid request data"
-//	@Failure		500	{object}	FailureResponse	"Event delete failed"
+//	@Param			Authorization	header		string			true	"Insert your access token"	default(Bearer <Add access token here>)
+//	@Param			id				path		string			true	"Event name or UID"
+//	@Success		200				{object}	SuccessResponse	"Event deleted successfully"
+//	@Failure		400				{object}	FailureResponse	"Invalid request data"
+//	@Failure		500				{object}	FailureResponse	"Event delete failed"
 //	@Router			/events/{id} [delete]
 func (rc *EventController) Delete(c echo.Context) error {
 	eventID := c.Param("id")
@@ -120,13 +123,14 @@ func (rc *EventController) Delete(c echo.Context) error {
 //	@Tags			events
 //	@Accept			json
 //	@Produce		json
-//	@Param			user_id		query		string			false	"Filter events by user id, returns owners events if not provided"
-//	@Param			visibility	query		string			false	"Filter events by visibility status (public:1, private:2, just me:3)"
-//	@Param			limit		query		string			false	"Limit the number of events returned"
-//	@Param			skip		query		string			false	"Number of events to skip for pagination"
-//	@Success		200			{object}	SuccessResponse	"Events retrieved successfully"
-//	@Failure		400			{object}	FailureResponse	"Invalid request data"
-//	@Failure		500			{object}	FailureResponse	"Event retrieval failed"
+//	@Param			Authorization	header		string			false	"Insert your access token"	default(Bearer <Add access token here>)
+//	@Param			user_id			query		string			false	"Filter events by user id, returns owners events if not provided"
+//	@Param			visibility		query		string			false	"Filter events by visibility status (public:1, private:2, just me:3)"
+//	@Param			limit			query		string			false	"Limit the number of events returned"
+//	@Param			skip			query		string			false	"Number of events to skip for pagination"
+//	@Success		200				{object}	SuccessResponse	"Events retrieved successfully"
+//	@Failure		400				{object}	FailureResponse	"Invalid request data"
+//	@Failure		500				{object}	FailureResponse	"Event retrieval failed"
 //	@Router			/events [get]
 func (rc *EventController) List(c echo.Context) error {
 	opts := rc.getEventsFindOpts(c)
@@ -149,10 +153,11 @@ func (rc *EventController) List(c echo.Context) error {
 //	@Tags			events
 //	@Accept			json
 //	@Produce		json
-//	@Param			id	path		string			true	"Event name or UID"
-//	@Success		200	{object}	SuccessResponse	"Event retrieved successfully"
-//	@Failure		400	{object}	FailureResponse	"Invalid request data"
-//	@Failure		500	{object}	FailureResponse	"Event retrieval failed"
+//	@Param			Authorization	header		string			true	"Insert your access token"	default(Bearer <Add access token here>)
+//	@Param			id				path		string			true	"Event name or UID"
+//	@Success		200				{object}	SuccessResponse	"Event retrieved successfully"
+//	@Failure		400				{object}	FailureResponse	"Invalid request data"
+//	@Failure		500				{object}	FailureResponse	"Event retrieval failed"
 //	@Router			/events/{id} [get]
 func (rc *EventController) GetByID(c echo.Context) error {
 	eventID := c.Param("id")

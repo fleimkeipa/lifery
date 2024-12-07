@@ -25,10 +25,11 @@ func NewEraController(eraUC *uc.EraUC) *EraController {
 //	@Tags			eras
 //	@Accept			json
 //	@Produce		json
-//	@Param			Body	body		model.EraCreateRequest	true	"Era creation input"
-//	@Success		201		{object}	SuccessResponse			"Era created successfully"
-//	@Failure		400		{object}	FailureResponse			"Invalid request data"
-//	@Failure		500		{object}	FailureResponse			"Era creation failed"
+//	@Param			Authorization	header		string					true	"Insert your access token"	default(Bearer <Add access token here>)
+//	@Param			Body			body		model.EraCreateRequest	true	"Era creation input"
+//	@Success		201				{object}	SuccessResponse			"Era created successfully"
+//	@Failure		400				{object}	FailureResponse			"Invalid request data"
+//	@Failure		500				{object}	FailureResponse			"Era creation failed"
 //	@Router			/eras [post]
 func (rc *EraController) Create(c echo.Context) error {
 	var request model.EraCreateRequest
@@ -60,10 +61,11 @@ func (rc *EraController) Create(c echo.Context) error {
 //	@Tags			eras
 //	@Accept			json
 //	@Produce		json
-//	@Param			Body	body		model.EraUpdateRequest	true	"Era update input"
-//	@Success		200		{object}	SuccessResponse			"Era updated successfully"
-//	@Failure		400		{object}	FailureResponse			"Invalid request data"
-//	@Failure		500		{object}	FailureResponse			"Era update failed"
+//	@Param			Authorization	header		string					true	"Insert your access token"	default(Bearer <Add access token here>)
+//	@Param			Body			body		model.EraUpdateRequest	true	"Era update input"
+//	@Success		200				{object}	SuccessResponse			"Era updated successfully"
+//	@Failure		400				{object}	FailureResponse			"Invalid request data"
+//	@Failure		500				{object}	FailureResponse			"Era update failed"
 //	@Router			/eras/{id} [patch]
 func (rc *EraController) Update(c echo.Context) error {
 	eraID := c.Param("id")
@@ -96,10 +98,11 @@ func (rc *EraController) Update(c echo.Context) error {
 //	@Tags			eras
 //	@Accept			json
 //	@Produce		json
-//	@Param			id	path		string			true	"Era name or UID"
-//	@Success		200	{object}	SuccessResponse	"Era deleted successfully"
-//	@Failure		400	{object}	FailureResponse	"Invalid request data"
-//	@Failure		500	{object}	FailureResponse	"Era delete failed"
+//	@Param			Authorization	header		string			true	"Insert your access token"	default(Bearer <Add access token here>)
+//	@Param			id				path		string			true	"Era name or UID"
+//	@Success		200				{object}	SuccessResponse	"Era deleted successfully"
+//	@Failure		400				{object}	FailureResponse	"Invalid request data"
+//	@Failure		500				{object}	FailureResponse	"Era delete failed"
 //	@Router			/eras/{id} [delete]
 func (rc *EraController) Delete(c echo.Context) error {
 	eraID := c.Param("id")
@@ -120,13 +123,14 @@ func (rc *EraController) Delete(c echo.Context) error {
 //	@Tags			eras
 //	@Accept			json
 //	@Produce		json
-//	@Param			name	query		string			false	"Filter eras by name"
-//	@Param			user_id	query		string			false	"Filter eras by user id"
-//	@Param			limit	query		string			false	"Limit the number of connects returned"
-//	@Param			skip	query		string			false	"Number of connects to skip for pagination"
-//	@Success		200		{object}	SuccessResponse	"Eras retrieved successfully"
-//	@Failure		400		{object}	FailureResponse	"Invalid request data"
-//	@Failure		500		{object}	FailureResponse	"Era retrieval failed"
+//	@Param			Authorization	header		string			false	"Insert your access token"	default(Bearer <Add access token here>)
+//	@Param			name			query		string			false	"Filter eras by name"
+//	@Param			user_id			query		string			false	"Filter eras by user id"
+//	@Param			limit			query		string			false	"Limit the number of connects returned"
+//	@Param			skip			query		string			false	"Number of connects to skip for pagination"
+//	@Success		200				{object}	SuccessResponse	"Eras retrieved successfully"
+//	@Failure		400				{object}	FailureResponse	"Invalid request data"
+//	@Failure		500				{object}	FailureResponse	"Era retrieval failed"
 //	@Router			/eras [get]
 func (rc *EraController) List(c echo.Context) error {
 	opts := rc.getErasFindOpts(c)
@@ -149,10 +153,11 @@ func (rc *EraController) List(c echo.Context) error {
 //	@Tags			eras
 //	@Accept			json
 //	@Produce		json
-//	@Param			id	path		string			true	"Era name or UID"
-//	@Success		200	{object}	SuccessResponse	"Era retrieved successfully"
-//	@Failure		400	{object}	FailureResponse	"Invalid request data"
-//	@Failure		500	{object}	FailureResponse	"Era retrieval failed"
+//	@Param			Authorization	header		string			true	"Insert your access token"	default(Bearer <Add access token here>)
+//	@Param			id				path		string			true	"Era name or UID"
+//	@Success		200				{object}	SuccessResponse	"Era retrieved successfully"
+//	@Failure		400				{object}	FailureResponse	"Invalid request data"
+//	@Failure		500				{object}	FailureResponse	"Era retrieval failed"
 //	@Router			/eras/{id} [get]
 func (rc *EraController) GetByID(c echo.Context) error {
 	eraID := c.Param("id")

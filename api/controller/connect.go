@@ -27,10 +27,11 @@ func NewConnectHandlers(connectUC *uc.ConnectsUC) *ConnectHandlers {
 //	@Tags			connects
 //	@Accept			json
 //	@Produce		json
-//	@Param			Body	body		model.ConnectCreateRequest	true	"Connect creation input"
-//	@Success		201		{object}	SuccessResponse				"Connect created successfully"
-//	@Failure		400		{object}	FailureResponse				"Invalid request data"
-//	@Failure		500		{object}	FailureResponse				"Connect creation failed"
+//	@Param			Authorization	header		string						true	"Insert your access token"	default(Bearer <Add access token here>)
+//	@Param			Body			body		model.ConnectCreateRequest	true	"Connect creation input"
+//	@Success		201				{object}	SuccessResponse				"Connect created successfully"
+//	@Failure		400				{object}	FailureResponse				"Invalid request data"
+//	@Failure		500				{object}	FailureResponse				"Connect creation failed"
 //	@Router			/connects [post]
 func (rc *ConnectHandlers) Create(c echo.Context) error {
 	var input model.ConnectCreateRequest
@@ -62,11 +63,12 @@ func (rc *ConnectHandlers) Create(c echo.Context) error {
 //	@Tags			connects
 //	@Accept			json
 //	@Produce		json
-//	@Param			id		path		string						true	"Connection ID to update"
-//	@Param			Body	body		model.ConnectUpdateRequest	true	"Connect update input"
-//	@Success		200		{object}	SuccessResponse				"Connect updated successfully"
-//	@Failure		400		{object}	FailureResponse				"Invalid request data"
-//	@Failure		500		{object}	FailureResponse				"Connect update failed"
+//	@Param			Authorization	header		string						true	"Insert your access token"	default(Bearer <Add access token here>)
+//	@Param			id				path		string						true	"Connection ID to update"
+//	@Param			Body			body		model.ConnectUpdateRequest	true	"Connect update input"
+//	@Success		200				{object}	SuccessResponse				"Connect updated successfully"
+//	@Failure		400				{object}	FailureResponse				"Invalid request data"
+//	@Failure		500				{object}	FailureResponse				"Connect update failed"
 //	@Router			/connects/{id} [patch]
 func (rc *ConnectHandlers) Update(c echo.Context) error {
 	id := c.Param("id")
@@ -99,10 +101,11 @@ func (rc *ConnectHandlers) Update(c echo.Context) error {
 //	@Tags			connects
 //	@Accept			json
 //	@Produce		json
-//	@Param			Body	body		model.DisconnectRequest	true	"Disconnect input"
-//	@Success		200		{object}	SuccessResponse			"Disconnected successfully"
-//	@Failure		400		{object}	FailureResponse			"Invalid request data"
-//	@Failure		500		{object}	FailureResponse			"Disconnect failed"
+//	@Param			Authorization	header		string					true	"Insert your access token"	default(Bearer <Add access token here>)
+//	@Param			Body			body		model.DisconnectRequest	true	"Disconnect input"
+//	@Success		200				{object}	SuccessResponse			"Disconnected successfully"
+//	@Failure		400				{object}	FailureResponse			"Invalid request data"
+//	@Failure		500				{object}	FailureResponse			"Disconnect failed"
 //	@Router			/connects/disconnect [patch]
 func (rc *ConnectHandlers) Disconnect(c echo.Context) error {
 	var input model.DisconnectRequest
@@ -133,6 +136,7 @@ func (rc *ConnectHandlers) Disconnect(c echo.Context) error {
 //	@Tags			connects
 //	@Accept			json
 //	@Produce		json
+//	@Param			Authorization	header		string			true	"Insert your access token"	default(Bearer <Add access token here>)
 //	@Param			Authorization	header		string			true	"Insert your access token"	default(Bearer <Add access token here>)
 //	@Param			status			query		string			false	"Filter connects by status"
 //	@Param			friend_id		query		string			false	"Filter connects by friend ID"
