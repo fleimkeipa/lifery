@@ -2,8 +2,10 @@ package uc
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/fleimkeipa/lifery/model"
+	"github.com/fleimkeipa/lifery/pkg"
 	"github.com/fleimkeipa/lifery/repositories/interfaces"
 	"github.com/fleimkeipa/lifery/util"
 )
@@ -29,7 +31,12 @@ func (rc *EraUC) Create(ctx context.Context, req *model.EraCreateRequest) (*mode
 		OwnerID:   ownerID,
 	}
 
-	return rc.repo.Create(ctx, &era)
+	newEra, err := rc.repo.Create(ctx, &era)
+	if err != nil {
+		return nil, pkg.NewError(err, "failed to create era", http.StatusInternalServerError)
+	}
+
+	return newEra, nil
 }
 
 func (rc *EraUC) Update(ctx context.Context, eraID string, req *model.EraUpdateRequest) (*model.Era, error) {
@@ -47,11 +54,20 @@ func (rc *EraUC) Update(ctx context.Context, eraID string, req *model.EraUpdateR
 		OwnerID:   exist.OwnerID,
 	}
 
-	return rc.repo.Update(ctx, eraID, &era)
+	updatedEra, err := rc.repo.Update(ctx, eraID, &era)
+	if err != nil {
+		return nil, pkg.NewError(err, "failed to update era", http.StatusInternalServerError)
+	}
+
+	return updatedEra, nil
 }
 
 func (rc *EraUC) Delete(ctx context.Context, id string) error {
-	return rc.repo.Delete(ctx, id)
+	if err := rc.repo.Delete(ctx, id); err != nil {
+		return pkg.NewError(err, "failed to delete era", http.StatusInternalServerError)
+	}
+
+	return nil
 }
 
 func (rc *EraUC) List(ctx context.Context, opts *model.EraFindOpts) (*model.EraList, error) {
@@ -63,12 +79,26 @@ func (rc *EraUC) List(ctx context.Context, opts *model.EraFindOpts) (*model.EraL
 			IsSended: true,
 		}
 
-		return rc.repo.List(ctx, opts)
+		return rc.list(ctx, opts)
 	}
 
-	return rc.repo.List(ctx, opts)
+	return rc.list(ctx, opts)
 }
 
 func (rc *EraUC) GetByID(ctx context.Context, id string) (*model.Era, error) {
-	return rc.repo.GetByID(ctx, id)
+	era, err := rc.repo.GetByID(ctx, id)
+	if err != nil {
+		return nil, pkg.NewError(err, "failed to get era", http.StatusInternalServerError)
+	}
+
+	return era, nil
+}
+
+func (rc *EraUC) list(ctx context.Context, opts *model.EraFindOpts) (*model.EraList, error) {
+	list, err := rc.repo.List(ctx, opts)
+	if err != nil {
+		return nil, pkg.NewError(err, "failed to list eras", http.StatusInternalServerError)
+	}
+
+	return list, nil
 }

@@ -1,10 +1,10 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/fleimkeipa/lifery/model"
+	"github.com/fleimkeipa/lifery/pkg"
 	"github.com/fleimkeipa/lifery/uc"
 
 	"github.com/labstack/echo/v4"
@@ -34,18 +34,17 @@ func (rc *EraController) Create(c echo.Context) error {
 	var request model.EraCreateRequest
 
 	if err := c.Bind(&request); err != nil {
-		return c.JSON(http.StatusBadRequest, FailureResponse{
-			Error:   fmt.Sprintf("Failed to bind request: %v", err),
-			Message: "Invalid request data. Please check your input and try again.",
-		})
+		err := pkg.NewError(
+			err,
+			"Invalid request format. Please check the input data and try again.",
+			http.StatusBadRequest,
+		)
+		return HandleEchoError(c, err)
 	}
 
 	era, err := rc.EraDBUC.Create(c.Request().Context(), &request)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, FailureResponse{
-			Error:   fmt.Sprintf("Failed to create era: %v", err),
-			Message: "Era creation failed. Please verify the details and try again.",
-		})
+		return HandleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusCreated, SuccessResponse{
@@ -71,18 +70,17 @@ func (rc *EraController) Update(c echo.Context) error {
 	var request model.EraUpdateRequest
 
 	if err := c.Bind(&request); err != nil {
-		return c.JSON(http.StatusBadRequest, FailureResponse{
-			Error:   fmt.Sprintf("Failed to bind request: %v", err),
-			Message: "Invalid request data. Please check your input and try again.",
-		})
+		err := pkg.NewError(
+			err,
+			"Invalid request format. Please check the input data and try again.",
+			http.StatusBadRequest,
+		)
+		return HandleEchoError(c, err)
 	}
 
 	era, err := rc.EraDBUC.Update(c.Request().Context(), eraID, &request)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, FailureResponse{
-			Error:   fmt.Sprintf("Failed to update era: %v", err),
-			Message: "Era creation failed. Please verify the details and try again.",
-		})
+		return HandleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
@@ -107,10 +105,7 @@ func (rc *EraController) Delete(c echo.Context) error {
 	eraID := c.Param("id")
 
 	if err := rc.EraDBUC.Delete(c.Request().Context(), eraID); err != nil {
-		return c.JSON(http.StatusBadRequest, FailureResponse{
-			Error:   fmt.Sprintf("Failed to retrieve era: %v", err),
-			Message: "Error fetching the era details. Please verify the era name or UID and try again.",
-		})
+		return HandleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
@@ -138,10 +133,7 @@ func (rc *EraController) List(c echo.Context) error {
 
 	list, err := rc.EraDBUC.List(c.Request().Context(), &opts)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, FailureResponse{
-			Error:   fmt.Sprintf("Failed to list eras: %v", err),
-			Message: "There was an issue retrieving eras. Please try again.",
-		})
+		return HandleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
@@ -167,10 +159,7 @@ func (rc *EraController) GetByID(c echo.Context) error {
 
 	era, err := rc.EraDBUC.GetByID(c.Request().Context(), eraID)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, FailureResponse{
-			Error:   fmt.Sprintf("Failed to retrieve era: %v", err),
-			Message: "Error fetching the era details. Please verify the era name or UID and try again.",
-		})
+		return HandleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
