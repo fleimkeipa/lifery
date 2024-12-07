@@ -56,10 +56,7 @@ func (rc *AuthHandlers) Register(c echo.Context) error {
 
 	exists, err := rc.userUC.Exists(c.Request().Context(), input.Username)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, FailureResponse{
-			Error:   fmt.Sprintf("User not found: %v", err),
-			Message: "User not found. Please check the username and try again.",
-		})
+		return HandleEchoError(c, err)
 	}
 
 	if exists {
@@ -85,10 +82,7 @@ func (rc *AuthHandlers) Register(c echo.Context) error {
 
 	user, err := rc.userUC.Create(c.Request().Context(), newUser)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, FailureResponse{
-			Error:   fmt.Sprintf("Failed to create user: %v", err),
-			Message: "User creation failed. Please verify the details and try again.",
-		})
+		return HandleEchoError(c, err)
 	}
 
 	jwt, err := util.GenerateJWT(user)
@@ -140,10 +134,7 @@ func (rc *AuthHandlers) Login(c echo.Context) error {
 
 	user, err := rc.userUC.GetByUsernameOrEmail(c.Request().Context(), input.Username)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, FailureResponse{
-			Error:   fmt.Sprintf("User not found: %v", err),
-			Message: "User not found. Please check the username and try again.",
-		})
+		return HandleEchoError(c, err)
 	}
 
 	if err := model.ValidateUserPassword(user.Password, input.Password); err != nil {
