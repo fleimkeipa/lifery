@@ -13,27 +13,10 @@ type event struct {
 	ID         int         `json:"id" pg:",pk"`
 	OwnerID    int         `json:"owner_id" pg:",notnull"`
 	Owner      *user       `json:"owner" pg:"rel:has-one"`
-	Visibility visibility  `json:"visibility"`
+	Visibility int         `json:"visibility"`
 }
 
-type visibility int
-
-const (
-	EventVisibilityPublic visibility = iota + 1
-	EventVisibilityPrivate
-	EventVisibilityJustMe
-)
-
-type eventType int
-
-const (
-	eventTypeString eventType = iota + 1
-	eventTypePhoto
-	eventTypeVideo
-	eventTypeVoiceRecord
-)
-
 type eventItem struct {
-	Data string    `json:"data"`
-	Type eventType `json:"type"`
+	Data string `json:"data"`
+	Type int    `json:"type"`
 }

@@ -90,7 +90,7 @@ func TestEventRepository_List(t *testing.T) {
 				events: []model.Event{
 					{
 						Name:       "1234",
-						Visibility: model.Visibility(repositories.EventVisibilityPublic),
+						Visibility: model.Visibility(model.EventVisibilityPublic),
 					},
 				},
 			},
@@ -105,7 +105,7 @@ func TestEventRepository_List(t *testing.T) {
 				Events: []model.Event{
 					{
 						Name:       "1234",
-						Visibility: model.Visibility(repositories.EventVisibilityPublic),
+						Visibility: model.Visibility(model.EventVisibilityPublic),
 					},
 				},
 				Total:          1,
@@ -119,11 +119,11 @@ func TestEventRepository_List(t *testing.T) {
 				events: []model.Event{
 					{
 						Name:       "1234",
-						Visibility: model.Visibility(repositories.EventVisibilityPublic),
+						Visibility: model.Visibility(model.EventVisibilityPublic),
 					},
 					{
 						Name:       "1234",
-						Visibility: model.Visibility(repositories.EventVisibilityPrivate),
+						Visibility: model.Visibility(model.EventVisibilityPrivate),
 					},
 				},
 			},
@@ -138,11 +138,11 @@ func TestEventRepository_List(t *testing.T) {
 				Events: []model.Event{
 					{
 						Name:       "1234",
-						Visibility: model.Visibility(repositories.EventVisibilityPublic),
+						Visibility: model.Visibility(model.EventVisibilityPublic),
 					},
 					{
 						Name:       "1234",
-						Visibility: model.Visibility(repositories.EventVisibilityPrivate),
+						Visibility: model.Visibility(model.EventVisibilityPrivate),
 					},
 				},
 				Total:          1,

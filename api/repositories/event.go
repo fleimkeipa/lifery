@@ -172,7 +172,7 @@ func (rc *EventRepository) internalToSQL(newEvent *model.Event) *event {
 	for _, v := range newEvent.Items {
 		items = append(items, eventItem{
 			Data: v.Data,
-			Type: eventType(v.Type),
+			Type: int(v.Type),
 		})
 	}
 
@@ -184,7 +184,7 @@ func (rc *EventRepository) internalToSQL(newEvent *model.Event) *event {
 		Items:      items,
 		ID:         eID,
 		OwnerID:    ownerID,
-		Visibility: visibility(newEvent.Visibility),
+		Visibility: int(newEvent.Visibility),
 	}
 }
 
