@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"strconv"
@@ -63,26 +64,26 @@ func (rc *EventRepository) Update(ctx context.Context, eventID string, event *mo
 	}
 
 	if result.RowsAffected() == 0 {
-		return nil, fmt.Errorf("no event updated")
+		return nil, fmt.Errorf("no event updated: [%s]", eventID)
 	}
 
 	return rc.sqlToInternal(sqlEvent), nil
 }
 
-func (rc *EventRepository) Delete(ctx context.Context, id string) error {
+func (rc *EventRepository) Delete(ctx context.Context, eventID string) error {
 	q := rc.db.Model(&event{})
 
 	ownerID := util.GetOwnerIDFromCtx(ctx)
 
-	q = q.Where("id = ? AND owner_id = ?", id, ownerID)
+	q = q.Where("id = ? AND owner_id = ?", eventID, ownerID)
 
 	result, err := q.Delete()
 	if err != nil {
-		return fmt.Errorf("failed to delete event: %w", err)
+		return fmt.Errorf("failed to delete event [%s]: %w", eventID, err)
 	}
 
 	if result.RowsAffected() == 0 {
-		return fmt.Errorf("no event deleted")
+		return fmt.Errorf("no event deleted: [%s]", eventID)
 	}
 
 	return nil
@@ -90,7 +91,7 @@ func (rc *EventRepository) Delete(ctx context.Context, id string) error {
 
 func (rc *EventRepository) List(ctx context.Context, opts *model.EventFindOpts) (*model.EventList, error) {
 	if opts == nil {
-		return nil, fmt.Errorf("opts is nil")
+		return nil, errors.New("opts is nil")
 	}
 
 	events := make([]event, 0)
