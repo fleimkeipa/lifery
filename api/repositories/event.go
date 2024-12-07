@@ -31,6 +31,10 @@ func NewEventRepository(db *pg.DB) *EventRepository {
 }
 
 func (rc *EventRepository) Create(ctx context.Context, event *model.Event) (*model.Event, error) {
+	if event.Visibility == 0 {
+		event.Visibility = model.EventVisibilityPublic
+	}
+
 	sqlEvent := rc.internalToSQL(event)
 
 	q := rc.db.Model(sqlEvent)
