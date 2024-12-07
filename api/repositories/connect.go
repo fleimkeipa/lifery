@@ -173,7 +173,7 @@ func (rc *ConnectRepository) internalToSQL(newConnect *model.Connect) *connect {
 
 	return &connect{
 		ID:       cID,
-		Status:   requestStatus(newConnect.Status),
+		Status:   int(newConnect.Status),
 		UserID:   userID,
 		FriendID: friendID,
 	}

@@ -72,7 +72,7 @@ func (rc *ConnectsUC) Update(ctx context.Context, id string, req model.ConnectUp
 
 	connect.Status = req.Status
 
-	if req.Status == "" {
+	if req.Status == 0 {
 		return nil, pkg.NewError(nil, "status is required", http.StatusBadRequest)
 	}
 

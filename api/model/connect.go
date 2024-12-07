@@ -17,12 +17,12 @@ type ConnectCreateRequest struct {
 	FriendID string `json:"friend_id" binding:"required"`
 }
 
-type RequestStatus string
+type RequestStatus int
 
 const (
-	RequestStatusApproved RequestStatus = "approved"
-	RequestStatusRejected RequestStatus = "rejected"
-	RequestStatusPending  RequestStatus = "pending"
+	RequestStatusPending RequestStatus = 100 + iota
+	RequestStatusApproved
+	RequestStatusRejected
 )
 
 type ConnectUpdateRequest struct {

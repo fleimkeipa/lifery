@@ -64,7 +64,7 @@ func (rc *ConnectHandlers) Create(c echo.Context) error {
 //	@Accept			json
 //	@Produce		json
 //	@Security		ApiKeyAuth
-//	@Param			id		path		string						true	"Connection ID to update"
+//	@Param			id		path		string						true	"Connection ID to update,approved:101, rejected:102"
 //	@Param			Body	body		model.ConnectUpdateRequest	true	"Connect update input"
 //	@Success		200		{object}	SuccessResponse				"Connect updated successfully"
 //	@Failure		400		{object}	FailureResponse				"Invalid request data"
