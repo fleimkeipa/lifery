@@ -230,7 +230,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Connection ID to update",
+                        "description": "Connection ID to update,approved:101, rejected:102",
                         "name": "id",
                         "in": "path",
                         "required": true

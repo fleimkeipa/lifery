@@ -296,7 +296,7 @@ paths:
       description: This endpoint updates a connection by binding the incoming JSON
         request to the ConnectUpdateRequest model.
       parameters:
-      - description: Connection ID to update
+      - description: Connection ID to update,approved:101, rejected:102
         in: path
         name: id
         required: true
