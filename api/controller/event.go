@@ -120,7 +120,7 @@ func (rc *EventController) Delete(c echo.Context) error {
 //	@Tags			events
 //	@Accept			json
 //	@Produce		json
-//	@Param			user_id		query		string			false	"Filter events by user id"
+//	@Param			user_id		query		string			false	"Filter events by user id, returns owners events if not provided"
 //	@Param			visibility	query		string			false	"Filter events by visibility status (public:1, private:2, just me:3)"
 //	@Param			limit		query		string			false	"Limit the number of events returned"
 //	@Param			skip		query		string			false	"Number of events to skip for pagination"

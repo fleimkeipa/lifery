@@ -80,6 +80,23 @@ func (rc *EventUC) Delete(ctx context.Context, id string) error {
 func (rc *EventUC) List(ctx context.Context, opts *model.EventFindOpts) (*model.EventList, error) {
 	ownerID := util.GetOwnerIDFromCtx(ctx)
 
+	if ownerID == "" {
+		if opts.UserID.Value == "" {
+			return nil, pkg.NewError(nil, "user id is empty", http.StatusBadRequest)
+		}
+
+		opts.UserID = model.Filter{
+			Value:    opts.UserID.Value,
+			IsSended: true,
+		}
+		opts.Visibility = model.Filter{
+			Value:    fmt.Sprintf("%d", model.EventVisibilityPublic),
+			IsSended: true,
+		}
+
+		return rc.list(ctx, opts)
+	}
+
 	if !opts.UserID.IsSended {
 		opts.UserID = model.Filter{
 			Value:    ownerID,

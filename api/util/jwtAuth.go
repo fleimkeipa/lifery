@@ -8,7 +8,7 @@ import (
 )
 
 // check for valid admin token
-func JWTAuth(next echo.HandlerFunc) echo.HandlerFunc {
+func JWTAuthAdmin(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		if err := ValidateJWT(c); err != nil {
 			return c.JSON(http.StatusUnauthorized, echo.Map{
@@ -30,8 +30,8 @@ func JWTAuth(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-// check for valid viewer token
-func JWTAuthViewer(next echo.HandlerFunc) echo.HandlerFunc {
+// check for valid user token
+func JWTAuthUser(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		if err := ValidateJWT(c); err != nil {
 			return c.JSON(http.StatusUnauthorized, echo.Map{
@@ -42,7 +42,34 @@ func JWTAuthViewer(next echo.HandlerFunc) echo.HandlerFunc {
 
 		if err := ValidateViewerRoleJWT(c); err != nil {
 			return c.JSON(http.StatusUnauthorized, echo.Map{
-				"message": "Only registered Viewers are allowed to perform this action",
+				"message": "Only registered Users are allowed to perform this action",
+				"error":   err.Error(),
+			})
+		}
+
+		setOwnerOnCtx(c)
+
+		return next(c)
+	}
+}
+
+// check for valid viewer token
+func JWTAuthViewer(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		if IsUserPublic(c) {
+			return next(c)
+		}
+
+		if err := ValidateJWT(c); err != nil {
+			return c.JSON(http.StatusUnauthorized, echo.Map{
+				"message": "Authentication required",
+				"error":   err.Error(),
+			})
+		}
+
+		if err := ValidateViewerRoleJWT(c); err != nil {
+			return c.JSON(http.StatusUnauthorized, echo.Map{
+				"message": "Only registered Users are allowed to perform this action",
 				"error":   err.Error(),
 			})
 		}

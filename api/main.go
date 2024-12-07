@@ -69,30 +69,40 @@ func serveApplication() {
 
 	// Add JWT authentication and authorization middleware
 	adminRoutes := e.Group("")
-	adminRoutes.Use(util.JWTAuth)
+	adminRoutes.Use(util.JWTAuthAdmin)
 
 	// Define viewer routes
 	viewerRoutes := e.Group("")
 	viewerRoutes.Use(util.JWTAuthViewer)
 
+	// Define user routes
+	userRoutes := e.Group("")
+	userRoutes.Use(util.JWTAuthUser)
+
 	// Define events routes
-	eventsRoutes := viewerRoutes.Group("/events")
+	eventsRoutes := userRoutes.Group("/events")
 	eventsRoutes.POST("", eventController.Create)
 	eventsRoutes.PATCH("/:id", eventController.Update)
 	eventsRoutes.DELETE("/:id", eventController.Delete)
-	eventsRoutes.GET("", eventController.List)
 	eventsRoutes.GET("/:id", eventController.GetByID)
 
+	// Define public events routes
+	publicEventsRoutes := viewerRoutes.Group("/events")
+	publicEventsRoutes.GET("", eventController.List)
+
 	// Define eras routes
-	erasRoutes := viewerRoutes.Group("/eras")
+	erasRoutes := userRoutes.Group("/eras")
 	erasRoutes.POST("", eraController.Create)
 	erasRoutes.PATCH("/:id", eraController.Update)
 	erasRoutes.DELETE("/:id", eraController.Delete)
-	erasRoutes.GET("", eraController.List)
 	erasRoutes.GET("/:id", eraController.GetByID)
 
+	// Define public eras routes
+	publicErasRoutes := viewerRoutes.Group("/eras")
+	publicErasRoutes.GET("", eraController.List)
+
 	// Define connects routes
-	connectsRoutes := viewerRoutes.Group("/connects")
+	connectsRoutes := userRoutes.Group("/connects")
 	connectsRoutes.POST("", connectController.Create)
 	connectsRoutes.PATCH("/:id", connectController.Update)
 	connectsRoutes.GET("", connectController.List)

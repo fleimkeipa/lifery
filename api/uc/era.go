@@ -73,6 +73,19 @@ func (rc *EraUC) Delete(ctx context.Context, id string) error {
 func (rc *EraUC) List(ctx context.Context, opts *model.EraFindOpts) (*model.EraList, error) {
 	ownerID := util.GetOwnerIDFromCtx(ctx)
 
+	if ownerID == "" {
+		if opts.UserID.Value == "" {
+			return nil, pkg.NewError(nil, "user id is empty", http.StatusBadRequest)
+		}
+
+		opts.UserID = model.Filter{
+			Value:    opts.UserID.Value,
+			IsSended: true,
+		}
+
+		return rc.list(ctx, opts)
+	}
+
 	if !opts.UserID.IsSended {
 		opts.UserID = model.Filter{
 			Value:    ownerID,

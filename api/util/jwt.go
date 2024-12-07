@@ -217,3 +217,26 @@ func getTokenFromRequest(c echo.Context) string {
 	}
 	return ""
 }
+
+func IsUserPublic(c echo.Context) bool {
+	token, err := getToken(c)
+	if err != nil {
+		return true
+	}
+
+	if !token.Valid {
+		return true
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return true
+	}
+
+	userRole := uint(claims["role"].(float64))
+	if userRole == model.ViewerRole || userRole == model.AdminRole {
+		return false
+	}
+
+	return true
+}
