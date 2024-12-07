@@ -25,11 +25,11 @@ func NewEventController(eventUC *uc.EventUC) *EventController {
 //	@Tags			events
 //	@Accept			json
 //	@Produce		json
-//	@Param			Authorization	header		string						true	"Insert your access token"	default(Bearer <Add access token here>)
-//	@Param			Body			body		model.EventCreateRequest	true	"Event creation input"
-//	@Success		201				{object}	SuccessResponse				"Event created successfully"
-//	@Failure		400				{object}	FailureResponse				"Invalid request data"
-//	@Failure		500				{object}	FailureResponse				"Event creation failed"
+//	@Security		ApiKeyAuth
+//	@Param			Body	body		model.EventCreateRequest	true	"Event creation input"
+//	@Success		201		{object}	SuccessResponse				"Event created successfully"
+//	@Failure		400		{object}	FailureResponse				"Invalid request data"
+//	@Failure		500		{object}	FailureResponse				"Event creation failed"
 //	@Router			/events [post]
 func (rc *EventController) Create(c echo.Context) error {
 	var request model.EventCreateRequest
@@ -61,11 +61,11 @@ func (rc *EventController) Create(c echo.Context) error {
 //	@Tags			events
 //	@Accept			json
 //	@Produce		json
-//	@Param			Authorization	header		string						true	"Insert your access token"	default(Bearer <Add access token here>)
-//	@Param			Body			body		model.EventUpdateRequest	true	"Event update input"
-//	@Success		200				{object}	SuccessResponse				"Event updated successfully"
-//	@Failure		400				{object}	FailureResponse				"Invalid request data"
-//	@Failure		500				{object}	FailureResponse				"Event update failed"
+//	@Security		ApiKeyAuth
+//	@Param			Body	body		model.EventUpdateRequest	true	"Event update input"
+//	@Success		200		{object}	SuccessResponse				"Event updated successfully"
+//	@Failure		400		{object}	FailureResponse				"Invalid request data"
+//	@Failure		500		{object}	FailureResponse				"Event update failed"
 //	@Router			/events/{id} [patch]
 func (rc *EventController) Update(c echo.Context) error {
 	eventID := c.Param("id")
@@ -98,11 +98,11 @@ func (rc *EventController) Update(c echo.Context) error {
 //	@Tags			events
 //	@Accept			json
 //	@Produce		json
-//	@Param			Authorization	header		string			true	"Insert your access token"	default(Bearer <Add access token here>)
-//	@Param			id				path		string			true	"Event name or UID"
-//	@Success		200				{object}	SuccessResponse	"Event deleted successfully"
-//	@Failure		400				{object}	FailureResponse	"Invalid request data"
-//	@Failure		500				{object}	FailureResponse	"Event delete failed"
+//	@Security		ApiKeyAuth
+//	@Param			id	path		string			true	"Event name or UID"
+//	@Success		200	{object}	SuccessResponse	"Event deleted successfully"
+//	@Failure		400	{object}	FailureResponse	"Invalid request data"
+//	@Failure		500	{object}	FailureResponse	"Event delete failed"
 //	@Router			/events/{id} [delete]
 func (rc *EventController) Delete(c echo.Context) error {
 	eventID := c.Param("id")
@@ -153,11 +153,11 @@ func (rc *EventController) List(c echo.Context) error {
 //	@Tags			events
 //	@Accept			json
 //	@Produce		json
-//	@Param			Authorization	header		string			true	"Insert your access token"	default(Bearer <Add access token here>)
-//	@Param			id				path		string			true	"Event name or UID"
-//	@Success		200				{object}	SuccessResponse	"Event retrieved successfully"
-//	@Failure		400				{object}	FailureResponse	"Invalid request data"
-//	@Failure		500				{object}	FailureResponse	"Event retrieval failed"
+//	@Security		ApiKeyAuth
+//	@Param			id	path		string			true	"Event name or UID"
+//	@Success		200	{object}	SuccessResponse	"Event retrieved successfully"
+//	@Failure		400	{object}	FailureResponse	"Invalid request data"
+//	@Failure		500	{object}	FailureResponse	"Event retrieval failed"
 //	@Router			/events/{id} [get]
 func (rc *EventController) GetByID(c echo.Context) error {
 	eventID := c.Param("id")
