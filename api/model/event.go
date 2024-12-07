@@ -26,7 +26,7 @@ const (
 type EventType int
 
 const (
-	EventTypeString EventType = iota + 1
+	EventTypeString EventType = iota + 10
 	EventTypePhoto
 	EventTypeVideo
 	EventTypeVoiceRecord

@@ -1183,10 +1183,10 @@ const docTemplate = `{
         "model.EventType": {
             "type": "integer",
             "enum": [
-                1,
-                2,
-                3,
-                4
+                10,
+                11,
+                12,
+                13
             ],
             "x-enum-varnames": [
                 "EventTypeString",
@@ -1268,16 +1268,16 @@ const docTemplate = `{
             }
         },
         "model.RequestStatus": {
-            "type": "string",
+            "type": "integer",
             "enum": [
-                "approved",
-                "rejected",
-                "pending"
+                100,
+                101,
+                102
             ],
             "x-enum-varnames": [
+                "RequestStatusPending",
                 "RequestStatusApproved",
-                "RequestStatusRejected",
-                "RequestStatusPending"
+                "RequestStatusRejected"
             ]
         },
         "model.UserCreateRequest": {

@@ -97,10 +97,10 @@ definitions:
     type: object
   model.EventType:
     enum:
-    - 1
-    - 2
-    - 3
-    - 4
+    - 10
+    - 11
+    - 12
+    - 13
     type: integer
     x-enum-varnames:
     - EventTypeString
@@ -157,14 +157,14 @@ definitions:
     type: object
   model.RequestStatus:
     enum:
-    - approved
-    - rejected
-    - pending
-    type: string
+    - 100
+    - 101
+    - 102
+    type: integer
     x-enum-varnames:
+    - RequestStatusPending
     - RequestStatusApproved
     - RequestStatusRejected
-    - RequestStatusPending
   model.UserCreateRequest:
     properties:
       email:
