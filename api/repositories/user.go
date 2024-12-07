@@ -74,7 +74,7 @@ func (rc *UserRepository) Delete(ctx context.Context, id string) error {
 		return fmt.Errorf("failed to delete user: %w", err)
 	}
 	if result.RowsAffected() == 0 {
-		return fmt.Errorf("no user deleted")
+		return fmt.Errorf("no user deleted: %s", id)
 	}
 
 	return nil
