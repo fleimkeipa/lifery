@@ -125,13 +125,13 @@ func (rc *EventController) Delete(c echo.Context) error {
 //	@Tags			events
 //	@Accept			json
 //	@Produce		json
-//	@Param			user_id	query		string			false	"Filter events by user id"
-//	@Param			private	query		string			false	"Filter events by private status"
-//	@Param			limit	query		string			false	"Limit the number of connects returned"
-//	@Param			skip	query		string			false	"Number of connects to skip for pagination"
-//	@Success		200		{object}	SuccessResponse	"Events retrieved successfully"
-//	@Failure		400		{object}	FailureResponse	"Invalid request data"
-//	@Failure		500		{object}	FailureResponse	"Event retrieval failed"
+//	@Param			user_id		query		string			false	"Filter events by user id"
+//	@Param			visibility	query		string			false	"Filter events by visibility status (public:1, private:2, just me:3)"
+//	@Param			limit		query		string			false	"Limit the number of events returned"
+//	@Param			skip		query		string			false	"Number of events to skip for pagination"
+//	@Success		200			{object}	SuccessResponse	"Events retrieved successfully"
+//	@Failure		400			{object}	FailureResponse	"Invalid request data"
+//	@Failure		500			{object}	FailureResponse	"Event retrieval failed"
 //	@Router			/events [get]
 func (rc *EventController) List(c echo.Context) error {
 	opts := rc.getEventsFindOpts(c)
@@ -183,6 +183,6 @@ func (rc *EventController) getEventsFindOpts(c echo.Context) model.EventFindOpts
 	return model.EventFindOpts{
 		PaginationOpts: getPagination(c),
 		UserID:         getFilter(c, "user_id"),
-		Private:        getFilter(c, "private"),
+		Visibility:     getFilter(c, "visibility"),
 	}
 }

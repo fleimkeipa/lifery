@@ -509,8 +509,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Filter events by private status",
-                        "name": "private",
+                        "description": "Filter events by visibility status",
+                        "name": "visibility",
                         "in": "query"
                     },
                     {

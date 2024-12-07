@@ -2,6 +2,7 @@ package tests
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/go-pg/pg"
 	"github.com/redis/go-redis/v9"
@@ -18,4 +19,23 @@ func addTestCacheData(ctx context.Context, key string, value string) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func addTempData(data interface{}) error {
+	_, err := testDB.Model(data).Insert()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func clearTable(tableName string) error {
+	query := fmt.Sprintf("TRUNCATE %s; DELETE FROM %s", tableName, tableName)
+	_, err := testDB.Exec(query)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

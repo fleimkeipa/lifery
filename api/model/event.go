@@ -65,7 +65,7 @@ type EventList struct {
 }
 
 type EventFindOpts struct {
-	UserID  Filter
-	Private Filter
+	UserID     Filter
+	Visibility Filter
 	PaginationOpts
 }

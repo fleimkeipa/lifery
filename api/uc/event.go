@@ -2,6 +2,7 @@ package uc
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/fleimkeipa/lifery/model"
 	"github.com/fleimkeipa/lifery/repositories/interfaces"
@@ -80,12 +81,17 @@ func (rc *EventUC) List(ctx context.Context, opts *model.EventFindOpts) (*model.
 	}
 
 	if !isConnected {
-		opts.Private = model.Filter{
-			Value:    "false",
+		opts.Visibility = model.Filter{
+			Value:    fmt.Sprintf("%d", model.EventVisibilityPublic),
 			IsSended: true,
 		}
 
 		return rc.repo.List(ctx, opts)
+	}
+
+	opts.Visibility = model.Filter{
+		Value:    fmt.Sprintf("%d,%d", model.EventVisibilityPublic, model.EventVisibilityPrivate),
+		IsSended: true,
 	}
 
 	return rc.repo.List(ctx, opts)

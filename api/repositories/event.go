@@ -152,8 +152,8 @@ func (rc *EventRepository) fillFilter(opts *model.EventFindOpts) string {
 		filter = addFilterClause(filter, "owner_id", opts.UserID.Value)
 	}
 
-	if opts.Private.IsSended {
-		filter = addFilterClause(filter, "private", opts.Private.Value)
+	if opts.Visibility.IsSended {
+		filter = addFilterClause(filter, "visibility", opts.Visibility.Value)
 	}
 
 	return filter
