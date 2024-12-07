@@ -3,8 +3,10 @@ package uc
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/fleimkeipa/lifery/model"
+	"github.com/fleimkeipa/lifery/pkg"
 	"github.com/fleimkeipa/lifery/repositories/interfaces"
 	"github.com/fleimkeipa/lifery/util"
 )
@@ -36,7 +38,12 @@ func (rc *EventUC) Create(ctx context.Context, req *model.EventCreateRequest) (*
 		Visibility: req.Visibility,
 	}
 
-	return rc.repo.Create(ctx, &event)
+	newEvent, err := rc.repo.Create(ctx, &event)
+	if err != nil {
+		return nil, pkg.NewError(err, "failed to create event", http.StatusInternalServerError)
+	}
+
+	return newEvent, nil
 }
 
 func (rc *EventUC) Update(ctx context.Context, eventID string, req *model.EventUpdateRequest) (*model.Event, error) {
@@ -56,11 +63,20 @@ func (rc *EventUC) Update(ctx context.Context, eventID string, req *model.EventU
 		Visibility: req.Visibility,
 	}
 
-	return rc.repo.Update(ctx, eventID, &event)
+	updatedEvent, err := rc.repo.Update(ctx, eventID, &event)
+	if err != nil {
+		return nil, pkg.NewError(err, "failed to update event", http.StatusInternalServerError)
+	}
+
+	return updatedEvent, nil
 }
 
 func (rc *EventUC) Delete(ctx context.Context, id string) error {
-	return rc.repo.Delete(ctx, id)
+	if err := rc.repo.Delete(ctx, id); err != nil {
+		return pkg.NewError(err, "failed to delete event", http.StatusInternalServerError)
+	}
+
+	return nil
 }
 
 func (rc *EventUC) List(ctx context.Context, opts *model.EventFindOpts) (*model.EventList, error) {
@@ -72,7 +88,7 @@ func (rc *EventUC) List(ctx context.Context, opts *model.EventFindOpts) (*model.
 			IsSended: true,
 		}
 
-		return rc.repo.List(ctx, opts)
+		return rc.list(ctx, opts)
 	}
 
 	isConnected, err := rc.userUC.IsConnected(ctx, ownerID, opts.UserID.Value)
@@ -86,7 +102,7 @@ func (rc *EventUC) List(ctx context.Context, opts *model.EventFindOpts) (*model.
 			IsSended: true,
 		}
 
-		return rc.repo.List(ctx, opts)
+		return rc.list(ctx, opts)
 	}
 
 	opts.Visibility = model.Filter{
@@ -94,9 +110,23 @@ func (rc *EventUC) List(ctx context.Context, opts *model.EventFindOpts) (*model.
 		IsSended: true,
 	}
 
-	return rc.repo.List(ctx, opts)
+	return rc.list(ctx, opts)
 }
 
 func (rc *EventUC) GetByID(ctx context.Context, id string) (*model.Event, error) {
-	return rc.repo.GetByID(ctx, id)
+	event, err := rc.repo.GetByID(ctx, id)
+	if err != nil {
+		return nil, pkg.NewError(err, "failed to get event", http.StatusInternalServerError)
+	}
+
+	return event, nil
+}
+
+func (rc *EventUC) list(ctx context.Context, opts *model.EventFindOpts) (*model.EventList, error) {
+	list, err := rc.repo.List(ctx, opts)
+	if err != nil {
+		return nil, pkg.NewError(err, "failed to list events", http.StatusInternalServerError)
+	}
+
+	return list, nil
 }

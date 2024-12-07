@@ -1,10 +1,10 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/fleimkeipa/lifery/model"
+	"github.com/fleimkeipa/lifery/pkg"
 	"github.com/fleimkeipa/lifery/uc"
 
 	"github.com/labstack/echo/v4"
@@ -34,18 +34,17 @@ func (rc *EventController) Create(c echo.Context) error {
 	var request model.EventCreateRequest
 
 	if err := c.Bind(&request); err != nil {
-		return c.JSON(http.StatusBadRequest, FailureResponse{
-			Error:   fmt.Sprintf("Failed to bind request: %v", err),
-			Message: "Invalid request data. Please check your input and try again.",
-		})
+		err := pkg.NewError(
+			err,
+			"Invalid request format. Please check the input data and try again.",
+			http.StatusBadRequest,
+		)
+		return HandleEchoError(c, err)
 	}
 
 	event, err := rc.EventDBUC.Create(c.Request().Context(), &request)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, FailureResponse{
-			Error:   fmt.Sprintf("Failed to create event: %v", err),
-			Message: "Event creation failed. Please verify the details and try again.",
-		})
+		return HandleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusCreated, SuccessResponse{
@@ -71,18 +70,17 @@ func (rc *EventController) Update(c echo.Context) error {
 	var request model.EventUpdateRequest
 
 	if err := c.Bind(&request); err != nil {
-		return c.JSON(http.StatusBadRequest, FailureResponse{
-			Error:   fmt.Sprintf("Failed to bind request: %v", err),
-			Message: "Invalid request data. Please check your input and try again.",
-		})
+		err := pkg.NewError(
+			err,
+			"Invalid request format. Please check the input data and try again.",
+			http.StatusBadRequest,
+		)
+		return HandleEchoError(c, err)
 	}
 
 	event, err := rc.EventDBUC.Update(c.Request().Context(), eventID, &request)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, FailureResponse{
-			Error:   fmt.Sprintf("Failed to update event: %v", err),
-			Message: "Event creation failed. Please verify the details and try again.",
-		})
+		return HandleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
@@ -107,10 +105,7 @@ func (rc *EventController) Delete(c echo.Context) error {
 	eventID := c.Param("id")
 
 	if err := rc.EventDBUC.Delete(c.Request().Context(), eventID); err != nil {
-		return c.JSON(http.StatusBadRequest, FailureResponse{
-			Error:   fmt.Sprintf("Failed to retrieve event: %v", err),
-			Message: "Error fetching the event details. Please verify the event name or UID and try again.",
-		})
+		return HandleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
@@ -138,10 +133,7 @@ func (rc *EventController) List(c echo.Context) error {
 
 	list, err := rc.EventDBUC.List(c.Request().Context(), &opts)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, FailureResponse{
-			Error:   fmt.Sprintf("Failed to list events: %v", err),
-			Message: "There was an issue retrieving events. Please try again.",
-		})
+		return HandleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
@@ -167,10 +159,7 @@ func (rc *EventController) GetByID(c echo.Context) error {
 
 	event, err := rc.EventDBUC.GetByID(c.Request().Context(), eventID)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, FailureResponse{
-			Error:   fmt.Sprintf("Failed to retrieve event: %v", err),
-			Message: "Error fetching the event details. Please verify the event name or UID and try again.",
-		})
+		return HandleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
