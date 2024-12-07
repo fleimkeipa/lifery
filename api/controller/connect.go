@@ -1,10 +1,10 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/fleimkeipa/lifery/model"
+	"github.com/fleimkeipa/lifery/pkg"
 	"github.com/fleimkeipa/lifery/uc"
 
 	"github.com/labstack/echo/v4"
@@ -36,18 +36,17 @@ func (rc *ConnectHandlers) Create(c echo.Context) error {
 	var input model.ConnectCreateRequest
 
 	if err := c.Bind(&input); err != nil {
-		return c.JSON(http.StatusBadRequest, FailureResponse{
-			Error:   fmt.Sprintf("Failed to bind request: %v", err),
-			Message: "Invalid request format. Please check the input data and try again.",
-		})
+		err := pkg.NewError(
+			err,
+			"Invalid request format. Please check the input data and try again.",
+			http.StatusBadRequest,
+		)
+		return HandleEchoError(c, err)
 	}
 
 	connect, err := rc.connectUC.Create(c.Request().Context(), input)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, FailureResponse{
-			Error:   fmt.Sprintf("Failed to create user: %v", err),
-			Message: "Connect creation failed. Please check the provided details and try again.",
-		})
+		return HandleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusCreated, SuccessResponse{
@@ -74,18 +73,17 @@ func (rc *ConnectHandlers) Update(c echo.Context) error {
 	var input model.ConnectUpdateRequest
 
 	if err := c.Bind(&input); err != nil {
-		return c.JSON(http.StatusBadRequest, FailureResponse{
-			Error:   fmt.Sprintf("Failed to bind request: %v", err),
-			Message: "Invalid request format. Please check the input data and try again.",
-		})
+		err := pkg.NewError(
+			err,
+			"Invalid request format. Please check the input data and try again.",
+			http.StatusBadRequest,
+		)
+		return HandleEchoError(c, err)
 	}
 
 	connect, err := rc.connectUC.Update(c.Request().Context(), id, input)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, FailureResponse{
-			Error:   fmt.Sprintf("Failed to update user: %v", err),
-			Message: "Connect update failed. Please check the provided details and try again.",
-		})
+		return HandleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
@@ -110,17 +108,16 @@ func (rc *ConnectHandlers) Disconnect(c echo.Context) error {
 	var input model.DisconnectRequest
 
 	if err := c.Bind(&input); err != nil {
-		return c.JSON(http.StatusBadRequest, FailureResponse{
-			Error:   fmt.Sprintf("Failed to bind request: %v", err),
-			Message: "Invalid request format. Please check the input data and try again.",
-		})
+		err := pkg.NewError(
+			err,
+			"Invalid request format. Please check the input data and try again.",
+			http.StatusBadRequest,
+		)
+		return HandleEchoError(c, err)
 	}
 
 	if err := rc.connectUC.Disconnect(c.Request().Context(), input); err != nil {
-		return c.JSON(http.StatusInternalServerError, FailureResponse{
-			Error:   fmt.Sprintf("Failed to disconnect: %v", err),
-			Message: "Failed to disconnect. Please check the provided details and try again.",
-		})
+		return HandleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
@@ -148,10 +145,7 @@ func (rc *ConnectHandlers) List(c echo.Context) error {
 
 	list, err := rc.connectUC.List(c.Request().Context(), &opts)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, FailureResponse{
-			Error:   fmt.Sprintf("Failed to retrieve connect list: %v", err),
-			Message: "Unable to retrieve the list of connects. Please check the query parameters and try again.",
-		})
+		return HandleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{

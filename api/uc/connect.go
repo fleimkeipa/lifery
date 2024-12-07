@@ -3,9 +3,11 @@ package uc
 import (
 	"context"
 	"errors"
+	"net/http"
 	"strconv"
 
 	"github.com/fleimkeipa/lifery/model"
+	"github.com/fleimkeipa/lifery/pkg"
 	"github.com/fleimkeipa/lifery/repositories/interfaces"
 	"github.com/fleimkeipa/lifery/util"
 )
@@ -65,31 +67,31 @@ func (rc *ConnectsUC) Create(ctx context.Context, req model.ConnectCreateRequest
 func (rc *ConnectsUC) Update(ctx context.Context, id string, req model.ConnectUpdateRequest) (*model.Connect, error) {
 	connect, err := rc.connectRepo.GetByID(ctx, id)
 	if err != nil {
-		return nil, err
+		return nil, pkg.NewError(nil, "connect not found", http.StatusNotFound)
 	}
 
 	connect.Status = req.Status
 
 	if req.Status == "" {
-		return nil, errors.New("status is required")
+		return nil, pkg.NewError(nil, "status is required", http.StatusBadRequest)
 	}
 
 	if req.Status == model.RequestStatusPending {
-		return nil, errors.New("status is pending already")
+		return nil, pkg.NewError(nil, "status is pending already", http.StatusBadRequest)
 	}
 
 	if req.Status != model.RequestStatusApproved && req.Status != model.RequestStatusRejected {
-		return nil, errors.New("invalid status")
+		return nil, pkg.NewError(nil, "invalid status", http.StatusBadRequest)
 	}
 
 	// users can only update their own connects
 	if !rc.isOwner(ctx, connect.FriendID) {
-		return nil, errors.New("you can update only your connects")
+		return nil, pkg.NewError(nil, "you can update only your connects", http.StatusBadRequest)
 	}
 
 	if req.Status == model.RequestStatusRejected {
 		if err := rc.Delete(ctx, id); err != nil {
-			return nil, err
+			return nil, pkg.NewError(nil, "failed to delete connect", http.StatusInternalServerError)
 		}
 
 		return connect, nil
@@ -101,7 +103,7 @@ func (rc *ConnectsUC) Update(ctx context.Context, id string, req model.ConnectUp
 	}
 
 	if err := rc.Delete(ctx, id); err != nil {
-		return nil, err
+		return nil, pkg.NewError(nil, "failed to delete connect", http.StatusInternalServerError)
 	}
 
 	return connect, nil
