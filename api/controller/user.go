@@ -27,11 +27,11 @@ func NewUserHandlers(uc *uc.UserUC) *UserHandlers {
 //	@Tags			users
 //	@Accept			json
 //	@Produce		json
-//	@Param			Authorization	header		string					true	"Insert your access token"	default(Bearer <Add access token here>)
-//	@Param			body			body		model.UserCreateRequest	true	"User creation input"
-//	@Success		201				{object}	SuccessResponse			"user username"
-//	@Failure		400				{object}	FailureResponse			"Error message including details on failure"
-//	@Failure		500				{object}	FailureResponse			"Interval error"
+//	@Security		ApiKeyAuth
+//	@Param			body	body		model.UserCreateRequest	true	"User creation input"
+//	@Success		201		{object}	SuccessResponse			"user username"
+//	@Failure		400		{object}	FailureResponse			"Error message including details on failure"
+//	@Failure		500		{object}	FailureResponse			"Interval error"
 //	@Router			/users [post]
 func (rc *UserHandlers) Create(c echo.Context) error {
 	var input model.UserCreateRequest
@@ -63,11 +63,11 @@ func (rc *UserHandlers) Create(c echo.Context) error {
 //	@Tags			users
 //	@Accept			json
 //	@Produce		json
-//	@Param			Authorization	header		string					true	"Insert your access token"	default(Bearer <Add access token here>)
-//	@Param			body			body		model.UserCreateRequest	true	"User update input"
-//	@Success		200				{object}	SuccessResponse			"user username"
-//	@Failure		400				{object}	FailureResponse			"Error message including details on failure"
-//	@Failure		500				{object}	FailureResponse			"Interval error"
+//	@Security		ApiKeyAuth
+//	@Param			body	body		model.UserCreateRequest	true	"User update input"
+//	@Success		200		{object}	SuccessResponse			"user username"
+//	@Failure		400		{object}	FailureResponse			"Error message including details on failure"
+//	@Failure		500		{object}	FailureResponse			"Interval error"
 //	@Router			/users/{id} [patch]
 func (rc *UserHandlers) UpdateUser(c echo.Context) error {
 	id := c.Param("id")
@@ -100,14 +100,14 @@ func (rc *UserHandlers) UpdateUser(c echo.Context) error {
 //	@Tags			users
 //	@Accept			json
 //	@Produce		json
-//	@Param			Authorization	header		string			true	"Insert your access token"	default(Bearer <Add access token here>)
-//	@Param			username		query		string			false	"Filter users by username"
-//	@Param			email			query		string			false	"Filter users by email"
-//	@Param			role_id			query		string			false	"Filter users by role ID"
-//	@Param			limit			query		string			false	"Limit the number of users returned"
-//	@Param			skip			query		string			false	"Number of users to skip for pagination"
-//	@Success		200				{object}	SuccessResponse	"Successful response containing the list of users"
-//	@Failure		500				{object}	FailureResponse	"Interval error"
+//	@Security		ApiKeyAuth
+//	@Param			username	query		string			false	"Filter users by username"
+//	@Param			email		query		string			false	"Filter users by email"
+//	@Param			role_id		query		string			false	"Filter users by role ID"
+//	@Param			limit		query		string			false	"Limit the number of users returned"
+//	@Param			skip		query		string			false	"Number of users to skip for pagination"
+//	@Success		200			{object}	SuccessResponse	"Successful response containing the list of users"
+//	@Failure		500			{object}	FailureResponse	"Interval error"
 //	@Router			/users [get]
 func (rc *UserHandlers) List(c echo.Context) error {
 	opts := rc.getUsersFindOpts(c, model.ZeroCreds)
@@ -130,10 +130,10 @@ func (rc *UserHandlers) List(c echo.Context) error {
 //	@Tags			users
 //	@Accept			json
 //	@Produce		json
-//	@Param			Authorization	header		string			true	"Insert your access token"	default(Bearer <Add access token here>)
-//	@Param			id				path		string			true	"User ID"
-//	@Success		200				{object}	SuccessResponse	"Successful response containing the user information"
-//	@Failure		500				{object}	FailureResponse	"Internal server error"
+//	@Security		ApiKeyAuth
+//	@Param			id	path		string			true	"User ID"
+//	@Success		200	{object}	SuccessResponse	"Successful response containing the user information"
+//	@Failure		500	{object}	FailureResponse	"Internal server error"
 //	@Router			/users/{id} [get]
 func (rc *UserHandlers) GetByID(c echo.Context) error {
 	id := c.Param("id") // Extract the user ID from the path parameters
@@ -159,9 +159,9 @@ func (rc *UserHandlers) GetByID(c echo.Context) error {
 //	@Tags			users
 //	@Accept			json
 //	@Produce		json
-//	@Param			Authorization	header		string			true	"Insert your access token"	default(Bearer <Add access token here>)
-//	@Success		200				{object}	SuccessResponse	"user username"
-//	@Failure		500				{object}	FailureResponse	"Interval error"
+//	@Security		ApiKeyAuth
+//	@Success		200	{object}	SuccessResponse	"user username"
+//	@Failure		500	{object}	FailureResponse	"Interval error"
 //	@Router			/users/{id} [delete]
 func (rc *UserHandlers) DeleteUser(c echo.Context) error {
 	id := c.Param("id")
