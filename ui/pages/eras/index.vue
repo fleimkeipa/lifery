@@ -38,8 +38,8 @@ const {
   data: items,
   error,
   isFetching,
-  execute: fetchPods,
-} = useApi<{ data: { items: Row[] } }>("/eras").json();
+  execute: fetchEras,
+} = useApi<{ data: { eras: Row[] } }>("/eras").json();
 
 const router = useRouter();
 
@@ -60,7 +60,7 @@ const actions = (row: Row) => [
 
 const handleDelete = async (uid: number) => {
   useApi(`/eras/${uid}`, {
-    afterFetch: () => fetchPods(),
+    afterFetch: () => fetchEras(),
   }).delete();
 };
 </script>
@@ -75,25 +75,18 @@ const handleDelete = async (uid: number) => {
       <UButton
         icon="i-heroicons-arrow-path"
         :loading="isFetching"
-        @click="fetchPods"
+        @click="fetchEras"
       ></UButton>
     </div>
     <UTable
       :columns="columns"
-      :rows="items.data.items"
+      :rows="items.data.eras"
       :loading="isFetching"
       :loading-state="{
         icon: 'i-heroicons-arrow-path-20-solid',
         label: 'Loading...',
       }"
     >
-      <template #expand="{ row }">
-        <div class="p-4">
-          <b>Containers:</b>
-          <pre>{{ row.spec.containers }}</pre>
-        </div>
-      </template>
-
       <template #actions-data="{ row }">
         <UDropdown :items="actions(row)">
           <UButton
