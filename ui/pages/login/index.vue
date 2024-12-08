@@ -7,7 +7,7 @@ definePageMeta({
 });
 
 const schema = object({
-  username: string().required("Required"),
+  email: string().email("Invalid email").required("Required"),
   password: string()
     .min(8, "Must be at least 8 characters")
     .required("Required"),
@@ -16,44 +16,30 @@ const schema = object({
 type Schema = InferType<typeof schema>;
 
 const state = reactive({
-  username: undefined,
+  email: undefined,
   password: undefined,
 });
 
-// async function onSubmit(event: FormSubmitEvent<Schema>) {
-//   useApi(`/auth/login`, {
-
-//   }).post(event.data);
-// }
-
-const router = useRouter();
-const loading = ref(false);
-const error = ref(null);
-
-
-
-const onSubmit = (event: FormSubmitEvent<Schema>) => {
-  useApi(`/auth/login`, {
-    afterFetch: () => {
-      loading.value = false;
-      router.push("/pods");
-    },
-    onFetchError: ({ error: fetchErr }) => {
-      loading.value = false;
-      error.value = fetchErr;
-    },
-  }).post(event.data);
-};
+async function onSubmit(event: FormSubmitEvent<Schema>) {
+  console.log(event.data);
+}
 </script>
 
 <template>
-  <div class="flex h-screen w-full flex-col items-center justify-center gap-y-16">
+  <div
+    class="flex h-screen w-full flex-col items-center justify-center gap-y-16"
+  >
     <h1 class="text-6xl font-bold">Kubernetes UI</h1>
     <UCard class="flex w-full max-w-sm items-center justify-center">
       <h1 class="mb-8 ml-auto text-4xl">Login</h1>
-      <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-        <UFormGroup label="Username" name="username">
-          <UInput v-model="state.username" />
+      <UForm
+        :schema="schema"
+        :state="state"
+        class="space-y-4"
+        @submit="onSubmit"
+      >
+        <UFormGroup label="Email" name="email">
+          <UInput v-model="state.email" />
         </UFormGroup>
 
         <UFormGroup label="Password" name="password">
