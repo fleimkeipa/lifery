@@ -4,13 +4,18 @@ definePageMeta({
 });
 
 type Row = {
+  id: number;
   name: string;
   color: string;
-  time_start: date;
-  time_end: date;
+  time_start: Date;
+  time_end: Date;
 };
 
 const columns = [
+  {
+    key: "id",
+    label: "ID",
+  },
   {
     key: "name",
     label: "Name",
@@ -43,17 +48,17 @@ const actions = (row: Row) => [
     {
       label: "Edit",
       icon: "i-heroicons-pencil-square-20-solid",
-      click: () => router.push(`/pods/${row.metadata.name}`),
+      click: () => router.push(`/pods/${row.id}`),
     },
     {
       label: "Delete",
       icon: "i-heroicons-trash-20-solid",
-      click: () => handleDelete(row.metadata.name),
+      click: () => handleDelete(row.id),
     },
   ],
 ];
 
-const handleDelete = async (uid: string) => {
+const handleDelete = async (uid: number) => {
   useApi(`/eras/${uid}`, {
     afterFetch: () => fetchPods(),
   }).delete();

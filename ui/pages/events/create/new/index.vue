@@ -13,7 +13,7 @@ const state = reactive({
     date: null,
     time_start: null,
     time_end: null,
-    items: [];
+    items: [],
   },
 });
 
