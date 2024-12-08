@@ -4,31 +4,28 @@ definePageMeta({
 });
 
 type Row = {
-  metadata: {
-    uid: string;
-    name: string;
-    namespace: string;
-  };
-  spec: {
-    containers: [];
-  };
+  name: string;
+  color: string;
+  time_start: date;
+  time_end: date;
 };
 
 const columns = [
   {
-    key: "metadata.uid",
-    label: "UID",
-  },
-  {
-    key: "metadata.name",
+    key: "name",
     label: "Name",
   },
   {
-    key: "metadata.namespace",
-    label: "Namespace",
+    key: "color",
+    label: "Color",
   },
   {
-    key: "actions",
+    key: "time_start",
+    label: "Time Start",
+  },
+  {
+    key: "time_end",
+    label: "Time End",
   },
 ];
 
@@ -37,7 +34,7 @@ const {
   error,
   isFetching,
   execute: fetchPods,
-} = useApi<{ data: { items: Row[] } }>("/pods").json();
+} = useApi<{ data: { items: Row[] } }>("/eras").json();
 
 const router = useRouter();
 
@@ -57,7 +54,7 @@ const actions = (row: Row) => [
 ];
 
 const handleDelete = async (uid: string) => {
-  useApi(`/pods/${uid}`, {
+  useApi(`/eras/${uid}`, {
     afterFetch: () => fetchPods(),
   }).delete();
 };
@@ -68,7 +65,7 @@ const handleDelete = async (uid: string) => {
   <div v-else>
     <div class="flex flex-row items-center justify-between">
       <UButton icon="i-heroicons-plus">
-        <NuxtLink to="/pods/create/new">Create New</NuxtLink>
+        <NuxtLink to="/eras/create/new">Create New</NuxtLink>
       </UButton>
       <UButton
         icon="i-heroicons-arrow-path"

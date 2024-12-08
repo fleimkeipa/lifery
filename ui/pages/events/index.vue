@@ -4,31 +4,43 @@ definePageMeta({
 });
 
 type Row = {
-  metadata: {
-    uid: string;
-    name: string;
-    namespace: string;
-  };
-  spec: {
-    containers: [];
-  };
+  name: string;
+  description: string;
+  visibility: number;
+  date: date;
+  time_start: date;
+  time_end: date;
+  items: [];
 };
 
 const columns = [
   {
-    key: "metadata.uid",
-    label: "UID",
-  },
-  {
-    key: "metadata.name",
+    key: "name",
     label: "Name",
   },
   {
-    key: "metadata.namespace",
-    label: "Namespace",
+    key: "description",
+    label: "Description",
   },
   {
-    key: "actions",
+    key: "visibility",
+    label: "Visibility",
+  },
+  {
+    key: "date",
+    label: "Date",
+  },
+  {
+    key: "time_start",
+    label: "TimeStart",
+  },
+  {
+    key: "time_end",
+    label: "TimeEnd",
+  },
+  {
+    key: "items",
+    label: "Items",
   },
 ];
 
@@ -37,7 +49,7 @@ const {
   error,
   isFetching,
   execute: fetchPods,
-} = useApi<{ data: { items: Row[] } }>("/deployments").json();
+} = useApi<{ data: { items: Row[] } }>("/events").json();
 
 const router = useRouter();
 
@@ -57,7 +69,7 @@ const actions = (row: Row) => [
 ];
 
 const handleDelete = async (uid: string) => {
-  useApi(`/pods/${uid}`, {
+  useApi(`/events/${uid}`, {
     afterFetch: () => fetchPods(),
   }).delete();
 };
@@ -68,37 +80,24 @@ const handleDelete = async (uid: string) => {
   <div v-else>
     <div class="flex flex-row items-center justify-between">
       <UButton icon="i-heroicons-plus">
-        <NuxtLink to="/deployments/create/new">Create New</NuxtLink>
+        <NuxtLink to="/events/create/new">Create New</NuxtLink>
       </UButton>
-      <UButton
-        icon="i-heroicons-arrow-path"
-        :loading="isFetching"
-        @click="fetchPods"
-      ></UButton>
+      <UButton icon="i-heroicons-arrow-path" :loading="isFetching" @click="fetchPods"></UButton>
     </div>
-    <UTable
-      :columns="columns"
-      :rows="items.data.items"
-      :loading="isFetching"
-      :loading-state="{
-        icon: 'i-heroicons-arrow-path-20-solid',
-        label: 'Loading...',
-      }"
-    >
+    <UTable :columns="columns" :rows="items.data.items" :loading="isFetching" :loading-state="{
+      icon: 'i-heroicons-arrow-path-20-solid',
+      label: 'Loading...',
+    }">
       <template #expand="{ row }">
         <div class="p-4">
-          <b>Containers:</b>
-          <pre>{{ row.spec.containers }}</pre>
+          <b>Items:</b>
+          <pre>{{ row.items }}</pre>
         </div>
       </template>
 
       <template #actions-data="{ row }">
         <UDropdown :items="actions(row)">
-          <UButton
-            color="gray"
-            variant="ghost"
-            icon="i-heroicons-ellipsis-horizontal-20-solid"
-          />
+          <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" />
         </UDropdown>
       </template>
     </UTable>
