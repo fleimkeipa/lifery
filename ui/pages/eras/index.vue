@@ -6,7 +6,7 @@ definePageMeta({
 type Row = {
   id: number;
   name: string;
-  color: string;
+  color: { hex: string, rgb: string };
   time_start: Date;
   time_end: Date;
 };
