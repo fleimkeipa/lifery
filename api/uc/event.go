@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/fleimkeipa/lifery/model"
 	"github.com/fleimkeipa/lifery/pkg"
@@ -26,10 +27,23 @@ func NewEventUC(repo interfaces.EventRepository, userUC *UserUC) *EventUC {
 func (rc *EventUC) Create(ctx context.Context, req *model.EventCreateRequest) (*model.Event, error) {
 	ownerID := util.GetOwnerIDFromCtx(ctx)
 
+	date, err := time.Parse(`2006-01-02`, req.Date)
+	if err != nil {
+		return nil, pkg.NewError(err, "failed to parse timeStart", http.StatusBadRequest)
+	}
+	timeStart, err := time.Parse(`2006-01-02`, req.TimeStart)
+	if err != nil {
+		return nil, pkg.NewError(err, "failed to parse timeStart", http.StatusBadRequest)
+	}
+	timeEnd, err := time.Parse(`2006-01-02`, req.TimeEnd)
+	if err != nil {
+		return nil, pkg.NewError(err, "failed to parse timeEnd", http.StatusBadRequest)
+	}
+
 	event := model.Event{
-		Date:       req.Date,
-		TimeStart:  req.TimeStart,
-		TimeEnd:    req.TimeEnd,
+		Date:       date.Format(`2006-01-02`),
+		TimeStart:  timeStart.Format(`2006-01-02`),
+		TimeEnd:    timeEnd.Format(`2006-01-02`),
 		Name:       req.Name,
 		Items:      req.Items,
 		OwnerID:    ownerID,
