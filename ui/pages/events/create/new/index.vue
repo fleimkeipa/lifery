@@ -1,27 +1,27 @@
 <script setup>
 import * as yup from "yup";
 
-definePageMeta({
-  middleware: "auth",
-});
+// definePageMeta({
+//   middleware: "auth",
+// });
 
 const state = reactive({
-    name: null,
-    description: null,
-    visibility: null,
-    date: null,
-    time_start: null,
-    time_end: null,
-    items: [],
+  name: null,
+  description: null,
+  visibility: null,
+  date: null,
+  time_start: null,
+  time_end: null,
+  items: [],
 });
 
 const schema = yup.object({
-    name: yup.string().nonNullable("Name cannot be null"),
-    description: yup.string(),
-    visibility: yup.number(),
-    date: yup.date(),
-    time_start: yup.date(),
-    time_end: yup.date(),
+  name: yup.string().nonNullable("Name cannot be null"),
+  description: yup.string(),
+  visibility: yup.number(),
+  date: yup.date(),
+  time_start: yup.date(),
+  time_end: yup.date(),
   items: yup.array().of(
     yup.object({
       type: yup.number().required("Item type cannot be empty"),

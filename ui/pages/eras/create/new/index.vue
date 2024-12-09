@@ -1,24 +1,24 @@
 <script setup>
 import * as yup from "yup";
 
-definePageMeta({
-  middleware: "auth",
-});
+// definePageMeta({
+//   middleware: "auth",
+// });
 
 const state = reactive({
-    name: null,
-    color: null,
-    time_start: null,
-    time_end: null,
+  name: null,
+  color: null,
+  time_start: null,
+  time_end: null,
 });
 
 const schema = yup.object({
-    name: yup.string().nonNullable("Name cannot be null"),
+  name: yup.string().nonNullable("Name cannot be null"),
   color: yup
     .string()
     .matches(/^#([0-9A-F]{3}){1,2}$/i, "Color must be a valid hex color"),
-    time_start: yup.date().required("Start time cannot be empty"),
-    time_end: yup.date().required("End time cannot be empty"),
+  time_start: yup.date().required("Start time cannot be empty"),
+  time_end: yup.date().required("End time cannot be empty"),
 });
 
 const router = useRouter();

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-definePageMeta({
-  middleware: "auth",
-});
+// definePageMeta({
+//   middleware: "auth",
+// });
 
 type Row = {
   id: number;
@@ -95,8 +95,8 @@ const handleDelete = async (uid: number) => {
       :rows="items.data.events"
       :loading="isFetching"
       :loading-state="{
-      icon: 'i-heroicons-arrow-path-20-solid',
-      label: 'Loading...',
+        icon: 'i-heroicons-arrow-path-20-solid',
+        label: 'Loading...',
       }"
     >
       <template #expand="{ row }">
