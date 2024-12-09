@@ -6,7 +6,7 @@ definePageMeta({
 type Row = {
   id: number;
   name: string;
-  color: { hex: string, rgb: string };
+  color: { hex: string; rgb: string };
   time_start: Date;
   time_end: Date;
 };
@@ -32,14 +32,14 @@ const columns = [
     key: "time_end",
     label: "Time End",
   },
+  {
+    key: "actions",
+  },
 ];
 
-const {
-  data: items,
-  error,
-  isFetching,
-  execute: fetchEras,
-} = useApi<{ data: { eras: Row[] } }>("/eras").json();
+const { data: items, error, isFetching, execute: fetchEras } = useApi<{
+  data: { eras: Row[] };
+}>("/eras").json();
 
 const router = useRouter();
 
@@ -48,7 +48,7 @@ const actions = (row: Row) => [
     {
       label: "Edit",
       icon: "i-heroicons-pencil-square-20-solid",
-      click: () => router.push(`/pods/${row.id}`),
+      click: () => router.push(`/eras/${row.id}`),
     },
     {
       label: "Delete",
@@ -58,8 +58,8 @@ const actions = (row: Row) => [
   ],
 ];
 
-const handleDelete = async (uid: number) => {
-  useApi(`/eras/${uid}`, {
+const handleDelete = async (id: number) => {
+  useApi(`/eras/${id}`, {
     afterFetch: () => fetchEras(),
   }).delete();
 };

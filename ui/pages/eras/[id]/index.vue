@@ -6,27 +6,38 @@ definePageMeta({
 });
 
 const state = reactive({
-    name: null,
-    color: null,
-    time_start: null,
-    time_end: null,
+  name: null,
+  color: null,
+  time_start: null,
+  time_end: null,
 });
 
 const schema = yup.object({
-    name: yup.string().nonNullable("Name cannot be null"),
+  name: yup.string().nonNullable("Name cannot be null"),
   color: yup
     .string()
     .matches(/^#([0-9A-F]{3}){1,2}$/i, "Color must be a valid hex color"),
-    time_start: yup.date().required("Start time cannot be empty"),
-    time_end: yup.date().required("End time cannot be empty"),
+  time_start: yup.date().required("Start time cannot be empty"),
+  time_end: yup.date().required("End time cannot be empty"),
 });
+
+const route = useRoute();
+const { isFetching } = useApi(`/eras/${route.params.id}`, {
+  afterFetch: (ctx) => {
+    const era = ctx.data.data;
+    state.name = era.name;
+    state.color = era.color;
+    state.time_start = era.time_start;
+    state.time_end = era.time_end;
+  },
+}).json();
 
 const router = useRouter();
 const loading = ref(false);
 const error = ref(null);
 const onSubmit = (era) => {
   loading.value = true;
-  useApi("/eras", {
+  useApi(`/eras/${route.params.id}`, {
     afterFetch: () => {
       loading.value = false;
       router.push("/eras");
@@ -35,13 +46,14 @@ const onSubmit = (era) => {
       loading.value = false;
       error.value = fetchErr;
     },
-  }).post(era.data);
+  }).patch(era.data);
 };
 </script>
 
 <template>
   <div>
-    <h1 class="text-2xl font-bold">Create Era</h1>
+    <h1 class="text-2xl font-bold">Update Era</h1>
+    <div v-if="isFetching">Loading...</div>
     <UForm
       @submit="onSubmit"
       style="display: flex; flex-direction: column; gap: 20px"
