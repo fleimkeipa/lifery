@@ -1,14 +1,15 @@
 package model
 
 type Event struct {
-	Date       string      `json:"date"`
-	TimeStart  string      `json:"time_start"`
-	TimeEnd    string      `json:"time_end"`
-	Name       string      `json:"name"`
-	Items      []EventItem `json:"items"`
-	ID         string      `json:"id"`
-	OwnerID    string      `json:"owner_id"`
-	Visibility Visibility  `json:"visibility"`
+	Date        string      `json:"date"`
+	TimeStart   string      `json:"time_start"`
+	TimeEnd     string      `json:"time_end"`
+	Name        string      `json:"name"`
+	Description string      `json:"description"`
+	Items       []EventItem `json:"items"`
+	ID          string      `json:"id"`
+	OwnerID     string      `json:"owner_id"`
+	Visibility  Visibility  `json:"visibility"`
 }
 
 type Visibility int

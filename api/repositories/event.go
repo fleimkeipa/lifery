@@ -177,14 +177,15 @@ func (rc *EventRepository) internalToSQL(newEvent *model.Event) *event {
 	}
 
 	return &event{
-		Date:       newEvent.Date,
-		TimeStart:  newEvent.TimeStart,
-		TimeEnd:    newEvent.TimeEnd,
-		Name:       newEvent.Name,
-		Items:      items,
-		ID:         eID,
-		OwnerID:    ownerID,
-		Visibility: int(newEvent.Visibility),
+		Date:        newEvent.Date,
+		TimeStart:   newEvent.TimeStart,
+		TimeEnd:     newEvent.TimeEnd,
+		Name:        newEvent.Name,
+		Description: newEvent.Description,
+		Items:       items,
+		ID:          eID,
+		OwnerID:     ownerID,
+		Visibility:  int(newEvent.Visibility),
 	}
 }
 
@@ -201,14 +202,15 @@ func (rc *EventRepository) sqlToInternal(newEvent *event) *model.Event {
 	}
 
 	return &model.Event{
-		Date:       newEvent.Date,
-		TimeStart:  newEvent.TimeStart,
-		TimeEnd:    newEvent.TimeEnd,
-		Name:       newEvent.Name,
-		Items:      items,
-		ID:         eID,
-		OwnerID:    ownerID,
-		Visibility: model.Visibility(newEvent.Visibility),
+		Date:        newEvent.Date,
+		TimeStart:   newEvent.TimeStart,
+		TimeEnd:     newEvent.TimeEnd,
+		Name:        newEvent.Name,
+		Description: newEvent.Description,
+		Items:       items,
+		ID:          eID,
+		OwnerID:     ownerID,
+		Visibility:  model.Visibility(newEvent.Visibility),
 	}
 }
 

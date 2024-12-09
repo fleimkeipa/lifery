@@ -41,13 +41,14 @@ func (rc *EventUC) Create(ctx context.Context, req *model.EventCreateRequest) (*
 	}
 
 	event := model.Event{
-		Date:       date.Format(`2006-01-02`),
-		TimeStart:  timeStart.Format(`2006-01-02`),
-		TimeEnd:    timeEnd.Format(`2006-01-02`),
-		Name:       req.Name,
-		Items:      req.Items,
-		OwnerID:    ownerID,
-		Visibility: req.Visibility,
+		Date:        date.Format(`2006-01-02`),
+		TimeStart:   timeStart.Format(`2006-01-02`),
+		TimeEnd:     timeEnd.Format(`2006-01-02`),
+		Name:        req.Name,
+		Description: req.Description,
+		Items:       req.Items,
+		OwnerID:     ownerID,
+		Visibility:  req.Visibility,
 	}
 
 	newEvent, err := rc.repo.Create(ctx, &event)
