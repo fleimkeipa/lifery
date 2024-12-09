@@ -26,7 +26,8 @@ const schema = yup.object({
     yup.object({
       type: yup.number().required("Item type cannot be empty"),
       data: yup.string().required("Item data cannot be empty"),
-    })),
+    })
+  ),
 });
 
 const push = () => {
@@ -57,8 +58,14 @@ const onSubmit = (event) => {
 <template>
   <div>
     <h1 class="text-2xl font-bold">Create Event</h1>
-    <UForm @submit="onSubmit" style="display: flex; flex-direction: column; gap: 20px" novalidate :state="state"
-      :schema="schema" class="mt-8 flex items-start">
+    <UForm
+      @submit="onSubmit"
+      style="display: flex; flex-direction: column; gap: 20px"
+      novalidate
+      :state="state"
+      :schema="schema"
+      class="mt-8 flex items-start"
+    >
       <UFormGroup label="Name" name="event.name">
         <UInput type="text" placeholder="Name" v-model="state.name" />
       </UFormGroup>
@@ -69,15 +76,29 @@ const onSubmit = (event) => {
         <UInput type="number" placeholder="Visibility" v-model="state.visibility" />
       </UFormGroup>
       <UFormGroup label="Date" name="event.date">
-        <UInput type="date" pattern="\d{4}-\d{2}-\d{2}" placeholder="Date" v-model="state.date" />
+        <UInput
+          type="date"
+          pattern="\d{4}-\d{2}-\d{2}"
+          placeholder="Date"
+          v-model="state.date"
+        />
       </UFormGroup>
       <UFormGroup label="TimeStart" name="event.time_start">
-        <UInput type="date" pattern="\d{4}-\d{2}-\d{2}" placeholder="Time Start" v-model="state.time_start" />
+        <UInput
+          type="date"
+          pattern="\d{4}-\d{2}-\d{2}"
+          placeholder="Time Start"
+          v-model="state.time_start"
+        />
       </UFormGroup>
       <UFormGroup label="TimeEnd" name="event.time_end">
-        <UInput type="date" pattern="\d{4}-\d{2}-\d{2}" placeholder="Time End" v-model="state.time_end" />
+        <UInput
+          type="date"
+          pattern="\d{4}-\d{2}-\d{2}"
+          placeholder="Time End"
+          v-model="state.time_end"
+        />
       </UFormGroup>
-
 
       <div>
         <div class="mb-4 flex flex-row items-center gap-x-4">
@@ -92,10 +113,7 @@ const onSubmit = (event) => {
             Add Item
           </UButton>
         </div>
-        <div
-          class="mb-4 flex flex-col gap-y-4"
-          v-if="state.items.length"
-        >
+        <div class="mb-4 flex flex-col gap-y-4" v-if="state.items.length">
           <div
             :key="item.key"
             v-for="(item, idx) in state.items"
@@ -105,15 +123,8 @@ const onSubmit = (event) => {
               <UInput type="number" v-model="item.type" />
             </UFormGroup>
 
-            <UFormGroup
-              label="Data"
-              :name="`items[${idx}].data`"
-            >
-              <UInput
-                type="text"
-                placeholder="Data an image..."
-                v-model="item.data"
-              />
+            <UFormGroup label="Data" :name="`items[${idx}].data`">
+              <UInput type="text" placeholder="Data an image..." v-model="item.data" />
             </UFormGroup>
 
             <UButton

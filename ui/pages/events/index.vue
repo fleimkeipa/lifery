@@ -49,12 +49,9 @@ const columns = [
   },
 ];
 
-const {
-  data: items,
-  error,
-  isFetching,
-  execute: fetchPods,
-} = useApi<{ data: { items: Row[] } }>("/events").json();
+const { data: items, error, isFetching, execute: fetchPods } = useApi<{
+  data: { items: Row[] };
+}>("/events").json();
 
 const router = useRouter();
 
@@ -87,12 +84,21 @@ const handleDelete = async (uid: number) => {
       <UButton icon="i-heroicons-plus">
         <NuxtLink to="/events/create/new">Create New</NuxtLink>
       </UButton>
-      <UButton icon="i-heroicons-arrow-path" :loading="isFetching" @click="fetchPods"></UButton>
+      <UButton
+        icon="i-heroicons-arrow-path"
+        :loading="isFetching"
+        @click="fetchPods"
+      ></UButton>
     </div>
-    <UTable :columns="columns" :rows="items.data.events" :loading="isFetching" :loading-state="{
+    <UTable
+      :columns="columns"
+      :rows="items.data.events"
+      :loading="isFetching"
+      :loading-state="{
       icon: 'i-heroicons-arrow-path-20-solid',
       label: 'Loading...',
-    }">
+      }"
+    >
       <template #expand="{ row }">
         <div class="p-4">
           <b>Items:</b>
@@ -102,7 +108,11 @@ const handleDelete = async (uid: number) => {
 
       <template #actions-data="{ row }">
         <UDropdown :items="actions(row)">
-          <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" />
+          <UButton
+            color="gray"
+            variant="ghost"
+            icon="i-heroicons-ellipsis-horizontal-20-solid"
+          />
         </UDropdown>
       </template>
     </UTable>
