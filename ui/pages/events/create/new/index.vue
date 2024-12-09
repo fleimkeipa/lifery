@@ -62,13 +62,13 @@ const onSubmit = (event) => {
         <UInput type="number" placeholder="Visibility" v-model="state.event.visibility" />
       </UFormGroup>
       <UFormGroup label="Date" name="event.date">
-        <UInput type="date" placeholder="Date" v-model="state.event.date" />
+        <UInput type="date" pattern="\d{4}-\d{2}-\d{2}" placeholder="Date" v-model="state.event.date" />
       </UFormGroup>
       <UFormGroup label="TimeStart" name="event.time_start">
-        <UInput type="date" placeholder="Time Start" v-model="state.event.time_start" />
+        <UInput type="date" pattern="\d{4}-\d{2}-\d{2}" placeholder="Time Start" v-model="state.event.time_start" />
       </UFormGroup>
       <UFormGroup label="TimeEnd" name="event.time_end">
-        <UInput type="date" placeholder="Time End" v-model="state.event.time_end" />
+        <UInput type="date" pattern="\d{4}-\d{2}-\d{2}" placeholder="Time End" v-model="state.event.time_end" />
       </UFormGroup>
 
       <UButton :loading="loading" type="submit">Submit</UButton>

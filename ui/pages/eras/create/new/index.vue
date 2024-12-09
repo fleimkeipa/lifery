@@ -6,7 +6,6 @@ definePageMeta({
 });
 
 const state = reactive({
-  era: {
     name: null,
     color: null,
     time_start: null,
