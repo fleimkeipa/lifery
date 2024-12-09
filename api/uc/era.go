@@ -34,8 +34,8 @@ func (rc *EraUC) Create(ctx context.Context, req *model.EraCreateRequest) (*mode
 	}
 
 	era := model.Era{
-		TimeStart: timeStart.String(),
-		TimeEnd:   timeEnd.String(),
+		TimeStart: timeStart.Format(`2006-01-02`),
+		TimeEnd:   timeEnd.Format(`2006-01-02`),
 		Name:      req.Name,
 		Color:     req.Color,
 		OwnerID:   ownerID,
