@@ -1,29 +1,27 @@
 package model
 
-import "time"
-
 type Era struct {
-	TimeStart time.Time `json:"time_start"`
-	TimeEnd   time.Time `json:"time_end"`
-	Name      string    `json:"name"`
-	Color     string    `json:"color"`
-	OwnerID   string    `json:"owner_id"`
-	ID        string    `json:"id"`
+	TimeStart string `json:"time_start"`
+	TimeEnd   string `json:"time_end"`
+	Name      string `json:"name"`
+	Color     string `json:"color"`
+	OwnerID   string `json:"owner_id"`
+	ID        string `json:"id"`
 }
 
 type EraCreateRequest struct {
-	TimeStart time.Time `json:"time_start"`
-	TimeEnd   time.Time `json:"time_end"`
-	Color     string    `json:"color"`
-	Name      string    `json:"name"`
+	TimeStart string `json:"time_start"`
+	TimeEnd   string `json:"time_end"`
+	Color     string `json:"color"`
+	Name      string `json:"name"`
 }
 
 type EraUpdateRequest struct {
-	TimeStart time.Time `json:"time_start"`
-	TimeEnd   time.Time `json:"time_end"`
-	Name      string    `json:"name"`
-	Color     string    `json:"color"`
-	ID        int64     `json:"id"`
+	TimeStart string `json:"time_start"`
+	TimeEnd   string `json:"time_end"`
+	Name      string `json:"name"`
+	Color     string `json:"color"`
+	ID        int64  `json:"id"`
 }
 
 type EraList struct {

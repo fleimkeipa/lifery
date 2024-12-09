@@ -3,6 +3,7 @@ package uc
 import (
 	"context"
 	"net/http"
+	"time"
 
 	"github.com/fleimkeipa/lifery/model"
 	"github.com/fleimkeipa/lifery/pkg"
@@ -23,9 +24,18 @@ func NewEraUC(repo interfaces.EraRepository) *EraUC {
 func (rc *EraUC) Create(ctx context.Context, req *model.EraCreateRequest) (*model.Era, error) {
 	ownerID := util.GetOwnerIDFromCtx(ctx)
 
+	timeStart, err := time.Parse(`2006-01-02`, req.TimeStart)
+	if err != nil {
+		return nil, pkg.NewError(err, "failed to parse timeStart", http.StatusBadRequest)
+	}
+	timeEnd, err := time.Parse(`2006-01-02`, req.TimeEnd)
+	if err != nil {
+		return nil, pkg.NewError(err, "failed to parse timeEnd", http.StatusBadRequest)
+	}
+
 	era := model.Era{
-		TimeStart: req.TimeStart,
-		TimeEnd:   req.TimeEnd,
+		TimeStart: timeStart.String(),
+		TimeEnd:   timeEnd.String(),
 		Name:      req.Name,
 		Color:     req.Color,
 		OwnerID:   ownerID,
@@ -46,9 +56,18 @@ func (rc *EraUC) Update(ctx context.Context, eraID string, req *model.EraUpdateR
 		return nil, err
 	}
 
+	timeStart, err := time.Parse(`2006-01-02`, req.TimeStart)
+	if err != nil {
+		return nil, pkg.NewError(err, "failed to parse timeStart", http.StatusBadRequest)
+	}
+	timeEnd, err := time.Parse(`2006-01-02`, req.TimeEnd)
+	if err != nil {
+		return nil, pkg.NewError(err, "failed to parse timeEnd", http.StatusBadRequest)
+	}
+
 	era := model.Era{
-		TimeStart: req.TimeStart,
-		TimeEnd:   req.TimeEnd,
+		TimeStart: timeStart.String(),
+		TimeEnd:   timeEnd.String(),
 		Name:      req.Name,
 		Color:     req.Color,
 		OwnerID:   exist.OwnerID,

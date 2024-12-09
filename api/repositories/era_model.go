@@ -1,20 +1,18 @@
 package repositories
 
-import "time"
-
 type era struct {
-	TimeStart time.Time `json:"time_start"`
-	TimeEnd   time.Time `json:"time_end"`
-	Name      string    `json:"name"`
-	Color     string    `json:"color"`
-	OwnerID   int       `json:"owner_id" pg:",notnull"`
-	Owner     *user     `json:"owner" pg:"rel:has-one"`
-	ID        int       `json:"id" pg:",pk"`
+	TimeStart string `json:"time_start"`
+	TimeEnd   string `json:"time_end"`
+	Name      string `json:"name"`
+	Color     string `json:"color"`
+	OwnerID   int    `json:"owner_id" pg:",notnull"`
+	Owner     *user  `json:"owner" pg:"rel:has-one"`
+	ID        int    `json:"id" pg:",pk"`
 }
 
 type eraGetResponse struct {
-	TimeStart time.Time `json:"time_start"`
-	TimeEnd   time.Time `json:"time_end"`
+	TimeStart string    `json:"time_start"`
+	TimeEnd   string    `json:"time_end"`
 	Name      string    `json:"name"`
 	Color     string    `json:"color"`
 	OwnerID   int       `json:"owner_id"`
