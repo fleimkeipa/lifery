@@ -20,7 +20,7 @@ func NewPSQLClient() *pg.DB {
 	}
 
 	opts := pg.Options{
-		Database: "case",
+		Database: "lifery",
 		User:     "postgres",
 		Password: "password",
 		Addr:     addr,

@@ -17,7 +17,7 @@ services:
     image: postgres:latest
     container_name: postgres
     environment:
-      - POSTGRES_DB=case
+      - POSTGRES_DB=lifery
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
     ports:
