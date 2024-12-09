@@ -1,43 +1,40 @@
 <script setup lang="ts">
-definePageMeta({
-  middleware: "auth",
-});
+// definePageMeta({
+//   middleware: "auth",
+// });
 
 type Row = {
-  metadata: {
-    uid: string;
-    name: string;
-    namespace: string;
-  };
-  spec: {
-    containers: [];
-  };
+  id: number;
+  user_id: string;
+  friend_id: string;
+  status: number;
 };
 
 const columns = [
   {
-    key: "metadata.uid",
-    label: "UID",
+    key: "id",
+    label: "ID",
   },
   {
-    key: "metadata.name",
-    label: "Name",
+    key: "user_id",
+    label: "User ID",
   },
   {
-    key: "metadata.namespace",
-    label: "Namespace",
+    key: "friend_id",
+    label: "Friend ID",
+  },
+  {
+    key: "status",
+    label: "Status",
   },
   {
     key: "actions",
   },
 ];
 
-const {
-  data: items,
-  error,
-  isFetching,
-  execute: fetchPods,
-} = useApi<{ data: { items: Row[] } }>("/connects").json();
+const { data: items, error, isFetching, execute: fetchConnects } = useApi<{
+  data: { items: Row[] };
+}>("/connects").json();
 
 const router = useRouter();
 
@@ -46,19 +43,19 @@ const actions = (row: Row) => [
     {
       label: "Edit",
       icon: "i-heroicons-pencil-square-20-solid",
-      click: () => router.push(`/connects/${row.metadata.name}`),
+      click: () => router.push(`/connects/${row.id}`),
     },
     {
       label: "Delete",
       icon: "i-heroicons-trash-20-solid",
-      click: () => handleDelete(row.metadata.name),
+      click: () => handleDelete(row.id),
     },
   ],
 ];
 
-const handleDelete = async (uid: string) => {
+const handleDelete = async (uid: number) => {
   useApi(`/connects/${uid}`, {
-    afterFetch: () => fetchPods(),
+    afterFetch: () => fetchConnects(),
   }).delete();
 };
 </script>
@@ -73,25 +70,18 @@ const handleDelete = async (uid: string) => {
       <UButton
         icon="i-heroicons-arrow-path"
         :loading="isFetching"
-        @click="fetchPods"
+        @click="fetchConnects"
       ></UButton>
     </div>
     <UTable
       :columns="columns"
-      :rows="items.data.items"
+      :rows="items.data.connects"
       :loading="isFetching"
       :loading-state="{
         icon: 'i-heroicons-arrow-path-20-solid',
         label: 'Loading...',
       }"
     >
-      <template #expand="{ row }">
-        <div class="p-4">
-          <b>Containers:</b>
-          <pre>{{ row.spec.containers }}</pre>
-        </div>
-      </template>
-
       <template #actions-data="{ row }">
         <UDropdown :items="actions(row)">
           <UButton
