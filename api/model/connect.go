@@ -8,7 +8,7 @@ type Connect struct {
 }
 
 type ConnectList struct {
-	Connects []Connect `json:"conects"`
+	Connects []Connect `json:"connects"`
 	Total    int       `json:"total"`
 	PaginationOpts
 }
