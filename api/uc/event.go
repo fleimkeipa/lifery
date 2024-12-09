@@ -67,13 +67,14 @@ func (rc *EventUC) Update(ctx context.Context, eventID string, req *model.EventU
 	}
 
 	event := model.Event{
-		Date:       req.Date,
-		TimeStart:  req.TimeStart,
-		TimeEnd:    req.TimeEnd,
-		Name:       req.Name,
-		Items:      req.Items,
-		OwnerID:    exist.OwnerID,
-		Visibility: req.Visibility,
+		Date:        req.Date,
+		TimeStart:   req.TimeStart,
+		TimeEnd:     req.TimeEnd,
+		Name:        req.Name,
+		Description: req.Description,
+		Items:       req.Items,
+		OwnerID:     exist.OwnerID,
+		Visibility:  req.Visibility,
 	}
 
 	updatedEvent, err := rc.repo.Update(ctx, eventID, &event)
