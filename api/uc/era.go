@@ -66,8 +66,8 @@ func (rc *EraUC) Update(ctx context.Context, eraID string, req *model.EraUpdateR
 	}
 
 	era := model.Era{
-		TimeStart: timeStart.String(),
-		TimeEnd:   timeEnd.String(),
+		TimeStart: timeStart.Format(`2006-01-02`),
+		TimeEnd:   timeEnd.Format(`2006-01-02`),
 		Name:      req.Name,
 		Color:     req.Color,
 		OwnerID:   exist.OwnerID,
