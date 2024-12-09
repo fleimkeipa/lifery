@@ -47,6 +47,9 @@ const columns = [
     key: "items",
     label: "Items",
   },
+  {
+    key: "actions",
+  },
 ];
 
 const { data: items, error, isFetching, execute: fetchPods } = useApi<{
@@ -60,7 +63,7 @@ const actions = (row: Row) => [
     {
       label: "Edit",
       icon: "i-heroicons-pencil-square-20-solid",
-      click: () => router.push(`/pods/${row.id}`),
+      click: () => router.push(`/events/${row.id}`),
     },
     {
       label: "Delete",
