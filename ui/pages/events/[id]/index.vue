@@ -139,7 +139,7 @@ const remove = (idx) => {
             </UFormGroup>
 
             <UFormGroup label="Data" :name="`items[${idx}].data`">
-              <UInput type="text" placeholder="Data an image..." v-model="item.data" />
+              <UInput type="text" placeholder="Data an item" v-model="item.data" />
             </UFormGroup>
 
             <UButton
