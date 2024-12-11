@@ -124,7 +124,7 @@ const onSubmit = (event) => {
             </UFormGroup>
 
             <UFormGroup label="Data" :name="`items[${idx}].data`">
-              <UInput type="text" placeholder="Data an image..." v-model="item.data" />
+              <UInput type="text" placeholder="Data of item" v-model="item.data" />
             </UFormGroup>
 
             <UButton
