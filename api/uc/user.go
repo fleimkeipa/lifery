@@ -136,6 +136,15 @@ func (rc *UserUC) DeleteConnect(ctx context.Context, userID, friendID string) (*
 	return rc.deleteConnect(ctx, sender, receiver.ID)
 }
 
+func (rc *UserUC) GetConnects(ctx context.Context, userID string) (*model.UserConnects, error) {
+	list, err := rc.userRepo.GetConnects(ctx, userID)
+	if err != nil {
+		return nil, pkg.NewError(err, "failed to get user connects", http.StatusInternalServerError)
+	}
+
+	return list, nil
+}
+
 func (rc *UserUC) List(ctx context.Context, opts *model.UserFindOpts) (*model.UserList, error) {
 	list, err := rc.userRepo.List(ctx, opts)
 	if err != nil {

@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"strconv"
@@ -139,7 +140,7 @@ func (rc *UserRepository) GetByID(ctx context.Context, userID string) (*model.Us
 
 func (rc *UserRepository) GetByUsernameOrEmail(ctx context.Context, usernameOrEmail string) (*model.User, error) {
 	if usernameOrEmail == "" {
-		return nil, fmt.Errorf("invalid username or email")
+		return nil, errors.New("missing username or email")
 	}
 
 	var user user
@@ -153,6 +154,33 @@ func (rc *UserRepository) GetByUsernameOrEmail(ctx context.Context, usernameOrEm
 	}
 
 	return rc.sqlToInternal(&user), nil
+}
+
+func (rc *UserRepository) GetConnects(ctx context.Context, userID string) (*model.UserConnects, error) {
+	if userID == "" {
+		return nil, errors.New("missing user id")
+	}
+
+	var connects userConnects
+
+	query := rc.db.Model(&connects)
+
+	query = query.Where("id =", userID)
+
+	if err := query.Select(); err != nil {
+		return nil, fmt.Errorf("failed to get user by [%s]: %w", userID, err)
+	}
+
+	if len(connects.Connects) == 0 {
+		return &model.UserConnects{}, nil
+	}
+
+	respConnects := new(model.UserConnects)
+	for _, v := range connects.Connects {
+		respConnects.Connects = append(respConnects.Connects, *rc.sqlToInternal(&v))
+	}
+
+	return respConnects, nil
 }
 
 func (rc *UserRepository) Exists(ctx context.Context, usernameOrEmail string) (bool, error) {

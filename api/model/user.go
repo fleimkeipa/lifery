@@ -15,6 +15,10 @@ type User struct {
 	RoleID    uint      `json:"role_id"`
 }
 
+type UserConnects struct {
+	Connects []User `json:"connects"`
+}
+
 type UserList struct {
 	Users []User `json:"users"`
 	Total int    `json:"total"`

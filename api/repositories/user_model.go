@@ -12,3 +12,7 @@ type user struct {
 	ID        int       `json:"id" pg:",pk"`
 	RoleID    uint      `json:"role_id"`
 }
+
+type userConnects struct {
+	Connects []user `json:"connects"`
+}
