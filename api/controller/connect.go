@@ -12,11 +12,13 @@ import (
 
 type ConnectHandlers struct {
 	connectUC *uc.ConnectsUC
+	userUC    *uc.UserUC
 }
 
-func NewConnectHandlers(connectUC *uc.ConnectsUC) *ConnectHandlers {
+func NewConnectHandlers(connectUC *uc.ConnectsUC, userUC *uc.UserUC) *ConnectHandlers {
 	return &ConnectHandlers{
 		connectUC: connectUC,
+		userUC:    userUC,
 	}
 }
 
@@ -123,9 +125,9 @@ func (rc *ConnectHandlers) Disconnect(c echo.Context) error {
 	})
 }
 
-// List godoc
+// ConnectsRequests godoc
 //
-//	@Summary		List all connects
+//	@Summary		ConnectsRequests all connects
 //	@Description	Retrieves a filtered and paginated list of connects based on query parameters.
 //	@Tags			connects
 //	@Accept			json
@@ -137,10 +139,37 @@ func (rc *ConnectHandlers) Disconnect(c echo.Context) error {
 //	@Param			skip		query		string			false	"Number of connects to skip for pagination"
 //	@Success		200			{object}	SuccessResponse	"Successful response containing the list of connects"
 //	@Failure		500			{object}	FailureResponse	"Internal error"
-func (rc *ConnectHandlers) List(c echo.Context) error {
+func (rc *ConnectHandlers) ConnectsRequests(c echo.Context) error {
 	opts := rc.getConnectsFindOpts(c, model.ZeroCreds)
 
 	list, err := rc.connectUC.List(c.Request().Context(), &opts)
+	if err != nil {
+		return HandleEchoError(c, err)
+	}
+
+	return c.JSON(http.StatusOK, SuccessResponse{
+		Data:    list,
+		Message: "Connects requests retrieved successfully.",
+	})
+}
+
+// GetConnects godoc
+//
+//	@Summary		List all connects
+//	@Description	Retrieves a filtered and paginated list of connects based on query parameters.
+//	@Tags			connects
+//	@Accept			json
+//	@Produce		json
+//	@Security		ApiKeyAuth
+//	@Param			limit		query		string			false	"Limit the number of connects returned"
+//	@Param			skip		query		string			false	"Number of connects to skip for pagination"
+//	@Success		200			{object}	SuccessResponse	"Successful response containing the list of connects"
+//	@Failure		500			{object}	FailureResponse	"Internal error"
+//	@Router			/connects/{user_id} [patch]
+func (rc *ConnectHandlers) GetConnects(c echo.Context) error {
+	id := c.Param("user_id")
+
+	list, err := rc.userUC.GetConnects(c.Request().Context(), id)
 	if err != nil {
 		return HandleEchoError(c, err)
 	}

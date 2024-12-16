@@ -62,7 +62,7 @@ func serveApplication() {
 
 	connectDBRepo := repositories.NewConnectRepository(dbClient)
 	connectUC := uc.NewConnectsUC(userUC, connectDBRepo)
-	connectController := controller.NewConnectHandlers(connectUC)
+	connectController := controller.NewConnectHandlers(connectUC, userUC)
 
 	authHandlers := controller.NewAuthHandlers(userUC)
 
@@ -109,7 +109,8 @@ func serveApplication() {
 	connectsRoutes := userRoutes.Group("/connects")
 	connectsRoutes.POST("", connectController.Create)
 	connectsRoutes.PATCH("/:id", connectController.Update)
-	connectsRoutes.GET("", connectController.List)
+	connectsRoutes.GET("", connectController.ConnectsRequests)
+	connectsRoutes.GET("/:user_id", connectController.GetConnects)
 	connectsRoutes.PATCH("/disconnect", connectController.Disconnect)
 
 	// Define user routes
