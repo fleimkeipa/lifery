@@ -327,6 +327,37 @@ paths:
       summary: Update updates an existing connection
       tags:
       - connects
+  /connects/{user_id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a filtered and paginated list of connects based on query
+        parameters.
+      parameters:
+      - description: Limit the number of connects returned
+        in: query
+        name: limit
+        type: string
+      - description: Number of connects to skip for pagination
+        in: query
+        name: skip
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response containing the list of connects
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: List all connects
+      tags:
+      - connects
   /connects/disconnect:
     patch:
       consumes:

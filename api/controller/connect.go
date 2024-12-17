@@ -161,11 +161,11 @@ func (rc *ConnectHandlers) ConnectsRequests(c echo.Context) error {
 //	@Accept			json
 //	@Produce		json
 //	@Security		ApiKeyAuth
-//	@Param			limit		query		string			false	"Limit the number of connects returned"
-//	@Param			skip		query		string			false	"Number of connects to skip for pagination"
-//	@Success		200			{object}	SuccessResponse	"Successful response containing the list of connects"
-//	@Failure		500			{object}	FailureResponse	"Internal error"
-//	@Router			/connects/{user_id} [patch]
+//	@Param			limit	query		string			false	"Limit the number of connects returned"
+//	@Param			skip	query		string			false	"Number of connects to skip for pagination"
+//	@Success		200		{object}	SuccessResponse	"Successful response containing the list of connects"
+//	@Failure		500		{object}	FailureResponse	"Internal error"
+//	@Router			/connects/{user_id} [get]
 func (rc *ConnectHandlers) GetConnects(c echo.Context) error {
 	id := c.Param("user_id")
 
