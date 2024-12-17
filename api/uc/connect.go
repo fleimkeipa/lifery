@@ -120,8 +120,8 @@ func (rc *ConnectsUC) Disconnect(ctx context.Context, req model.DisconnectReques
 	return nil
 }
 
-func (rc *ConnectsUC) List(ctx context.Context, opts *model.ConnectFindOpts) (*model.ConnectList, error) {
-	return rc.connectRepo.List(ctx, opts)
+func (rc *ConnectsUC) ConnectsRequests(ctx context.Context, opts *model.ConnectFindOpts) (*model.ConnectList, error) {
+	return rc.connectRepo.ConnectsRequests(ctx, opts)
 }
 
 func (rc *ConnectsUC) GetByID(ctx context.Context, id string) (*model.Connect, error) {

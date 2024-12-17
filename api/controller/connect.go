@@ -127,8 +127,8 @@ func (rc *ConnectHandlers) Disconnect(c echo.Context) error {
 
 // ConnectsRequests godoc
 //
-//	@Summary		ConnectsRequests all connects
-//	@Description	Retrieves a filtered and paginated list of connects based on query parameters.
+//	@Summary		ConnectsRequests list all connects requests
+//	@Description	Retrieves a filtered and paginated list of connects requests based on query parameters.
 //	@Tags			connects
 //	@Accept			json
 //	@Produce		json
@@ -142,7 +142,7 @@ func (rc *ConnectHandlers) Disconnect(c echo.Context) error {
 func (rc *ConnectHandlers) ConnectsRequests(c echo.Context) error {
 	opts := rc.getConnectsFindOpts(c, model.ZeroCreds)
 
-	list, err := rc.connectUC.List(c.Request().Context(), &opts)
+	list, err := rc.connectUC.ConnectsRequests(c.Request().Context(), &opts)
 	if err != nil {
 		return HandleEchoError(c, err)
 	}

@@ -76,7 +76,7 @@ func (rc *ConnectRepository) Delete(ctx context.Context, id string) error {
 	return nil
 }
 
-func (rc *ConnectRepository) List(ctx context.Context, opts *model.ConnectFindOpts) (*model.ConnectList, error) {
+func (rc *ConnectRepository) ConnectsRequests(ctx context.Context, opts *model.ConnectFindOpts) (*model.ConnectList, error) {
 	if opts == nil {
 		return nil, fmt.Errorf("opts is nil")
 	}
