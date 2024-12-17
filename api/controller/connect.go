@@ -167,9 +167,9 @@ func (rc *ConnectHandlers) ConnectsRequests(c echo.Context) error {
 //	@Failure		500		{object}	FailureResponse	"Internal error"
 //	@Router			/connects/{user_id} [get]
 func (rc *ConnectHandlers) GetConnects(c echo.Context) error {
-	id := c.Param("user_id")
+	opts := rc.getUserConnectsFindOpts(c)
 
-	list, err := rc.userUC.GetConnects(c.Request().Context(), id)
+	list, err := rc.userUC.GetConnects(c.Request().Context(), &opts)
 	if err != nil {
 		return HandleEchoError(c, err)
 	}
@@ -188,5 +188,21 @@ func (rc *ConnectHandlers) getConnectsFindOpts(c echo.Context, fields ...string)
 		},
 		Status:   getFilter(c, "status"),
 		FriendID: getFilter(c, "friend_id"),
+	}
+}
+
+func (rc *ConnectHandlers) getUserConnectsFindOpts(c echo.Context, fields ...string) model.UserConnectsFindOpts {
+	userID := c.Param("user_id")
+	userIDFilter := model.Filter{
+		Value:    userID,
+		IsSended: userID != "",
+	}
+
+	return model.UserConnectsFindOpts{
+		PaginationOpts: getPagination(c),
+		FieldsOpts: model.FieldsOpts{
+			Fields: fields,
+		},
+		UserID: userIDFilter,
 	}
 }

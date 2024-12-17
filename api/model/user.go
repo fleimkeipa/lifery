@@ -17,6 +17,8 @@ type User struct {
 
 type UserConnects struct {
 	Connects []User `json:"connects"`
+	Total    int    `json:"total"`
+	PaginationOpts
 }
 
 type UserList struct {
@@ -36,6 +38,12 @@ type UserFindOpts struct {
 	Username Filter
 	Email    Filter
 	RoleID   Filter
+	FieldsOpts
+	PaginationOpts
+}
+
+type UserConnectsFindOpts struct {
+	UserID Filter
 	FieldsOpts
 	PaginationOpts
 }

@@ -14,5 +14,5 @@ type UserInterfaces interface {
 	GetByUsernameOrEmail(ctx context.Context, usernameOrEmail string) (*model.User, error)
 	Exists(ctx context.Context, usernameOrEmail string) (bool, error)
 	Delete(ctx context.Context, userID string) error
-	GetConnects(ctx context.Context, userID string) (*model.UserConnects, error)
+	GetConnects(ctx context.Context, opts *model.UserConnectsFindOpts) (*model.UserConnects, error)
 }

@@ -156,18 +156,23 @@ func (rc *UserRepository) GetByUsernameOrEmail(ctx context.Context, usernameOrEm
 	return rc.sqlToInternal(&user), nil
 }
 
-func (rc *UserRepository) GetConnects(ctx context.Context, userID string) (*model.UserConnects, error) {
-	if userID == "" {
+func (rc *UserRepository) GetConnects(ctx context.Context, opts *model.UserConnectsFindOpts) (*model.UserConnects, error) {
+	if !opts.UserID.IsSended {
 		return nil, errors.New("missing user id")
 	}
+
+	userID := opts.UserID.Value
 
 	var connects userConnects
 
 	query := rc.db.Model(&connects)
 
+	query = query.Limit(opts.Limit).Offset(opts.Skip)
+
 	query = query.Where("id =", userID)
 
-	if err := query.Select(); err != nil {
+	count, err := query.SelectAndCount()
+	if err != nil {
 		return nil, fmt.Errorf("failed to get user by [%s]: %w", userID, err)
 	}
 
@@ -180,7 +185,14 @@ func (rc *UserRepository) GetConnects(ctx context.Context, userID string) (*mode
 		respConnects.Connects = append(respConnects.Connects, *rc.sqlToInternal(&v))
 	}
 
-	return respConnects, nil
+	return &model.UserConnects{
+		Connects: respConnects.Connects,
+		Total:    count,
+		PaginationOpts: model.PaginationOpts{
+			Skip:  opts.Skip,
+			Limit: opts.Limit,
+		},
+	}, nil
 }
 
 func (rc *UserRepository) Exists(ctx context.Context, usernameOrEmail string) (bool, error) {
