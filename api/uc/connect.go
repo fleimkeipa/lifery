@@ -102,10 +102,6 @@ func (rc *ConnectsUC) Update(ctx context.Context, id string, req model.ConnectUp
 		return nil, err
 	}
 
-	if err := rc.Delete(ctx, id); err != nil {
-		return nil, pkg.NewError(nil, "failed to delete connect", http.StatusInternalServerError)
-	}
-
 	return connect, nil
 }
 
