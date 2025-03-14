@@ -88,15 +88,15 @@ func (rc *UserRepository) List(ctx context.Context, opts *model.UserFindOpts) (*
 
 	users := make([]user, 0)
 
-	filter := rc.fillFilter(opts)
-	fields := rc.fillFields(opts)
-	query := rc.db.Model(&users).Column(fields...)
+	query := rc.db.Model(&users)
 
-	if filter != "" {
-		query = query.Where(filter)
-	}
+	query = applyOrderBy(query, opts.OrderByOpts)
 
-	query = query.Limit(opts.Limit).Offset(opts.Skip)
+	query = applyStandardQueries(query, opts.PaginationOpts)
+
+	query = rc.fillFields(query, opts)
+
+	query = rc.fillFilter(query, opts)
 
 	count, err := query.SelectAndCount()
 	if err != nil {
@@ -161,19 +161,19 @@ func (rc *UserRepository) GetConnects(ctx context.Context, opts *model.UserConne
 		return nil, errors.New("missing user id")
 	}
 
-	userID := opts.UserID.Value
-
 	var connects userConnects
 
 	query := rc.db.Model(&connects)
 
-	query = query.Limit(opts.Limit).Offset(opts.Skip)
+	query = applyOrderBy(query, opts.OrderByOpts)
 
-	query = query.Where("id =", userID)
+	query = applyStandardQueries(query, opts.PaginationOpts)
+
+	query = rc.fillConnectsFilter(query, opts)
 
 	count, err := query.SelectAndCount()
 	if err != nil {
-		return nil, fmt.Errorf("failed to get user by [%s]: %w", userID, err)
+		return nil, fmt.Errorf("failed to get user connects: %w", err)
 	}
 
 	if len(connects.Connects) == 0 {
@@ -212,42 +212,40 @@ func (rc *UserRepository) Exists(ctx context.Context, usernameOrEmail string) (b
 	return exists, nil
 }
 
-func (rc *UserRepository) fillFilter(opts *model.UserFindOpts) string {
-	filter := ""
-
+func (rc *UserRepository) fillFilter(tx *orm.Query, opts *model.UserFindOpts) *orm.Query {
 	if opts.Username.IsSended {
-		filter = addFilterClause(filter, "username", opts.Username.Value)
+		tx = applyFilterWithOperand(tx, "username", opts.Username)
 	}
 
 	if opts.Email.IsSended {
-		filter = addFilterClause(filter, "email", opts.Email.Value)
+		tx = applyFilterWithOperand(tx, "email", opts.Email)
 	}
 
 	if opts.RoleID.IsSended {
-		filter = addFilterClause(filter, "role_id", opts.RoleID.Value)
+		tx = applyFilterWithOperand(tx, "role_id", opts.RoleID)
 	}
 
-	return filter
+	return tx
 }
 
-func (rc *UserRepository) fillFields(opts *model.UserFindOpts) []string {
+func (rc *UserRepository) fillFields(tx *orm.Query, opts *model.UserFindOpts) *orm.Query {
 	fields := opts.Fields
 
 	if len(fields) == 0 {
-		return nil
+		return tx
 	}
 
 	if len(fields) == 1 && fields[0] == model.ZeroCreds {
-		return []string{
+		return tx.Column(
 			"id",
 			"username",
 			"email",
 			"role_id",
 			"deleted_at",
-		}
+		)
 	}
 
-	return fields
+	return tx.Column(fields...)
 }
 
 func (rc *UserRepository) internalToSQL(newUser *model.User) *user {
@@ -291,4 +289,14 @@ func (rc *UserRepository) createSchema(db *pg.DB) error {
 	}
 
 	return nil
+}
+
+func (rc *UserRepository) fillConnectsFilter(tx *orm.Query, opts *model.UserConnectsFindOpts) *orm.Query {
+	filter := tx
+
+	if opts.UserID.IsSended {
+		filter = applyFilterWithOperand(tx, "id", opts.UserID)
+	}
+
+	return filter
 }

@@ -173,6 +173,7 @@ func (rc *UserHandlers) DeleteUser(c echo.Context) error {
 
 func (rc *UserHandlers) getUsersFindOpts(c echo.Context, fields ...string) model.UserFindOpts {
 	return model.UserFindOpts{
+		OrderByOpts:    getOrder(c),
 		PaginationOpts: getPagination(c),
 		FieldsOpts: model.FieldsOpts{
 			Fields: fields,

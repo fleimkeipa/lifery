@@ -40,10 +40,12 @@ type UserFindOpts struct {
 	RoleID   Filter
 	FieldsOpts
 	PaginationOpts
+	OrderByOpts
 }
 
 type UserConnectsFindOpts struct {
 	UserID Filter
 	FieldsOpts
 	PaginationOpts
+	OrderByOpts
 }

@@ -83,15 +83,15 @@ func (rc *ConnectRepository) ConnectsRequests(ctx context.Context, opts *model.C
 
 	connects := make([]connect, 0)
 
-	filter := rc.fillFilter(opts)
-	fields := rc.fillFields(opts)
-	query := rc.db.Model(&connects).Column(fields...)
+	query := rc.db.Model(&connects)
 
-	if filter != "" {
-		query = query.Where(filter)
-	}
+	query = applyOrderBy(query, opts.OrderByOpts)
 
-	query = query.Limit(opts.Limit).Offset(opts.Skip)
+	query = applyStandardQueries(query, opts.PaginationOpts)
+
+	query = rc.fillFields(query, opts)
+
+	query = rc.fillConnectsRequestsFilter(query, opts)
 
 	count, err := query.SelectAndCount()
 	if err != nil {
@@ -133,37 +133,35 @@ func (rc *ConnectRepository) GetByID(ctx context.Context, connectID string) (*mo
 	return rc.sqlToInternal(connect), nil
 }
 
-func (rc *ConnectRepository) fillFilter(opts *model.ConnectFindOpts) string {
-	filter := ""
-
+func (rc *ConnectRepository) fillConnectsRequestsFilter(tx *orm.Query, opts *model.ConnectFindOpts) *orm.Query {
 	if opts.Status.IsSended {
-		filter = addFilterClause(filter, "status", opts.Status.Value)
+		tx = applyFilterWithOperand(tx, "status", opts.Status)
 	}
 
 	if opts.FriendID.IsSended {
-		filter = addFilterClause(filter, "friend_id", opts.FriendID.Value)
+		tx = applyFilterWithOperand(tx, "friend_id", opts.FriendID)
 	}
 
-	return filter
+	return tx
 }
 
-func (rc *ConnectRepository) fillFields(opts *model.ConnectFindOpts) []string {
+func (rc *ConnectRepository) fillFields(tx *orm.Query, opts *model.ConnectFindOpts) *orm.Query {
 	fields := opts.Fields
 
 	if len(fields) == 0 {
-		return nil
+		return tx
 	}
 
 	if len(fields) == 1 && fields[0] == model.ZeroCreds {
-		return []string{
+		return tx.Column(
 			"id",
 			"status",
 			"user_id",
 			"friend_id",
-		}
+		)
 	}
 
-	return fields
+	return tx.Column(fields...)
 }
 
 func (rc *ConnectRepository) internalToSQL(newConnect *model.Connect) *connect {

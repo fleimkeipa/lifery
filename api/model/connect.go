@@ -37,5 +37,6 @@ type ConnectFindOpts struct {
 	Status   Filter
 	FriendID Filter
 	FieldsOpts
+	OrderByOpts
 	PaginationOpts
 }

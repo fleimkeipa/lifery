@@ -183,6 +183,7 @@ func (rc *ConnectHandlers) GetConnects(c echo.Context) error {
 func (rc *ConnectHandlers) getConnectsFindOpts(c echo.Context, fields ...string) model.ConnectFindOpts {
 	return model.ConnectFindOpts{
 		PaginationOpts: getPagination(c),
+		OrderByOpts:    getOrder(c),
 		FieldsOpts: model.FieldsOpts{
 			Fields: fields,
 		},
@@ -200,6 +201,7 @@ func (rc *ConnectHandlers) getUserConnectsFindOpts(c echo.Context, fields ...str
 
 	return model.UserConnectsFindOpts{
 		PaginationOpts: getPagination(c),
+		OrderByOpts:    getOrder(c),
 		FieldsOpts: model.FieldsOpts{
 			Fields: fields,
 		},
