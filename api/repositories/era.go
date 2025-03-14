@@ -2,11 +2,12 @@ package repositories
 
 import (
 	"context"
-	"fmt"
 	"log"
+	"net/http"
 	"strconv"
 
 	"github.com/fleimkeipa/lifery/model"
+	"github.com/fleimkeipa/lifery/pkg"
 	"github.com/fleimkeipa/lifery/util"
 
 	"github.com/go-pg/pg"
@@ -36,7 +37,7 @@ func (rc *EraRepository) Create(ctx context.Context, era *model.Era) (*model.Era
 
 	_, err := q.Insert()
 	if err != nil {
-		return nil, err
+		return nil, pkg.NewError(err, "failed to create era", http.StatusInternalServerError)
 	}
 
 	return rc.sqlToInternal(sqlEra), nil
@@ -44,7 +45,7 @@ func (rc *EraRepository) Create(ctx context.Context, era *model.Era) (*model.Era
 
 func (rc *EraRepository) Update(ctx context.Context, eraID string, era *model.Era) (*model.Era, error) {
 	if eraID == "" || eraID == "0" {
-		return nil, fmt.Errorf("invalid era id [%v]", eraID)
+		return nil, pkg.NewError(nil, "invalid era id "+eraID, http.StatusBadRequest)
 	}
 
 	era.ID = eraID
@@ -59,11 +60,11 @@ func (rc *EraRepository) Update(ctx context.Context, eraID string, era *model.Er
 
 	result, err := q.Update()
 	if err != nil {
-		return nil, err
+		return nil, pkg.NewError(err, "failed to update era", http.StatusInternalServerError)
 	}
 
 	if result.RowsAffected() == 0 {
-		return nil, fmt.Errorf("no era updated")
+		return nil, pkg.NewError(nil, "no era updated", http.StatusBadRequest)
 	}
 
 	return rc.sqlToInternal(sqlEra), nil
@@ -81,7 +82,7 @@ func (rc *EraRepository) Delete(ctx context.Context, id string) error {
 		return err
 	}
 	if result.RowsAffected() == 0 {
-		return fmt.Errorf("no era deleted")
+		return pkg.NewError(nil, "no era deleted", http.StatusBadRequest)
 	}
 
 	return nil
@@ -89,7 +90,7 @@ func (rc *EraRepository) Delete(ctx context.Context, id string) error {
 
 func (rc *EraRepository) List(ctx context.Context, opts *model.EraFindOpts) (*model.EraList, error) {
 	if opts == nil {
-		return nil, fmt.Errorf("opts is nil")
+		return nil, pkg.NewError(nil, "opts is nil", http.StatusBadRequest)
 	}
 
 	eras := make([]era, 0)
@@ -105,7 +106,7 @@ func (rc *EraRepository) List(ctx context.Context, opts *model.EraFindOpts) (*mo
 
 	count, err := query.SelectAndCount()
 	if err != nil {
-		return nil, err
+		return nil, pkg.NewError(err, "failed to list eras", http.StatusInternalServerError)
 	}
 
 	if count == 0 {
@@ -129,7 +130,7 @@ func (rc *EraRepository) List(ctx context.Context, opts *model.EraFindOpts) (*mo
 
 func (rc *EraRepository) GetByID(ctx context.Context, eraID string) (*model.Era, error) {
 	if eraID == "" || eraID == "0" {
-		return nil, fmt.Errorf("invalid era ID: %s", eraID)
+		return nil, pkg.NewError(nil, "invalid era ID: "+eraID, http.StatusBadRequest)
 	}
 
 	resp := new(eraGetResponse)
@@ -139,7 +140,7 @@ func (rc *EraRepository) GetByID(ctx context.Context, eraID string) (*model.Era,
 		Where("era.id = ?", eraID).
 		Select(resp)
 	if err != nil {
-		return nil, fmt.Errorf("failed to find era by ID [%s]: %w", eraID, err)
+		return nil, pkg.NewError(err, "failed to find era by ID "+eraID, http.StatusInternalServerError)
 	}
 
 	return rc.sqlToInternal2(resp), nil
@@ -207,7 +208,7 @@ func (rc *EraRepository) createSchema(db *pg.DB) error {
 	}
 
 	if err := db.Model(model).CreateTable(opts); err != nil {
-		return fmt.Errorf("failed to create era table: %w", err)
+		return pkg.NewError(err, "failed to create era table", http.StatusInternalServerError)
 	}
 
 	return nil

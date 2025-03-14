@@ -43,7 +43,7 @@ func (rc *EraUC) Create(ctx context.Context, req *model.EraCreateRequest) (*mode
 
 	newEra, err := rc.repo.Create(ctx, &era)
 	if err != nil {
-		return nil, pkg.NewError(err, "failed to create era", http.StatusInternalServerError)
+		return nil, err
 	}
 
 	return newEra, nil
@@ -75,18 +75,14 @@ func (rc *EraUC) Update(ctx context.Context, eraID string, req *model.EraUpdateR
 
 	updatedEra, err := rc.repo.Update(ctx, eraID, &era)
 	if err != nil {
-		return nil, pkg.NewError(err, "failed to update era", http.StatusInternalServerError)
+		return nil, err
 	}
 
 	return updatedEra, nil
 }
 
 func (rc *EraUC) Delete(ctx context.Context, id string) error {
-	if err := rc.repo.Delete(ctx, id); err != nil {
-		return pkg.NewError(err, "failed to delete era", http.StatusInternalServerError)
-	}
-
-	return nil
+	return rc.repo.Delete(ctx, id)
 }
 
 func (rc *EraUC) List(ctx context.Context, opts *model.EraFindOpts) (*model.EraList, error) {
@@ -120,7 +116,7 @@ func (rc *EraUC) List(ctx context.Context, opts *model.EraFindOpts) (*model.EraL
 func (rc *EraUC) GetByID(ctx context.Context, id string) (*model.Era, error) {
 	era, err := rc.repo.GetByID(ctx, id)
 	if err != nil {
-		return nil, pkg.NewError(err, "failed to get era", http.StatusInternalServerError)
+		return nil, err
 	}
 
 	return era, nil
@@ -129,7 +125,7 @@ func (rc *EraUC) GetByID(ctx context.Context, id string) (*model.Era, error) {
 func (rc *EraUC) list(ctx context.Context, opts *model.EraFindOpts) (*model.EraList, error) {
 	list, err := rc.repo.List(ctx, opts)
 	if err != nil {
-		return nil, pkg.NewError(err, "failed to list eras", http.StatusInternalServerError)
+		return nil, err
 	}
 
 	return list, nil
