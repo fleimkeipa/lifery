@@ -100,15 +100,14 @@ func (rc *EventRepository) List(ctx context.Context, opts *model.EventFindOpts) 
 
 	events := make([]event, 0)
 
-	filter := rc.fillFilter(opts)
 	fields := []string{"*"}
 	query := rc.db.Model(&events).Column(fields...)
 
-	if filter != "" {
-		query = query.Where(filter)
-	}
+	query = applyOrderBy(query, opts.OrderByOpts)
 
-	query = query.Limit(opts.Limit).Offset(opts.Skip)
+	query = applyStandardQueries(query, opts.PaginationOpts)
+
+	query = rc.fillFilter(query, opts)
 
 	count, err := query.SelectAndCount()
 	if err != nil {
@@ -150,15 +149,15 @@ func (rc *EventRepository) GetByID(ctx context.Context, eventID string) (*model.
 	return rc.sqlToInternal(event), nil
 }
 
-func (rc *EventRepository) fillFilter(opts *model.EventFindOpts) string {
-	filter := ""
+func (rc *EventRepository) fillFilter(tx *orm.Query, opts *model.EventFindOpts) *orm.Query {
+	filter := tx
 
 	if opts.UserID.IsSended {
-		filter = addFilterClause(filter, "owner_id", opts.UserID.Value)
+		filter = applyFilterWithOperand(tx, "owner_id", opts.UserID)
 	}
 
 	if opts.Visibility.IsSended {
-		filter = addFilterClause(filter, "visibility", opts.Visibility.Value)
+		filter = applyFilterWithOperand(tx, "visibility", opts.Visibility)
 	}
 
 	return filter

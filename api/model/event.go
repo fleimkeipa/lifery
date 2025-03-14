@@ -65,4 +65,5 @@ type EventFindOpts struct {
 	UserID     Filter
 	Visibility Filter
 	PaginationOpts
+	OrderByOpts
 }
