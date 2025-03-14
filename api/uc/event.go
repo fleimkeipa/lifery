@@ -53,7 +53,7 @@ func (rc *EventUC) Create(ctx context.Context, req *model.EventCreateRequest) (*
 
 	newEvent, err := rc.repo.Create(ctx, &event)
 	if err != nil {
-		return nil, pkg.NewError(err, "failed to create event", http.StatusInternalServerError)
+		return nil, err
 	}
 
 	return newEvent, nil
@@ -79,18 +79,14 @@ func (rc *EventUC) Update(ctx context.Context, eventID string, req *model.EventU
 
 	updatedEvent, err := rc.repo.Update(ctx, eventID, &event)
 	if err != nil {
-		return nil, pkg.NewError(err, "failed to update event", http.StatusInternalServerError)
+		return nil, err
 	}
 
 	return updatedEvent, nil
 }
 
 func (rc *EventUC) Delete(ctx context.Context, id string) error {
-	if err := rc.repo.Delete(ctx, id); err != nil {
-		return pkg.NewError(err, "failed to delete event", http.StatusInternalServerError)
-	}
-
-	return nil
+	return rc.repo.Delete(ctx, id)
 }
 
 func (rc *EventUC) List(ctx context.Context, opts *model.EventFindOpts) (*model.EventList, error) {
@@ -145,19 +141,9 @@ func (rc *EventUC) List(ctx context.Context, opts *model.EventFindOpts) (*model.
 }
 
 func (rc *EventUC) GetByID(ctx context.Context, id string) (*model.Event, error) {
-	event, err := rc.repo.GetByID(ctx, id)
-	if err != nil {
-		return nil, pkg.NewError(err, "failed to get event", http.StatusInternalServerError)
-	}
-
-	return event, nil
+	return rc.repo.GetByID(ctx, id)
 }
 
 func (rc *EventUC) list(ctx context.Context, opts *model.EventFindOpts) (*model.EventList, error) {
-	list, err := rc.repo.List(ctx, opts)
-	if err != nil {
-		return nil, pkg.NewError(err, "failed to list events", http.StatusInternalServerError)
-	}
-
-	return list, nil
+	return rc.repo.List(ctx, opts)
 }

@@ -2,12 +2,12 @@ package repositories
 
 import (
 	"context"
-	"errors"
-	"fmt"
 	"log"
+	"net/http"
 	"strconv"
 
 	"github.com/fleimkeipa/lifery/model"
+	"github.com/fleimkeipa/lifery/pkg"
 	"github.com/fleimkeipa/lifery/util"
 
 	"github.com/go-pg/pg"
@@ -41,7 +41,7 @@ func (rc *EventRepository) Create(ctx context.Context, event *model.Event) (*mod
 
 	_, err := q.Insert()
 	if err != nil {
-		return nil, fmt.Errorf("failed to create event [%v]: %w", event.Name, err)
+		return nil, pkg.NewError(err, "failed to create event "+event.Name, http.StatusInternalServerError)
 	}
 
 	return rc.sqlToInternal(sqlEvent), nil
@@ -49,7 +49,7 @@ func (rc *EventRepository) Create(ctx context.Context, event *model.Event) (*mod
 
 func (rc *EventRepository) Update(ctx context.Context, eventID string, event *model.Event) (*model.Event, error) {
 	if eventID == "" || eventID == "0" {
-		return nil, fmt.Errorf("event id is empty")
+		return nil, pkg.NewError(nil, "event id is empty", http.StatusBadRequest)
 	}
 
 	event.ID = eventID
@@ -64,11 +64,11 @@ func (rc *EventRepository) Update(ctx context.Context, eventID string, event *mo
 
 	result, err := q.Update()
 	if err != nil {
-		return nil, fmt.Errorf("failed to update event [%v]: %w", sqlEvent.Name, err)
+		return nil, pkg.NewError(err, "failed to update event "+sqlEvent.Name, http.StatusInternalServerError)
 	}
 
 	if result.RowsAffected() == 0 {
-		return nil, fmt.Errorf("no event updated: [%s]", eventID)
+		return nil, pkg.NewError(nil, "no event updated: "+eventID, http.StatusBadRequest)
 	}
 
 	return rc.sqlToInternal(sqlEvent), nil
@@ -83,11 +83,11 @@ func (rc *EventRepository) Delete(ctx context.Context, eventID string) error {
 
 	result, err := q.Delete()
 	if err != nil {
-		return fmt.Errorf("failed to delete event [%s]: %w", eventID, err)
+		return pkg.NewError(err, "failed to delete event "+eventID, http.StatusInternalServerError)
 	}
 
 	if result.RowsAffected() == 0 {
-		return fmt.Errorf("no event deleted: [%s]", eventID)
+		return pkg.NewError(nil, "no event deleted: "+eventID, http.StatusBadRequest)
 	}
 
 	return nil
@@ -95,7 +95,7 @@ func (rc *EventRepository) Delete(ctx context.Context, eventID string) error {
 
 func (rc *EventRepository) List(ctx context.Context, opts *model.EventFindOpts) (*model.EventList, error) {
 	if opts == nil {
-		return nil, errors.New("opts is nil")
+		return nil, pkg.NewError(nil, "opts is nil", http.StatusBadRequest)
 	}
 
 	events := make([]event, 0)
@@ -111,7 +111,7 @@ func (rc *EventRepository) List(ctx context.Context, opts *model.EventFindOpts) 
 
 	count, err := query.SelectAndCount()
 	if err != nil {
-		return nil, fmt.Errorf("failed to list events: %w", err)
+		return nil, pkg.NewError(err, "failed to list events", http.StatusInternalServerError)
 	}
 
 	if count == 0 {
@@ -135,7 +135,7 @@ func (rc *EventRepository) List(ctx context.Context, opts *model.EventFindOpts) 
 
 func (rc *EventRepository) GetByID(ctx context.Context, eventID string) (*model.Event, error) {
 	if eventID == "" || eventID == "0" {
-		return nil, fmt.Errorf("invalid event ID: %s", eventID)
+		return nil, pkg.NewError(nil, "invalid event ID: "+eventID, http.StatusBadRequest)
 	}
 
 	event := new(event)
@@ -143,24 +143,22 @@ func (rc *EventRepository) GetByID(ctx context.Context, eventID string) (*model.
 	query := rc.db.Model(event).Where("id = ?", eventID)
 
 	if err := query.Select(); err != nil {
-		return nil, fmt.Errorf("failed to find event by ID [%s]: %w", eventID, err)
+		return nil, pkg.NewError(err, "failed to find event by ID "+eventID, http.StatusInternalServerError)
 	}
 
 	return rc.sqlToInternal(event), nil
 }
 
 func (rc *EventRepository) fillFilter(tx *orm.Query, opts *model.EventFindOpts) *orm.Query {
-	filter := tx
-
 	if opts.UserID.IsSended {
-		filter = applyFilterWithOperand(tx, "owner_id", opts.UserID)
+		tx = applyFilterWithOperand(tx, "owner_id", opts.UserID)
 	}
 
 	if opts.Visibility.IsSended {
-		filter = applyFilterWithOperand(tx, "visibility", opts.Visibility)
+		tx = applyFilterWithOperand(tx, "visibility", opts.Visibility)
 	}
 
-	return filter
+	return tx
 }
 
 func (rc *EventRepository) internalToSQL(newEvent *model.Event) *event {
@@ -222,7 +220,7 @@ func (rc *EventRepository) createSchema(db *pg.DB) error {
 	}
 
 	if err := db.Model(model).CreateTable(opts); err != nil {
-		return fmt.Errorf("failed to create event table: %w", err)
+		return pkg.NewError(err, "failed to create event table", http.StatusInternalServerError)
 	}
 
 	return nil
