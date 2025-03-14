@@ -2,24 +2,11 @@ package repositories
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/fleimkeipa/lifery/model"
 
 	"github.com/go-pg/pg/orm"
 )
-
-func addFilterClause(filter string, key string, value string) string {
-	if filter == "" {
-		return fmt.Sprintf("%s = '%s'", key, value)
-	}
-
-	if strings.Contains(value, ",") {
-		return fmt.Sprintf("%s AND %s IN (%s)", filter, key, value)
-	}
-
-	return fmt.Sprintf("%s AND %s = '%s'", filter, key, value)
-}
 
 func applyStandardQueries(tx *orm.Query, pagination model.PaginationOpts) *orm.Query {
 	page := 1

@@ -2,7 +2,6 @@ package uc
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
 
@@ -33,12 +32,12 @@ func (rc *ConnectsUC) Create(ctx context.Context, req model.ConnectCreateRequest
 	}
 
 	if ownerID == req.FriendID {
-		return nil, errors.New("cannot connect to self")
+		return nil, pkg.NewError(nil, "cannot connect to self", http.StatusBadRequest)
 	}
 
 	// owner control
 	if !rc.isOwner(ctx, ownerID) {
-		return nil, errors.New("you can't connect to other users")
+		return nil, pkg.NewError(nil, "you can't connect to other users", http.StatusBadRequest)
 	}
 
 	// receiver exist control
@@ -57,7 +56,7 @@ func (rc *ConnectsUC) Create(ctx context.Context, req model.ConnectCreateRequest
 	for _, v := range connects {
 		strID := strconv.Itoa(v)
 		if strID == req.FriendID {
-			return nil, errors.New("already connected")
+			return nil, pkg.NewError(nil, "already connected", http.StatusBadRequest)
 		}
 	}
 

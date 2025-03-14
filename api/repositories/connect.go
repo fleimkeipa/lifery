@@ -2,11 +2,12 @@ package repositories
 
 import (
 	"context"
-	"fmt"
 	"log"
+	"net/http"
 	"strconv"
 
 	"github.com/fleimkeipa/lifery/model"
+	"github.com/fleimkeipa/lifery/pkg"
 
 	"github.com/go-pg/pg"
 	"github.com/go-pg/pg/orm"
@@ -35,7 +36,7 @@ func (rc *ConnectRepository) Create(ctx context.Context, connect *model.Connect)
 
 	_, err := q.Insert()
 	if err != nil {
-		return nil, fmt.Errorf("failed to create connect ID [%v]: %w", connect.ID, err)
+		return nil, pkg.NewError(err, "failed to create connect ID "+connect.ID, http.StatusInternalServerError)
 	}
 
 	return rc.sqlToInternal(sqlConnect), nil
@@ -43,7 +44,7 @@ func (rc *ConnectRepository) Create(ctx context.Context, connect *model.Connect)
 
 func (rc *ConnectRepository) Update(ctx context.Context, connectID string, connect *model.Connect) (*model.Connect, error) {
 	if connectID == "" || connectID == "0" {
-		return nil, fmt.Errorf("connect id is empty")
+		return nil, pkg.NewError(nil, "connect id is empty", http.StatusBadRequest)
 	}
 
 	connect.ID = connectID
@@ -54,11 +55,11 @@ func (rc *ConnectRepository) Update(ctx context.Context, connectID string, conne
 
 	result, err := q.Update()
 	if err != nil {
-		return nil, fmt.Errorf("failed to update connect ID [%v]: %w", connectID, err)
+		return nil, pkg.NewError(err, "failed to update connect ID "+connectID, http.StatusInternalServerError)
 	}
 
 	if result.RowsAffected() == 0 {
-		return nil, fmt.Errorf("no connect updated")
+		return nil, pkg.NewError(nil, "no connect updated", http.StatusBadRequest)
 	}
 
 	return rc.sqlToInternal(sqlConnect), nil
@@ -67,10 +68,10 @@ func (rc *ConnectRepository) Update(ctx context.Context, connectID string, conne
 func (rc *ConnectRepository) Delete(ctx context.Context, id string) error {
 	result, err := rc.db.Model(&connect{}).Where("id = ?", id).Delete()
 	if err != nil {
-		return fmt.Errorf("failed to delete connect: %w", err)
+		return pkg.NewError(err, "failed to delete connect", http.StatusInternalServerError)
 	}
 	if result.RowsAffected() == 0 {
-		return fmt.Errorf("no connect deleted")
+		return pkg.NewError(nil, "no connect deleted", http.StatusBadRequest)
 	}
 
 	return nil
@@ -78,7 +79,7 @@ func (rc *ConnectRepository) Delete(ctx context.Context, id string) error {
 
 func (rc *ConnectRepository) ConnectsRequests(ctx context.Context, opts *model.ConnectFindOpts) (*model.ConnectList, error) {
 	if opts == nil {
-		return nil, fmt.Errorf("opts is nil")
+		return nil, pkg.NewError(nil, "opts is nil", http.StatusBadRequest)
 	}
 
 	connects := make([]connect, 0)
@@ -95,7 +96,7 @@ func (rc *ConnectRepository) ConnectsRequests(ctx context.Context, opts *model.C
 
 	count, err := query.SelectAndCount()
 	if err != nil {
-		return nil, fmt.Errorf("failed to list connects: %w", err)
+		return nil, pkg.NewError(err, "failed to list connects", http.StatusInternalServerError)
 	}
 
 	if count == 0 {
@@ -119,7 +120,7 @@ func (rc *ConnectRepository) ConnectsRequests(ctx context.Context, opts *model.C
 
 func (rc *ConnectRepository) GetByID(ctx context.Context, connectID string) (*model.Connect, error) {
 	if connectID == "" || connectID == "0" {
-		return nil, fmt.Errorf("invalid connect ID: %s", connectID)
+		return nil, pkg.NewError(nil, "invalid connect ID: "+connectID, http.StatusBadRequest)
 	}
 
 	connect := new(connect)
@@ -127,7 +128,7 @@ func (rc *ConnectRepository) GetByID(ctx context.Context, connectID string) (*mo
 	query := rc.db.Model(connect).Where("id = ?", connectID)
 
 	if err := query.Select(); err != nil {
-		return nil, fmt.Errorf("failed to find connect by id [%s]: %w", connectID, err)
+		return nil, pkg.NewError(err, "failed to find connect by id "+connectID, http.StatusInternalServerError)
 	}
 
 	return rc.sqlToInternal(connect), nil
@@ -199,7 +200,7 @@ func (rc *ConnectRepository) createSchema(db *pg.DB) error {
 	}
 
 	if err := db.Model(model).CreateTable(opts); err != nil {
-		return fmt.Errorf("failed to create connect table: %w", err)
+		return pkg.NewError(err, "failed to create connect table", http.StatusInternalServerError)
 	}
 
 	return nil
