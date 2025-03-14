@@ -1,7 +1,5 @@
 package pkg
 
-import "errors"
-
 // Error struct defines a custom error type with an error, status code, and message.
 type Error struct {
 	err        error
@@ -11,9 +9,6 @@ type Error struct {
 
 // NewError creates a new instance of the Error struct.
 func NewError(err error, message string, statusCode int) *Error {
-	if err == nil {
-		err = errors.New("error")
-	}
 	return &Error{
 		err:        err,
 		message:    message,
@@ -23,6 +18,9 @@ func NewError(err error, message string, statusCode int) *Error {
 
 // Error implements the error interface by returning the original error message.
 func (rc *Error) Error() string {
+	if rc.err == nil {
+		return ""
+	}
 	return rc.err.Error()
 }
 
