@@ -1,13 +1,5 @@
 package model
 
-type InternalRequest struct {
-	Body       interface{}
-	Headers    map[string]string
-	Method     string
-	Paths      []string
-	Pagination PaginationOpts
-}
-
 type PaginationOpts struct {
 	Limit int `json:"limit"`
 	Skip  int `json:"skip"`
