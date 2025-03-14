@@ -20,9 +20,9 @@ func NewPSQLClient() *pg.DB {
 	}
 
 	opts := pg.Options{
-		Database: "lifery",
-		User:     "postgres",
-		Password: "password",
+		Database: os.Getenv("DB_NAME"),
+		User:     os.Getenv("DB_USER"),
+		Password: os.Getenv("DB_PASSWORD"),
 		Addr:     addr,
 	}
 	db := pg.Connect(&opts)

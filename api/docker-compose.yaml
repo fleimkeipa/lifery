@@ -17,9 +17,9 @@ services:
     image: postgres:latest
     container_name: postgres
     environment:
-      - POSTGRES_DB=lifery
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
     ports:
       - "5432:5432"
 
