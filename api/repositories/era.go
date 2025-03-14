@@ -36,7 +36,7 @@ func (rc *EraRepository) Create(ctx context.Context, era *model.Era) (*model.Era
 
 	_, err := q.Insert()
 	if err != nil {
-		return nil, fmt.Errorf("failed to create era [%v]: %w", era.Name, err)
+		return nil, err
 	}
 
 	return rc.sqlToInternal(sqlEra), nil
@@ -59,7 +59,7 @@ func (rc *EraRepository) Update(ctx context.Context, eraID string, era *model.Er
 
 	result, err := q.Update()
 	if err != nil {
-		return nil, fmt.Errorf("failed to update era [%v]: %w", sqlEra.Name, err)
+		return nil, err
 	}
 
 	if result.RowsAffected() == 0 {
@@ -78,7 +78,7 @@ func (rc *EraRepository) Delete(ctx context.Context, id string) error {
 
 	result, err := q.Delete()
 	if err != nil {
-		return fmt.Errorf("failed to delete era: %w", err)
+		return err
 	}
 	if result.RowsAffected() == 0 {
 		return fmt.Errorf("no era deleted")
@@ -94,19 +94,18 @@ func (rc *EraRepository) List(ctx context.Context, opts *model.EraFindOpts) (*mo
 
 	eras := make([]era, 0)
 
-	filter := rc.fillFilter(opts)
 	fields := []string{"*"}
 	query := rc.db.Model(&eras).Column(fields...)
 
-	if filter != "" {
-		query = query.Where(filter)
-	}
+	query = applyOrderBy(query, opts.OrderByOpts)
 
-	query = query.Limit(opts.Limit).Offset(opts.Skip)
+	query = applyStandardQueries(query, opts.PaginationOpts)
+
+	query = rc.fillFilter(query, opts)
 
 	count, err := query.SelectAndCount()
 	if err != nil {
-		return nil, fmt.Errorf("failed to list eras: %w", err)
+		return nil, err
 	}
 
 	if count == 0 {
@@ -146,15 +145,15 @@ func (rc *EraRepository) GetByID(ctx context.Context, eraID string) (*model.Era,
 	return rc.sqlToInternal2(resp), nil
 }
 
-func (rc *EraRepository) fillFilter(opts *model.EraFindOpts) string {
-	filter := ""
+func (rc *EraRepository) fillFilter(tx *orm.Query, opts *model.EraFindOpts) *orm.Query {
+	filter := tx
 
 	if opts.Name.IsSended {
-		filter = addFilterClause(filter, "name", opts.Name.Value)
+		filter = applyFilterWithOperand(tx, "name", opts.Name)
 	}
 
 	if opts.UserID.IsSended {
-		filter = addFilterClause(filter, "owner_id", opts.UserID.Value)
+		filter = applyFilterWithOperand(tx, "owner_id", opts.UserID)
 	}
 
 	return filter

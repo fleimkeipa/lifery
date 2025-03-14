@@ -418,6 +418,10 @@ paths:
         in: query
         name: skip
         type: string
+      - description: Order by column
+        in: query
+        name: order
+        type: string
       produces:
       - application/json
       responses:

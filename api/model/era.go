@@ -33,5 +33,6 @@ type EraList struct {
 type EraFindOpts struct {
 	Name   Filter
 	UserID Filter
+	OrderByOpts
 	PaginationOpts
 }

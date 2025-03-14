@@ -9,15 +9,37 @@ type InternalRequest struct {
 }
 
 type PaginationOpts struct {
-	Limit int
-	Skip  int
+	Limit int `json:"limit"`
+	Skip  int `json:"skip"`
 }
+
+type OrderByOpts struct {
+	IsSended bool
+	Column   string
+	OrderBy  string
+}
+
+type Operand string
+
+func (o Operand) String() string {
+	return string(o)
+}
+
+const (
+	OperandEqual        Operand = "eq"
+	OperandNot          Operand = "ne"
+	OperandGreater      Operand = "gt"
+	OperandGreaterEqual Operand = "gte"
+	OperandLess         Operand = "lt"
+	OperandLessEqual    Operand = "lte"
+	OperandLike         Operand = "like"
+)
 
 type Filter struct {
 	Value    string
+	Operand  Operand
 	IsSended bool
 }
-
 type FieldsOpts struct {
 	Fields []string
 }

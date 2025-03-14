@@ -359,6 +359,12 @@ const docTemplate = `{
                         "description": "Number of connects to skip for pagination",
                         "name": "skip",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Order by column",
+                        "name": "order",
+                        "in": "query"
                     }
                 ],
                 "responses": {
