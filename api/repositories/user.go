@@ -2,12 +2,12 @@ package repositories
 
 import (
 	"context"
-	"errors"
-	"fmt"
 	"log"
+	"net/http"
 	"strconv"
 
 	"github.com/fleimkeipa/lifery/model"
+	"github.com/fleimkeipa/lifery/pkg"
 
 	"github.com/go-pg/pg"
 	"github.com/go-pg/pg/orm"
@@ -40,7 +40,7 @@ func (rc *UserRepository) Create(ctx context.Context, newUser *model.User) (*mod
 
 	_, err := q.Insert()
 	if err != nil {
-		return nil, fmt.Errorf("failed to create user: %w", err)
+		return nil, pkg.NewError(err, "failed to create user", http.StatusInternalServerError)
 	}
 
 	return rc.sqlToInternal(sqlUser), nil
@@ -48,7 +48,7 @@ func (rc *UserRepository) Create(ctx context.Context, newUser *model.User) (*mod
 
 func (rc *UserRepository) Update(ctx context.Context, userID string, user *model.User) (*model.User, error) {
 	if userID == "" || userID == "0" {
-		return nil, fmt.Errorf("user id is empty")
+		return nil, pkg.NewError(nil, "user id is empty", http.StatusBadRequest)
 	}
 
 	user.ID = userID
@@ -59,11 +59,11 @@ func (rc *UserRepository) Update(ctx context.Context, userID string, user *model
 
 	result, err := q.Update()
 	if err != nil {
-		return nil, fmt.Errorf("failed to update user: %w", err)
+		return nil, pkg.NewError(err, "failed to update user", http.StatusInternalServerError)
 	}
 
 	if result.RowsAffected() == 0 {
-		return nil, fmt.Errorf("no user updated")
+		return nil, pkg.NewError(nil, "no user updated", http.StatusBadRequest)
 	}
 
 	return rc.sqlToInternal(sqlUser), nil
@@ -72,10 +72,10 @@ func (rc *UserRepository) Update(ctx context.Context, userID string, user *model
 func (rc *UserRepository) Delete(ctx context.Context, id string) error {
 	result, err := rc.db.Model(&user{}).Where("id = ?", id).Delete()
 	if err != nil {
-		return fmt.Errorf("failed to delete user: %w", err)
+		return pkg.NewError(err, "failed to delete user", http.StatusInternalServerError)
 	}
 	if result.RowsAffected() == 0 {
-		return fmt.Errorf("no user deleted: %s", id)
+		return pkg.NewError(nil, "no user deleted: "+id, http.StatusBadRequest)
 	}
 
 	return nil
@@ -83,7 +83,7 @@ func (rc *UserRepository) Delete(ctx context.Context, id string) error {
 
 func (rc *UserRepository) List(ctx context.Context, opts *model.UserFindOpts) (*model.UserList, error) {
 	if opts == nil {
-		return nil, fmt.Errorf("opts is nil")
+		return nil, pkg.NewError(nil, "opts is nil", http.StatusBadRequest)
 	}
 
 	users := make([]user, 0)
@@ -100,7 +100,7 @@ func (rc *UserRepository) List(ctx context.Context, opts *model.UserFindOpts) (*
 
 	count, err := query.SelectAndCount()
 	if err != nil {
-		return nil, fmt.Errorf("failed to list users: %w", err)
+		return nil, pkg.NewError(err, "failed to list users", http.StatusInternalServerError)
 	}
 
 	if count == 0 {
@@ -124,7 +124,7 @@ func (rc *UserRepository) List(ctx context.Context, opts *model.UserFindOpts) (*
 
 func (rc *UserRepository) GetByID(ctx context.Context, userID string) (*model.User, error) {
 	if userID == "" || userID == "0" {
-		return nil, fmt.Errorf("invalid user ID: %s", userID)
+		return nil, pkg.NewError(nil, "invalid user ID: "+userID, http.StatusBadRequest)
 	}
 
 	var user user
@@ -132,7 +132,7 @@ func (rc *UserRepository) GetByID(ctx context.Context, userID string) (*model.Us
 	query := rc.db.Model(&user).Where("id = ?", userID)
 
 	if err := query.Select(); err != nil {
-		return nil, fmt.Errorf("failed to find user by id [%s]: %w", userID, err)
+		return nil, pkg.NewError(err, "failed to find user by id "+userID, http.StatusInternalServerError)
 	}
 
 	return rc.sqlToInternal(&user), nil
@@ -140,7 +140,7 @@ func (rc *UserRepository) GetByID(ctx context.Context, userID string) (*model.Us
 
 func (rc *UserRepository) GetByUsernameOrEmail(ctx context.Context, usernameOrEmail string) (*model.User, error) {
 	if usernameOrEmail == "" {
-		return nil, errors.New("missing username or email")
+		return nil, pkg.NewError(nil, "missing username or email", http.StatusBadRequest)
 	}
 
 	var user user
@@ -150,7 +150,7 @@ func (rc *UserRepository) GetByUsernameOrEmail(ctx context.Context, usernameOrEm
 	query = query.Where("username = ? OR email = ?", usernameOrEmail, usernameOrEmail)
 
 	if err := query.Select(); err != nil {
-		return nil, fmt.Errorf("failed to get user by [%s]: %w", usernameOrEmail, err)
+		return nil, pkg.NewError(err, "failed to get user by "+usernameOrEmail, http.StatusInternalServerError)
 	}
 
 	return rc.sqlToInternal(&user), nil
@@ -158,7 +158,7 @@ func (rc *UserRepository) GetByUsernameOrEmail(ctx context.Context, usernameOrEm
 
 func (rc *UserRepository) GetConnects(ctx context.Context, opts *model.UserConnectsFindOpts) (*model.UserConnects, error) {
 	if !opts.UserID.IsSended {
-		return nil, errors.New("missing user id")
+		return nil, pkg.NewError(nil, "missing user id", http.StatusBadRequest)
 	}
 
 	var connects userConnects
@@ -173,7 +173,7 @@ func (rc *UserRepository) GetConnects(ctx context.Context, opts *model.UserConne
 
 	count, err := query.SelectAndCount()
 	if err != nil {
-		return nil, fmt.Errorf("failed to get user connects: %w", err)
+		return nil, pkg.NewError(err, "failed to get user connects", http.StatusInternalServerError)
 	}
 
 	if len(connects.Connects) == 0 {
@@ -197,7 +197,7 @@ func (rc *UserRepository) GetConnects(ctx context.Context, opts *model.UserConne
 
 func (rc *UserRepository) Exists(ctx context.Context, usernameOrEmail string) (bool, error) {
 	if usernameOrEmail == "" {
-		return false, fmt.Errorf("invalid username or email")
+		return false, pkg.NewError(nil, "invalid username or email", http.StatusBadRequest)
 	}
 
 	query := rc.db.Model(&user{})
@@ -206,7 +206,7 @@ func (rc *UserRepository) Exists(ctx context.Context, usernameOrEmail string) (b
 
 	exists, err := query.Exists()
 	if err != nil {
-		return false, fmt.Errorf("failed to get user by [%s]: %w", usernameOrEmail, err)
+		return false, pkg.NewError(err, "failed to get user by "+usernameOrEmail, http.StatusInternalServerError)
 	}
 
 	return exists, nil
@@ -285,7 +285,7 @@ func (rc *UserRepository) createSchema(db *pg.DB) error {
 	}
 
 	if err := db.Model(model).CreateTable(opts); err != nil {
-		return fmt.Errorf("failed to create user table: %w", err)
+		return pkg.NewError(err, "failed to create user table", http.StatusInternalServerError)
 	}
 
 	return nil

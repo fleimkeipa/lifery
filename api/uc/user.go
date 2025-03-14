@@ -39,7 +39,7 @@ func (rc *UserUC) Create(ctx context.Context, req model.UserCreateRequest) (*mod
 
 	newUser, err := rc.userRepo.Create(ctx, &user)
 	if err != nil {
-		return nil, pkg.NewError(err, "failed to create user", http.StatusInternalServerError)
+		return nil, err
 	}
 
 	return newUser, nil
@@ -67,7 +67,7 @@ func (rc *UserUC) Update(ctx context.Context, userID string, req model.UserCreat
 
 	updatedUser, err := rc.userRepo.Update(ctx, userID, &user)
 	if err != nil {
-		return nil, pkg.NewError(err, "failed to update user", http.StatusInternalServerError)
+		return nil, err
 	}
 
 	return updatedUser, nil
@@ -139,7 +139,7 @@ func (rc *UserUC) DeleteConnect(ctx context.Context, userID, friendID string) (*
 func (rc *UserUC) GetConnects(ctx context.Context, opts *model.UserConnectsFindOpts) (*model.UserConnects, error) {
 	list, err := rc.userRepo.GetConnects(ctx, opts)
 	if err != nil {
-		return nil, pkg.NewError(err, "failed to get user connects", http.StatusInternalServerError)
+		return nil, err
 	}
 
 	return list, nil
@@ -148,7 +148,7 @@ func (rc *UserUC) GetConnects(ctx context.Context, opts *model.UserConnectsFindO
 func (rc *UserUC) List(ctx context.Context, opts *model.UserFindOpts) (*model.UserList, error) {
 	list, err := rc.userRepo.List(ctx, opts)
 	if err != nil {
-		return nil, pkg.NewError(err, "failed to list users", http.StatusInternalServerError)
+		return nil, err
 	}
 
 	return list, nil
@@ -157,7 +157,7 @@ func (rc *UserUC) List(ctx context.Context, opts *model.UserFindOpts) (*model.Us
 func (rc *UserUC) GetByID(ctx context.Context, id string) (*model.User, error) {
 	user, err := rc.userRepo.GetByID(ctx, id)
 	if err != nil {
-		return nil, pkg.NewError(err, "user not found", http.StatusNotFound)
+		return nil, err
 	}
 
 	return user, nil
@@ -166,7 +166,7 @@ func (rc *UserUC) GetByID(ctx context.Context, id string) (*model.User, error) {
 func (rc *UserUC) GetByUsernameOrEmail(ctx context.Context, usernameOrEmail string) (*model.User, error) {
 	user, err := rc.userRepo.GetByUsernameOrEmail(ctx, usernameOrEmail)
 	if err != nil {
-		return nil, pkg.NewError(err, "user not found", http.StatusNotFound)
+		return nil, err
 	}
 
 	return user, nil
@@ -175,7 +175,7 @@ func (rc *UserUC) GetByUsernameOrEmail(ctx context.Context, usernameOrEmail stri
 func (rc *UserUC) Exists(ctx context.Context, usernameOrEmail string) (bool, error) {
 	exists, err := rc.userRepo.Exists(ctx, usernameOrEmail)
 	if err != nil {
-		return false, pkg.NewError(err, "failed to get user by username or email", http.StatusInternalServerError)
+		return false, err
 	}
 
 	return exists, nil
@@ -183,7 +183,7 @@ func (rc *UserUC) Exists(ctx context.Context, usernameOrEmail string) (bool, err
 
 func (rc *UserUC) Delete(ctx context.Context, userID string) error {
 	if err := rc.userRepo.Delete(ctx, userID); err != nil {
-		return pkg.NewError(err, "failed to delete user", http.StatusInternalServerError)
+		return err
 	}
 
 	return nil
@@ -192,14 +192,14 @@ func (rc *UserUC) Delete(ctx context.Context, userID string) error {
 func (rc *UserUC) addConnect(ctx context.Context, user *model.User, senderID, receiverID string) (*model.User, error) {
 	sID, err := strconv.Atoi(senderID)
 	if err != nil {
-		return nil, pkg.NewError(err, "failed to convert string to int", http.StatusBadRequest)
+		return nil, err
 	}
 
 	user.Connects = append(user.Connects, int(sID))
 
 	updatedUser, err := rc.userRepo.Update(ctx, receiverID, user)
 	if err != nil {
-		return nil, pkg.NewError(err, "failed to update user", http.StatusInternalServerError)
+		return nil, err
 	}
 
 	return updatedUser, nil
@@ -215,7 +215,7 @@ func (rc *UserUC) deleteConnect(ctx context.Context, user *model.User, userID st
 
 	updatedUser, err := rc.userRepo.Update(ctx, userID, user)
 	if err != nil {
-		return nil, pkg.NewError(err, "failed to update user", http.StatusInternalServerError)
+		return nil, err
 	}
 
 	return updatedUser, nil
