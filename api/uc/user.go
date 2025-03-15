@@ -9,6 +9,7 @@ import (
 	"github.com/fleimkeipa/lifery/model"
 	"github.com/fleimkeipa/lifery/pkg"
 	"github.com/fleimkeipa/lifery/repositories/interfaces"
+	"github.com/fleimkeipa/lifery/util"
 )
 
 type UserUC struct {
@@ -22,6 +23,30 @@ func NewUserUC(repo interfaces.UserInterfaces) *UserUC {
 }
 
 func (rc *UserUC) Create(ctx context.Context, req model.UserCreateRequest) (*model.User, error) {
+	if req.RoleID == 0 {
+		req.RoleID = model.EditorRole
+	}
+
+	if req.RoleID == model.AdminRole {
+		user := util.GetOwnerFromCtx(ctx)
+		if user.RoleID != model.AdminRole {
+			return nil, pkg.NewError(nil, "Only admin can create admin user", http.StatusBadRequest)
+		}
+	}
+
+	exists, err := rc.Exists(ctx, req.Username)
+	if err != nil {
+		return nil, err
+	}
+
+	if exists {
+		return nil, pkg.NewError(nil, "User already exists", http.StatusBadRequest)
+	}
+
+	if req.Password != req.ConfirmPassword {
+		return nil, pkg.NewError(nil, "Password and confirm password do not match", http.StatusBadRequest)
+	}
+
 	user := model.User{
 		Username: req.Username,
 		Email:    req.Email,

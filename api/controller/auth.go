@@ -54,30 +54,12 @@ func (rc *AuthHandlers) Register(c echo.Context) error {
 		})
 	}
 
-	exists, err := rc.userUC.Exists(c.Request().Context(), input.Username)
-	if err != nil {
-		return HandleEchoError(c, err)
-	}
-
-	if exists {
-		return c.JSON(http.StatusBadRequest, FailureResponse{
-			Error:   fmt.Sprintf("User already exists: %v", err),
-			Message: "User already exists. Please choose a different username.",
-		})
-	}
-
-	if input.Password != input.ConfirmPassword {
-		return c.JSON(http.StatusBadRequest, FailureResponse{
-			Error:   fmt.Sprintf("Password does not match: %v", err),
-			Message: "Password and confirm password do not match. Please try again.",
-		})
-	}
-
 	newUser := model.UserCreateRequest{
-		Username: input.Username,
-		Email:    input.Email,
-		Password: input.Password,
-		RoleID:   input.RoleID,
+		Username:        input.Username,
+		Email:           input.Email,
+		Password:        input.Password,
+		ConfirmPassword: input.ConfirmPassword,
+		RoleID:          input.RoleID,
 	}
 
 	user, err := rc.userUC.Create(c.Request().Context(), newUser)
