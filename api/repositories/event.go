@@ -114,10 +114,6 @@ func (rc *EventRepository) List(ctx context.Context, opts *model.EventFindOpts) 
 		return nil, pkg.NewError(err, "failed to list events", http.StatusInternalServerError)
 	}
 
-	if count == 0 {
-		return &model.EventList{}, nil
-	}
-
 	internalEvents := make([]model.Event, 0)
 	for _, v := range events {
 		internalEvents = append(internalEvents, *rc.sqlToInternal(&v))

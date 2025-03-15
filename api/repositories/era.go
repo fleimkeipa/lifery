@@ -109,10 +109,6 @@ func (rc *EraRepository) List(ctx context.Context, opts *model.EraFindOpts) (*mo
 		return nil, pkg.NewError(err, "failed to list eras", http.StatusInternalServerError)
 	}
 
-	if count == 0 {
-		return &model.EraList{}, nil
-	}
-
 	internalEras := make([]model.Era, 0)
 	for _, v := range eras {
 		internalEras = append(internalEras, *rc.sqlToInternal(&v))

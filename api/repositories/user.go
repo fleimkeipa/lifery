@@ -103,10 +103,6 @@ func (rc *UserRepository) List(ctx context.Context, opts *model.UserFindOpts) (*
 		return nil, pkg.NewError(err, "failed to list users", http.StatusInternalServerError)
 	}
 
-	if count == 0 {
-		return &model.UserList{}, nil
-	}
-
 	internalUsers := make([]model.User, 0)
 	for _, v := range users {
 		internalUsers = append(internalUsers, *rc.sqlToInternal(&v))
@@ -174,10 +170,6 @@ func (rc *UserRepository) GetConnects(ctx context.Context, opts *model.UserConne
 	count, err := query.SelectAndCount()
 	if err != nil {
 		return nil, pkg.NewError(err, "failed to get user connects", http.StatusInternalServerError)
-	}
-
-	if len(connects.Connects) == 0 {
-		return &model.UserConnects{}, nil
 	}
 
 	respConnects := new(model.UserConnects)

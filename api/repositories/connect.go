@@ -99,10 +99,6 @@ func (rc *ConnectRepository) ConnectsRequests(ctx context.Context, opts *model.C
 		return nil, pkg.NewError(err, "failed to list connects", http.StatusInternalServerError)
 	}
 
-	if count == 0 {
-		return &model.ConnectList{}, nil
-	}
-
 	internalConnects := make([]model.Connect, 0)
 	for _, v := range connects {
 		internalConnects = append(internalConnects, *rc.sqlToInternal(&v))
