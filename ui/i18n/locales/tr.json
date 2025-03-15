@@ -1,0 +1,41 @@
+{
+    "register": {
+        "title": "Kayıt Ol",
+        "username": "Kullanıcı Adı",
+        "email": "E-posta",
+        "password": "Şifre",
+        "confirmPassword": "Şifre Tekrarı",
+        "submit": "Kayıt Ol",
+        "alreadyHaveAccount": "Zaten bir hesabınız var mı? Giriş yapın",
+        "validation": {
+            "required": {
+                "username": "Kullanıcı adı gereklidir",
+                "email": "E-posta adresi gereklidir",
+                "password": "Şifre gereklidir",
+                "confirmPassword": "Şifre tekrarı gereklidir"
+            },
+            "min": {
+                "username": "Kullanıcı adı en az 3 karakter olmalıdır",
+                "password": "Şifre en az 6 karakter olmalıdır"
+            },
+            "email": "Geçerli bir e-posta adresi giriniz",
+            "passwordsMatch": "Şifreler eşleşmelidir"
+        }
+    },
+    "login": {
+        "title": "Giriş Yap",
+        "username": "Kullanıcı Adı",
+        "password": "Şifre",
+        "submit": "Giriş Yap",
+        "noAccount": "Hesabınız yok mu? Kayıt olun",
+        "validation": {
+            "required": {
+                "username": "Kullanıcı adı gereklidir",
+                "password": "Şifre gereklidir"
+            },
+            "min": {
+                "password": "Şifre en az 8 karakter olmalıdır"
+            }
+        }
+    }
+}

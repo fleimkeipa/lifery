@@ -1,0 +1,41 @@
+{
+    "register": {
+        "title": "Sign Up",
+        "username": "Username",
+        "email": "Email",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "submit": "Sign Up",
+        "alreadyHaveAccount": "Already have an account? Sign in",
+        "validation": {
+            "required": {
+                "username": "Username is required",
+                "email": "Email is required",
+                "password": "Password is required",
+                "confirmPassword": "Password confirmation is required"
+            },
+            "min": {
+                "username": "Username must be at least 3 characters",
+                "password": "Password must be at least 6 characters"
+            },
+            "email": "Please enter a valid email address",
+            "passwordsMatch": "Passwords must match"
+        }
+    },
+    "login": {
+        "title": "Sign In",
+        "username": "Username",
+        "password": "Password",
+        "submit": "Sign In",
+        "noAccount": "Don't have an account? Sign up",
+        "validation": {
+            "required": {
+                "username": "Username is required",
+                "password": "Password is required"
+            },
+            "min": {
+                "password": "Password must be at least 8 characters"
+            }
+        }
+    }
+}

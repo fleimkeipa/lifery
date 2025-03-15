@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { object, string, type InferType } from "yup";
 import type { FormSubmitEvent } from "#ui/types";
-
+import { useI18n } from "vue-i18n";
 definePageMeta({
   layout: "not-authenticated",
 });
 
+const { t, locale } = useI18n();
+
 const schema = object({
-  username: string().required("Required"),
+  username: string().required(t('login.validation.required.username')),
   password: string()
-    .min(8, "Must be at least 8 characters")
-    .required("Required"),
+    .required(t('login.validation.required.password')),
 });
 
 type Schema = InferType<typeof schema>;
@@ -43,7 +44,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     // Store the token in localStorage
     localStorage.setItem('auth_token', data.value.token);
     localStorage.setItem('username', data.value.username);
-    
+
     // Navigate to the events page
     await navigateTo('/events');
   }
@@ -51,28 +52,27 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 </script>
 
 <template>
-  <div
-    class="flex h-screen w-full flex-col items-center justify-center gap-y-16"
-  >
-    <h1 class="text-6xl font-bold">Kubernetes UI</h1>
+  <div class="flex h-screen w-full flex-col items-center justify-center gap-y-16">
+    <h1 class="text-6xl font-bold">Lifery</h1>
     <UCard class="flex w-full max-w-sm items-center justify-center">
-      <h1 class="mb-8 ml-auto text-4xl">Login</h1>
-      <UForm
-        :schema="schema"
-        :state="state"
-        class="space-y-4"
-        @submit="onSubmit"
-      >
-        <UFormGroup label="Username" name="username">
+      <h1 class="mb-8 ml-auto text-4xl">{{ t('login.title') }}</h1>
+      <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
+        <UFormGroup :label="t('login.username')" name="username">
           <UInput v-model="state.username" />
         </UFormGroup>
 
-        <UFormGroup label="Password" name="password">
+        <UFormGroup :label="t('login.password')" name="password">
           <UInput v-model="state.password" type="password" />
         </UFormGroup>
 
         <div class="flex w-full justify-center">
-          <UButton type="submit" class="mt-4" block> Submit </UButton>
+          <UButton type="submit" class="mt-4" block> {{ t('login.submit') }} </UButton>
+        </div>
+
+        <div class="flex w-full justify-center mt-4">
+          <UButton :to="{ path: '/register', query: { locale } }" variant="link" class="text-sm">
+            {{ t('login.noAccount') }}
+          </UButton>
         </div>
       </UForm>
     </UCard>
