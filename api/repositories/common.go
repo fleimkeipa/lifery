@@ -48,17 +48,6 @@ func applyFilterWithOperand(tx *orm.Query, key string, filter model.Filter) *orm
 	}
 }
 
-func GetOrderByQuery(orderBy model.OrderByOpts) string {
-	if orderBy.IsSended {
-		if orderBy.OrderBy == "" {
-			orderBy.OrderBy = "asc"
-		}
-		return fmt.Sprintf("%s %s", orderBy.Column, orderBy.OrderBy)
-	}
-
-	return ""
-}
-
 func applyOrderBy(tx *orm.Query, orderBy model.OrderByOpts) *orm.Query {
 	if orderBy.IsSended {
 		if orderBy.OrderBy == "" {
