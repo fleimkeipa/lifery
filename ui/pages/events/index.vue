@@ -121,7 +121,7 @@ const { data: eventsData, error, isFetching, execute: fetchEvents } = useApi<{
     limit: number;
     skip: number;
   };
-}>("/events?order=asc:date").json();
+}>("/events?order=desc:date").json();
 
 const timelineData = computed<TimelineItem[]>(() => {
   if (!eventsData.value?.data?.events) return [];
