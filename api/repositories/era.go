@@ -143,17 +143,15 @@ func (rc *EraRepository) GetByID(ctx context.Context, eraID string) (*model.Era,
 }
 
 func (rc *EraRepository) fillFilter(tx *orm.Query, opts *model.EraFindOpts) *orm.Query {
-	filter := tx
-
 	if opts.Name.IsSended {
-		filter = applyFilterWithOperand(tx, "name", opts.Name)
+		tx = applyFilterWithOperand(tx, "name", opts.Name)
 	}
 
 	if opts.UserID.IsSended {
-		filter = applyFilterWithOperand(tx, "owner_id", opts.UserID)
+		tx = applyFilterWithOperand(tx, "owner_id", opts.UserID)
 	}
 
-	return filter
+	return tx
 }
 
 func (rc *EraRepository) internalToSQL(newEra *model.Era) *era {
