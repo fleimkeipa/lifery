@@ -97,11 +97,12 @@ func (rc *UserHandlers) UpdateUser(c echo.Context) error {
 //	@Accept			json
 //	@Produce		json
 //	@Security		ApiKeyAuth
-//	@Param			username	query		string			false	"Filter users by username"
-//	@Param			email		query		string			false	"Filter users by email"
-//	@Param			role_id		query		string			false	"Filter users by role ID"
-//	@Param			limit		query		string			false	"Limit the number of users returned"
-//	@Param			skip		query		string			false	"Number of users to skip for pagination"
+//	@Param			username	query		string			false	"Filter users by username"						example(eq:test)
+//	@Param			email		query		string			false	"Filter users by email"							example(eq:test@test.com)
+//	@Param			role_id		query		string			false	"Filter users by role ID"						example(eq:1)
+//	@Param			limit		query		string			false	"Limit the number of users returned"			example(10)
+//	@Param			skip		query		string			false	"Number of users to skip for pagination"		example(0)
+//	@Param			order		query		string			false	"Order by column (prefix with asc: or desc:)"	example(desc:created_at)
 //	@Success		200			{object}	SuccessResponse	"Successful response containing the list of users"
 //	@Failure		500			{object}	FailureResponse	"Interval error"
 //	@Router			/users [get]

@@ -335,12 +335,19 @@ paths:
         parameters.
       parameters:
       - description: Limit the number of connects returned
+        example: "10"
         in: query
         name: limit
         type: string
       - description: Number of connects to skip for pagination
+        example: "0"
         in: query
         name: skip
+        type: string
+      - description: 'Order by column (prefix with asc: or desc:)'
+        example: desc:created_at
+        in: query
+        name: order
         type: string
       produces:
       - application/json
@@ -403,10 +410,12 @@ paths:
         name: Authorization
         type: string
       - description: Filter eras by name
+        example: eq:test
         in: query
         name: name
         type: string
       - description: Filter eras by user id
+        example: eq:1
         in: query
         name: user_id
         type: string
@@ -418,7 +427,8 @@ paths:
         in: query
         name: skip
         type: string
-      - description: Order by column
+      - description: 'Order by column (prefix with asc: or desc:)'
+        example: desc:created_at
         in: query
         name: order
         type: string
@@ -578,21 +588,30 @@ paths:
         name: Authorization
         type: string
       - description: Filter events by user id, returns owners events if not provided
+        example: eq:1
         in: query
         name: user_id
         type: string
       - description: Filter events by visibility status (public:1, private:2, just
           me:3)
+        example: eq:1
         in: query
         name: visibility
         type: string
       - description: Limit the number of events returned
+        example: "10"
         in: query
         name: limit
         type: string
       - description: Number of events to skip for pagination
+        example: "0"
         in: query
         name: skip
+        type: string
+      - description: 'Order by column (prefix with asc: or desc:)'
+        example: desc:created_at
+        in: query
+        name: order
         type: string
       produces:
       - application/json
@@ -746,24 +765,34 @@ paths:
         based on query parameters.
       parameters:
       - description: Filter users by username
+        example: eq:test
         in: query
         name: username
         type: string
       - description: Filter users by email
+        example: eq:test@test.com
         in: query
         name: email
         type: string
       - description: Filter users by role ID
+        example: eq:1
         in: query
         name: role_id
         type: string
       - description: Limit the number of users returned
+        example: "10"
         in: query
         name: limit
         type: string
       - description: Number of users to skip for pagination
+        example: "0"
         in: query
         name: skip
+        type: string
+      - description: 'Order by column (prefix with asc: or desc:)'
+        example: desc:created_at
+        in: query
+        name: order
         type: string
       produces:
       - application/json

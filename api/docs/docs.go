@@ -288,14 +288,23 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "example": "10",
                         "description": "Limit the number of connects returned",
                         "name": "limit",
                         "in": "query"
                     },
                     {
                         "type": "string",
+                        "example": "0",
                         "description": "Number of connects to skip for pagination",
                         "name": "skip",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "desc:created_at",
+                        "description": "Order by column (prefix with asc: or desc:)",
+                        "name": "order",
                         "in": "query"
                     }
                 ],
@@ -338,12 +347,14 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "example": "eq:test",
                         "description": "Filter eras by name",
                         "name": "name",
                         "in": "query"
                     },
                     {
                         "type": "string",
+                        "example": "eq:1",
                         "description": "Filter eras by user id",
                         "name": "user_id",
                         "in": "query"
@@ -362,7 +373,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Order by column",
+                        "example": "desc:created_at",
+                        "description": "Order by column (prefix with asc: or desc:)",
                         "name": "order",
                         "in": "query"
                     }
@@ -606,26 +618,37 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "example": "eq:1",
                         "description": "Filter events by user id, returns owners events if not provided",
                         "name": "user_id",
                         "in": "query"
                     },
                     {
                         "type": "string",
+                        "example": "eq:1",
                         "description": "Filter events by visibility status (public:1, private:2, just me:3)",
                         "name": "visibility",
                         "in": "query"
                     },
                     {
                         "type": "string",
+                        "example": "10",
                         "description": "Limit the number of events returned",
                         "name": "limit",
                         "in": "query"
                     },
                     {
                         "type": "string",
+                        "example": "0",
                         "description": "Number of events to skip for pagination",
                         "name": "skip",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "desc:created_at",
+                        "description": "Order by column (prefix with asc: or desc:)",
+                        "name": "order",
                         "in": "query"
                     }
                 ],
@@ -866,32 +889,44 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "example": "eq:test",
                         "description": "Filter users by username",
                         "name": "username",
                         "in": "query"
                     },
                     {
                         "type": "string",
+                        "example": "eq:test@test.com",
                         "description": "Filter users by email",
                         "name": "email",
                         "in": "query"
                     },
                     {
                         "type": "string",
+                        "example": "eq:1",
                         "description": "Filter users by role ID",
                         "name": "role_id",
                         "in": "query"
                     },
                     {
                         "type": "string",
+                        "example": "10",
                         "description": "Limit the number of users returned",
                         "name": "limit",
                         "in": "query"
                     },
                     {
                         "type": "string",
+                        "example": "0",
                         "description": "Number of users to skip for pagination",
                         "name": "skip",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "desc:created_at",
+                        "description": "Order by column (prefix with asc: or desc:)",
+                        "name": "order",
                         "in": "query"
                     }
                 ],

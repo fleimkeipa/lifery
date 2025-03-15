@@ -161,8 +161,9 @@ func (rc *ConnectHandlers) ConnectsRequests(c echo.Context) error {
 //	@Accept			json
 //	@Produce		json
 //	@Security		ApiKeyAuth
-//	@Param			limit	query		string			false	"Limit the number of connects returned"
-//	@Param			skip	query		string			false	"Number of connects to skip for pagination"
+//	@Param			limit	query		string			false	"Limit the number of connects returned"			example(10)
+//	@Param			skip	query		string			false	"Number of connects to skip for pagination"		example(0)
+//	@Param			order	query		string			false	"Order by column (prefix with asc: or desc:)"	example(desc:created_at)
 //	@Success		200		{object}	SuccessResponse	"Successful response containing the list of connects"
 //	@Failure		500		{object}	FailureResponse	"Internal error"
 //	@Router			/connects/{user_id} [get]

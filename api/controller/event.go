@@ -119,11 +119,12 @@ func (rc *EventController) Delete(c echo.Context) error {
 //	@Tags			events
 //	@Accept			json
 //	@Produce		json
-//	@Param			Authorization	header		string			false	"Insert your access token"	default(Bearer <Add access token here>)
-//	@Param			user_id			query		string			false	"Filter events by user id, returns owners events if not provided"
-//	@Param			visibility		query		string			false	"Filter events by visibility status (public:1, private:2, just me:3)"
-//	@Param			limit			query		string			false	"Limit the number of events returned"
-//	@Param			skip			query		string			false	"Number of events to skip for pagination"
+//	@Param			Authorization	header		string			false	"Insert your access token"												default(Bearer <Add access token here>)
+//	@Param			user_id			query		string			false	"Filter events by user id, returns owners events if not provided"		example(eq:1)
+//	@Param			visibility		query		string			false	"Filter events by visibility status (public:1, private:2, just me:3)"	example(eq:1)
+//	@Param			limit			query		string			false	"Limit the number of events returned"									example(10)
+//	@Param			skip			query		string			false	"Number of events to skip for pagination"								example(0)
+//	@Param			order			query		string			false	"Order by column (prefix with asc: or desc:)"							example(desc:created_at)
 //	@Success		200				{object}	SuccessResponse	"Events retrieved successfully"
 //	@Failure		400				{object}	FailureResponse	"Invalid request data"
 //	@Failure		500				{object}	FailureResponse	"Event retrieval failed"

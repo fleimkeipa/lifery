@@ -120,11 +120,11 @@ func (rc *EraController) Delete(c echo.Context) error {
 //	@Accept			json
 //	@Produce		json
 //	@Param			Authorization	header		string			false	"Insert your access token"	default(Bearer <Add access token here>)
-//	@Param			name			query		string			false	"Filter eras by name"
-//	@Param			user_id			query		string			false	"Filter eras by user id"
+//	@Param			name			query		string			false	"Filter eras by name"		example(eq:test)
+//	@Param			user_id			query		string			false	"Filter eras by user id"	example(eq:1)
 //	@Param			limit			query		string			false	"Limit the number of connects returned"
 //	@Param			skip			query		string			false	"Number of connects to skip for pagination"
-//	@Param			order			query		string			false	"Order by column"
+//	@Param			order			query		string			false	"Order by column (prefix with asc: or desc:)"	example(desc:created_at)
 //	@Success		200				{object}	SuccessResponse	"Eras retrieved successfully"
 //	@Failure		400				{object}	FailureResponse	"Invalid request data"
 //	@Failure		500				{object}	FailureResponse	"Era retrieval failed"
