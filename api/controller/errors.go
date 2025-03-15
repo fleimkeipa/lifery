@@ -22,21 +22,14 @@ func HandleEchoError(c echo.Context, err error) error {
 			if errMessage == "" {
 				return ""
 			}
-			if strings.HasPrefix(errMessage, "ERROR:") {
+			if strings.HasPrefix(errMessage, "pg:") {
 				return errMessage
 			}
 			return fmt.Sprintf("error: %s", errMessage)
 		}()
 
-		if message != "" && errorMessage != "" {
-			message = fmt.Sprintf("%s | %s", message, errorMessage)
-		}
-		if message == "" {
-			message = errorMessage
-		}
-
 		return c.JSON(pe.StatusCode(), FailureResponse{
-			Error:   err.Error(),
+			Error:   errorMessage,
 			Message: message,
 		})
 	}

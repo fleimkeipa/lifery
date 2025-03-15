@@ -109,7 +109,7 @@ func getOrder(c echo.Context) model.OrderByOpts {
 
 	return model.OrderByOpts{
 		IsSended: true,
-		Column:   splitted[0],
-		OrderBy:  splitted[1],
+		Column:   splitted[1],
+		OrderBy:  splitted[0],
 	}
 }
