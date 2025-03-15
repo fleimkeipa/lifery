@@ -4,6 +4,7 @@ import type { FormSubmitEvent } from "#ui/types";
 import { useI18n } from "vue-i18n";
 definePageMeta({
   layout: "not-authenticated",
+  middleware: "no-auth"
 });
 
 const { t, locale } = useI18n();
