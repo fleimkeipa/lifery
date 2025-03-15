@@ -7,7 +7,7 @@ definePageMeta({
 });
 
 const schema = object({
-  email: string().email("Invalid email").required("Required"),
+  username: string().required("Required"),
   password: string()
     .min(8, "Must be at least 8 characters")
     .required("Required"),
@@ -16,12 +16,37 @@ const schema = object({
 type Schema = InferType<typeof schema>;
 
 const state = reactive({
-  email: undefined,
+  username: undefined,
   password: undefined,
 });
 
+type LoginResponse = {
+  type: string;
+  token: string;
+  username: string;
+  message: string;
+}
+
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  console.log(event.data);
+  const { data, error } = await useFetch<LoginResponse>("/auth/login", {
+    method: "POST",
+    baseURL: useRuntimeConfig().public.apiBase,
+    body: event.data
+  });
+
+  if (error.value) {
+    console.error(error.value);
+    return;
+  }
+
+  if (data.value) {
+    // Store the token in localStorage
+    localStorage.setItem('auth_token', data.value.token);
+    localStorage.setItem('username', data.value.username);
+    
+    // Navigate to the events page
+    await navigateTo('/events');
+  }
 }
 </script>
 
@@ -38,8 +63,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         class="space-y-4"
         @submit="onSubmit"
       >
-        <UFormGroup label="Email" name="email">
-          <UInput v-model="state.email" />
+        <UFormGroup label="Username" name="username">
+          <UInput v-model="state.username" />
         </UFormGroup>
 
         <UFormGroup label="Password" name="password">
