@@ -270,11 +270,3 @@ func (rc *UserRepository) createSchema(db *pg.DB) error {
 
 	return nil
 }
-
-func (rc *UserRepository) fillConnectsFilter(tx *orm.Query, opts *model.UserConnectsFindOpts) *orm.Query {
-	if opts.UserID.IsSended {
-		tx = applyFilterWithOperand(tx, "id", opts.UserID)
-	}
-
-	return tx
-}
