@@ -110,8 +110,6 @@ func serveApplication() {
 	connectsRoutes.POST("", connectController.Create)
 	connectsRoutes.PATCH("/:id", connectController.Update)
 	connectsRoutes.GET("", connectController.ConnectsRequests)
-	connectsRoutes.GET("/:user_id", connectController.GetConnects)
-	connectsRoutes.PATCH("/disconnect", connectController.Disconnect)
 
 	// Define user routes
 	usersRoutes := adminRoutes.Group("/users")

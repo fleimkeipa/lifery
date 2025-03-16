@@ -38,13 +38,6 @@ definitions:
     required:
     - status
     type: object
-  model.DisconnectRequest:
-    properties:
-      friend_id:
-        type: string
-    required:
-    - friend_id
-    type: object
   model.EraCreateRequest:
     properties:
       color:
@@ -167,6 +160,8 @@ definitions:
     - RequestStatusRejected
   model.UserCreateRequest:
     properties:
+      confirm_password:
+        type: string
       email:
         type: string
       password:
@@ -176,6 +171,7 @@ definitions:
       username:
         type: string
     required:
+    - confirm_password
     - email
     - password
     - role_id
@@ -325,77 +321,6 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Update updates an existing connection
-      tags:
-      - connects
-  /connects/{user_id}:
-    get:
-      consumes:
-      - application/json
-      description: Retrieves a filtered and paginated list of connects based on query
-        parameters.
-      parameters:
-      - description: Limit the number of connects returned
-        example: "10"
-        in: query
-        name: limit
-        type: string
-      - description: Number of connects to skip for pagination
-        example: "0"
-        in: query
-        name: skip
-        type: string
-      - description: 'Order by column (prefix with asc: or desc:)'
-        example: desc:created_at
-        in: query
-        name: order
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Successful response containing the list of connects
-          schema:
-            $ref: '#/definitions/controller.SuccessResponse'
-        "500":
-          description: Internal error
-          schema:
-            $ref: '#/definitions/controller.FailureResponse'
-      security:
-      - ApiKeyAuth: []
-      summary: List all connects
-      tags:
-      - connects
-  /connects/disconnect:
-    patch:
-      consumes:
-      - application/json
-      description: This endpoint disconnects an existing connection by binding the
-        incoming JSON request to the DisconnectRequest model.
-      parameters:
-      - description: Disconnect input
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/model.DisconnectRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Disconnected successfully
-          schema:
-            $ref: '#/definitions/controller.SuccessResponse'
-        "400":
-          description: Invalid request data
-          schema:
-            $ref: '#/definitions/controller.FailureResponse'
-        "500":
-          description: Disconnect failed
-          schema:
-            $ref: '#/definitions/controller.FailureResponse'
-      security:
-      - ApiKeyAuth: []
-      summary: Disconnects an existing connection
       tags:
       - connects
   /eras:

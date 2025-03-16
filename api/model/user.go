@@ -5,19 +5,19 @@ import "time"
 const ZeroCreds = "zeroCreds"
 
 type User struct {
-	DeletedAt time.Time `json:"deleted_at"`
-	CreatedAt time.Time `json:"created_at"`
-	Connects  []int     `json:"connects"`
-	Username  string    `json:"username"`
-	Email     string    `json:"email"`
-	Password  string    `json:"password"`
-	ID        string    `json:"id"`
-	RoleID    uint      `json:"role_id"`
+	DeletedAt time.Time  `json:"deleted_at"`
+	CreatedAt time.Time  `json:"created_at"`
+	Connects  []*Connect `json:"connects"`
+	Username  string     `json:"username"`
+	Email     string     `json:"email"`
+	Password  string     `json:"password"`
+	ID        string     `json:"id"`
+	RoleID    uint       `json:"role_id"`
 }
 
 type UserConnects struct {
-	Connects []User `json:"connects"`
-	Total    int    `json:"total"`
+	Connects []Connect `json:"connects"`
+	Total    int       `json:"total"`
 	PaginationOpts
 }
 

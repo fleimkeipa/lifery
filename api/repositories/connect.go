@@ -94,6 +94,16 @@ func (rc *ConnectRepository) ConnectsRequests(ctx context.Context, opts *model.C
 
 	query = rc.fillConnectsRequestsFilter(query, opts)
 
+	query = query.Relation("User", func(q *orm.Query) (*orm.Query, error) {
+		q.Column("User.id", "User.username", "User.email", "User.created_at")
+		return q, nil
+	})
+
+	query = query.Relation("Friend", func(q *orm.Query) (*orm.Query, error) {
+		q.Column("Friend.id", "Friend.username", "Friend.email", "Friend.created_at")
+		return q, nil
+	})
+
 	count, err := query.SelectAndCount()
 	if err != nil {
 		return nil, pkg.NewError(err, "failed to list connects", http.StatusInternalServerError)
@@ -121,7 +131,17 @@ func (rc *ConnectRepository) GetByID(ctx context.Context, connectID string) (*mo
 
 	connect := new(connect)
 
-	query := rc.db.Model(connect).Where("id = ?", connectID)
+	query := rc.db.Model(connect).Where("connect.id = ?", connectID)
+
+	query = query.Relation("User", func(q *orm.Query) (*orm.Query, error) {
+		q.Column("User.id", "User.username", "User.email", "User.created_at")
+		return q, nil
+	})
+
+	query = query.Relation("Friend", func(q *orm.Query) (*orm.Query, error) {
+		q.Column("Friend.id", "Friend.username", "Friend.email", "Friend.created_at")
+		return q, nil
+	})
 
 	if err := query.Select(); err != nil {
 		return nil, pkg.NewError(err, "failed to find connect by id "+connectID, http.StatusInternalServerError)
@@ -135,8 +155,8 @@ func (rc *ConnectRepository) fillConnectsRequestsFilter(tx *orm.Query, opts *mod
 		tx = applyFilterWithOperand(tx, "status", opts.Status)
 	}
 
-	if opts.FriendID.IsSended {
-		tx = applyFilterWithOperand(tx, "friend_id", opts.FriendID)
+	if opts.UserID.IsSended {
+		tx = tx.Where("connect.user_id = ? or connect.friend_id = ?", opts.UserID.Value, opts.UserID.Value)
 	}
 
 	return tx
@@ -151,14 +171,20 @@ func (rc *ConnectRepository) fillFields(tx *orm.Query, opts *model.ConnectFindOp
 
 	if len(fields) == 1 && fields[0] == model.ZeroCreds {
 		return tx.Column(
-			"id",
-			"status",
-			"user_id",
-			"friend_id",
+			"connect.id",
+			"connect.status",
+			"connect.user_id",
+			"connect.friend_id",
 		)
 	}
 
-	return tx.Column(fields...)
+	// Prefix all fields with "connect." to avoid ambiguity
+	qualifiedFields := make([]string, len(fields))
+	for i, field := range fields {
+		qualifiedFields[i] = "connect." + field
+	}
+
+	return tx.Column(qualifiedFields...)
 }
 
 func (rc *ConnectRepository) internalToSQL(newConnect *model.Connect) *connect {
@@ -171,6 +197,16 @@ func (rc *ConnectRepository) internalToSQL(newConnect *model.Connect) *connect {
 		Status:   int(newConnect.Status),
 		UserID:   userID,
 		FriendID: friendID,
+		User: &user{
+			ID:       userID,
+			Username: newConnect.User.Username,
+			Email:    newConnect.User.Email,
+		},
+		Friend: &user{
+			ID:       friendID,
+			Username: newConnect.Friend.Username,
+			Email:    newConnect.Friend.Email,
+		},
 	}
 }
 
@@ -179,11 +215,34 @@ func (rc *ConnectRepository) sqlToInternal(newConnect *connect) *model.Connect {
 	userID := strconv.Itoa(newConnect.UserID)
 	friendID := strconv.Itoa(newConnect.FriendID)
 
+	var user model.User
+	var friend model.User
+
+	if newConnect.User != nil {
+		user = model.User{
+			ID:        userID,
+			Username:  newConnect.User.Username,
+			Email:     newConnect.User.Email,
+			CreatedAt: newConnect.User.CreatedAt,
+		}
+	}
+
+	if newConnect.Friend != nil {
+		friend = model.User{
+			ID:        friendID,
+			Username:  newConnect.Friend.Username,
+			Email:     newConnect.Friend.Email,
+			CreatedAt: newConnect.Friend.CreatedAt,
+		}
+	}
+
 	return &model.Connect{
 		ID:       cID,
 		Status:   model.RequestStatus(newConnect.Status),
 		UserID:   userID,
 		FriendID: friendID,
+		User:     user,
+		Friend:   friend,
 	}
 }
 

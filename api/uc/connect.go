@@ -3,7 +3,6 @@ package uc
 import (
 	"context"
 	"net/http"
-	"strconv"
 
 	"github.com/fleimkeipa/lifery/model"
 	"github.com/fleimkeipa/lifery/pkg"
@@ -54,8 +53,7 @@ func (rc *ConnectsUC) Create(ctx context.Context, req model.ConnectCreateRequest
 
 	connects := receiver.Connects
 	for _, v := range connects {
-		strID := strconv.Itoa(v)
-		if strID == req.FriendID {
+		if v.ID == req.FriendID {
 			return nil, pkg.NewError(nil, "already connected", http.StatusBadRequest)
 		}
 	}
@@ -66,7 +64,7 @@ func (rc *ConnectsUC) Create(ctx context.Context, req model.ConnectCreateRequest
 func (rc *ConnectsUC) Update(ctx context.Context, id string, req model.ConnectUpdateRequest) error {
 	connect, err := rc.connectRepo.GetByID(ctx, id)
 	if err != nil {
-		return pkg.NewError(nil, "connect not found", http.StatusNotFound)
+		return err
 	}
 
 	connect.Status = req.Status
@@ -89,25 +87,10 @@ func (rc *ConnectsUC) Update(ctx context.Context, id string, req model.ConnectUp
 	}
 
 	if req.Status == model.RequestStatusRejected {
-		if err := rc.Delete(ctx, id); err != nil {
-			return err
-		}
-
-		return nil
+		return rc.Delete(ctx, id)
 	}
 
-	_, err = rc.AddConnectOnUser(ctx, id, connect.UserID, connect.FriendID)
-	if err != nil {
-		return err
-	}
-
-	return rc.Delete(ctx, id)
-}
-
-func (rc *ConnectsUC) Disconnect(ctx context.Context, req model.DisconnectRequest) error {
-	ownerID := util.GetOwnerIDFromCtx(ctx)
-
-	_, err := rc.DeleteConnectOnUser(ctx, ownerID, req.FriendID)
+	_, err = rc.connectRepo.Update(ctx, id, connect)
 	if err != nil {
 		return err
 	}
@@ -127,48 +110,43 @@ func (rc *ConnectsUC) Delete(ctx context.Context, id string) error {
 	return rc.connectRepo.Delete(ctx, id)
 }
 
-func (rc *ConnectsUC) AddConnectOnUser(ctx context.Context, connectID string, userID, friendID string) (*model.User, error) {
+func (rc *ConnectsUC) AddConnectOnUser(ctx context.Context, connectID string, userID, friendID string) error {
 	// receiver exist control
 	receiver, err := rc.userUC.GetByID(ctx, userID)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// sender exist control
 	sender, err := rc.userUC.GetByID(ctx, friendID)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	receiver, err = rc.userUC.UpdateConnects(ctx, receiver, sender.ID, receiver.ID)
+	err = rc.userUC.UpdateConnects(ctx, receiver, sender.ID, receiver.ID)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	sender, err = rc.userUC.UpdateConnects(ctx, sender, receiver.ID, sender.ID)
-	if err != nil {
-		return nil, err
-	}
-
-	return sender, nil
+	return rc.userUC.UpdateConnects(ctx, sender, receiver.ID, sender.ID)
 }
 
-func (rc *ConnectsUC) DeleteConnectOnUser(ctx context.Context, userID, friendID string) (*model.User, error) {
+func (rc *ConnectsUC) DeleteConnectOnUser(ctx context.Context, userID, friendID string) error {
 	// receiver exist control
 	receiver, err := rc.userUC.GetByID(ctx, userID)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// sender exist control
 	sender, err := rc.userUC.GetByID(ctx, friendID)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	receiver, err = rc.userUC.DeleteUserConnect(ctx, receiver, sender.ID)
+	err = rc.userUC.DeleteUserConnect(ctx, receiver, sender.ID)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	return rc.userUC.DeleteUserConnect(ctx, sender, receiver.ID)

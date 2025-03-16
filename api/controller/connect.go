@@ -6,6 +6,7 @@ import (
 
 	"github.com/fleimkeipa/lifery/model"
 	"github.com/fleimkeipa/lifery/uc"
+	"github.com/fleimkeipa/lifery/util"
 
 	"github.com/labstack/echo/v4"
 )
@@ -92,39 +93,6 @@ func (rc *ConnectHandlers) Update(c echo.Context) error {
 	})
 }
 
-// Disconnect godoc
-//
-//	@Summary		Disconnects an existing connection
-//	@Description	This endpoint disconnects an existing connection by binding the incoming JSON request to the DisconnectRequest model.
-//	@Tags			connects
-//	@Accept			json
-//	@Produce		json
-//	@Security		ApiKeyAuth
-//	@Param			Body	body		model.DisconnectRequest	true	"Disconnect input"
-//	@Success		200		{object}	SuccessResponse			"Disconnected successfully"
-//	@Failure		400		{object}	FailureResponse			"Invalid request data"
-//	@Failure		500		{object}	FailureResponse			"Disconnect failed"
-//	@Router			/connects/disconnect [patch]
-func (rc *ConnectHandlers) Disconnect(c echo.Context) error {
-	var input model.DisconnectRequest
-
-	if err := c.Bind(&input); err != nil {
-		return c.JSON(http.StatusBadRequest, FailureResponse{
-			Error:   fmt.Sprintf("Failed to bind request: %v", err),
-			Message: "Invalid request data. Please check your input and try again.",
-		})
-	}
-
-	if err := rc.connectUC.Disconnect(c.Request().Context(), input); err != nil {
-		return HandleEchoError(c, err)
-	}
-
-	return c.JSON(http.StatusOK, SuccessResponse{
-		Data:    "Disconnected",
-		Message: "Disconnected successfully.",
-	})
-}
-
 // ConnectsRequests godoc
 //
 //	@Summary		ConnectsRequests list all connects requests
@@ -133,12 +101,12 @@ func (rc *ConnectHandlers) Disconnect(c echo.Context) error {
 //	@Accept			json
 //	@Produce		json
 //	@Security		ApiKeyAuth
-//	@Param			status		query		string			false	"Filter connects by status"
-//	@Param			friend_id	query		string			false	"Filter connects by friend ID"
-//	@Param			limit		query		string			false	"Limit the number of connects returned"
-//	@Param			skip		query		string			false	"Number of connects to skip for pagination"
-//	@Success		200			{object}	SuccessResponse	"Successful response containing the list of connects"
-//	@Failure		500			{object}	FailureResponse	"Internal error"
+//	@Param			status	query		string			false	"Filter connects by status"
+//	@Param			user_id	query		string			false	"Filter connects by user id if you are admin"
+//	@Param			limit	query		string			false	"Limit the number of connects returned"
+//	@Param			skip	query		string			false	"Number of connects to skip for pagination"
+//	@Success		200		{object}	SuccessResponse	"Successful response containing the list of connects"
+//	@Failure		500		{object}	FailureResponse	"Internal error"
 func (rc *ConnectHandlers) ConnectsRequests(c echo.Context) error {
 	opts := rc.getConnectsFindOpts(c, model.ZeroCreds)
 
@@ -153,59 +121,40 @@ func (rc *ConnectHandlers) ConnectsRequests(c echo.Context) error {
 	})
 }
 
-// GetConnects godoc
-//
-//	@Summary		List all connects
-//	@Description	Retrieves a filtered and paginated list of connects based on query parameters.
-//	@Tags			connects
-//	@Accept			json
-//	@Produce		json
-//	@Security		ApiKeyAuth
-//	@Param			limit	query		string			false	"Limit the number of connects returned"			example(10)
-//	@Param			skip	query		string			false	"Number of connects to skip for pagination"		example(0)
-//	@Param			order	query		string			false	"Order by column (prefix with asc: or desc:)"	example(desc:created_at)
-//	@Success		200		{object}	SuccessResponse	"Successful response containing the list of connects"
-//	@Failure		500		{object}	FailureResponse	"Internal error"
-//	@Router			/connects/{user_id} [get]
-func (rc *ConnectHandlers) GetConnects(c echo.Context) error {
-	opts := rc.getUserConnectsFindOpts(c)
-
-	list, err := rc.userUC.GetConnects(c.Request().Context(), &opts)
-	if err != nil {
-		return HandleEchoError(c, err)
-	}
-
-	return c.JSON(http.StatusOK, SuccessResponse{
-		Data:    list,
-		Message: "Connects retrieved successfully.",
-	})
-}
-
 func (rc *ConnectHandlers) getConnectsFindOpts(c echo.Context, fields ...string) model.ConnectFindOpts {
-	return model.ConnectFindOpts{
+	defaultFilter := model.ConnectFindOpts{
 		PaginationOpts: getPagination(c),
 		OrderByOpts:    getOrder(c),
 		FieldsOpts: model.FieldsOpts{
 			Fields: fields,
 		},
-		Status:   getFilter(c, "status"),
-		FriendID: getFilter(c, "friend_id"),
-	}
-}
-
-func (rc *ConnectHandlers) getUserConnectsFindOpts(c echo.Context, fields ...string) model.UserConnectsFindOpts {
-	userID := c.Param("user_id")
-	userIDFilter := model.Filter{
-		Value:    userID,
-		IsSended: userID != "",
+		Status: getFilter(c, "status"),
 	}
 
-	return model.UserConnectsFindOpts{
-		PaginationOpts: getPagination(c),
-		OrderByOpts:    getOrder(c),
-		FieldsOpts: model.FieldsOpts{
-			Fields: fields,
-		},
-		UserID: userIDFilter,
+	owner, err := util.GetOwnerFromToken(c)
+	if err != nil {
+		return defaultFilter
 	}
+
+	defaultFilter.UserID = getFilter(c, "user_id")
+
+	if !defaultFilter.UserID.IsSended {
+		defaultFilter.UserID = model.Filter{
+			Value:    owner.ID,
+			IsSended: owner.ID != "",
+		}
+
+		return defaultFilter
+	}
+
+	if owner.RoleID == model.AdminRole {
+		return defaultFilter
+	}
+
+	defaultFilter.UserID = model.Filter{
+		Value:    owner.ID,
+		IsSended: owner.ID != "",
+	}
+
+	return defaultFilter
 }

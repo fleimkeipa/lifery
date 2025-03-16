@@ -147,57 +147,6 @@
                 }
             }
         },
-        "/connects/disconnect": {
-            "patch": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "This endpoint disconnects an existing connection by binding the incoming JSON request to the DisconnectRequest model.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "connects"
-                ],
-                "summary": "Disconnects an existing connection",
-                "parameters": [
-                    {
-                        "description": "Disconnect input",
-                        "name": "Body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.DisconnectRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Disconnected successfully",
-                        "schema": {
-                            "$ref": "#/definitions/controller.SuccessResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request data",
-                        "schema": {
-                            "$ref": "#/definitions/controller.FailureResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Disconnect failed",
-                        "schema": {
-                            "$ref": "#/definitions/controller.FailureResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/connects/{id}": {
             "patch": {
                 "security": [
@@ -249,63 +198,6 @@
                     },
                     "500": {
                         "description": "Connect update failed",
-                        "schema": {
-                            "$ref": "#/definitions/controller.FailureResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/connects/{user_id}": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Retrieves a filtered and paginated list of connects based on query parameters.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "connects"
-                ],
-                "summary": "List all connects",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "example": "10",
-                        "description": "Limit the number of connects returned",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "example": "0",
-                        "description": "Number of connects to skip for pagination",
-                        "name": "skip",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "example": "desc:created_at",
-                        "description": "Order by column (prefix with asc: or desc:)",
-                        "name": "order",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful response containing the list of connects",
-                        "schema": {
-                            "$ref": "#/definitions/controller.SuccessResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal error",
                         "schema": {
                             "$ref": "#/definitions/controller.FailureResponse"
                         }
@@ -1170,17 +1062,6 @@
                 }
             }
         },
-        "model.DisconnectRequest": {
-            "type": "object",
-            "required": [
-                "friend_id"
-            ],
-            "properties": {
-                "friend_id": {
-                    "type": "string"
-                }
-            }
-        },
         "model.EraCreateRequest": {
             "type": "object",
             "properties": {
@@ -1361,12 +1242,16 @@
         "model.UserCreateRequest": {
             "type": "object",
             "required": [
+                "confirm_password",
                 "email",
                 "password",
                 "role_id",
                 "username"
             ],
             "properties": {
+                "confirm_password": {
+                    "type": "string"
+                },
                 "email": {
                     "type": "string"
                 },

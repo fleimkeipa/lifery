@@ -82,6 +82,30 @@ func ValidateAdminRoleJWT(c echo.Context) error {
 	return errors.New("invalid admin token provided")
 }
 
+// validate Editor role
+func ValidateEditorRoleJWT(c echo.Context) error {
+	token, err := getToken(c)
+	if err != nil {
+		return err
+	}
+
+	if !token.Valid {
+		return errors.New("invalid token")
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return errors.New("invalid token claims")
+	}
+
+	userRole := uint(claims["role"].(float64))
+	if userRole == model.EditorRole || userRole == model.AdminRole {
+		return nil
+	}
+
+	return errors.New("invalid editor or admin token provided")
+}
+
 // validate Viewer role
 func ValidateViewerRoleJWT(c echo.Context) error {
 	token, err := getToken(c)

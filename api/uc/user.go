@@ -98,36 +98,41 @@ func (rc *UserUC) Update(ctx context.Context, userID string, req model.UserCreat
 	return updatedUser, nil
 }
 
-func (rc *UserUC) UpdateConnects(ctx context.Context, user *model.User, senderID, receiverID string) (*model.User, error) {
+func (rc *UserUC) UpdateConnects(ctx context.Context, user *model.User, senderID, receiverID string) error {
 	sID, err := strconv.Atoi(senderID)
 	if err != nil {
-		return nil, pkg.NewError(err, "failed to convert senderID to int", http.StatusInternalServerError)
+		return pkg.NewError(err, "failed to convert senderID to int", http.StatusInternalServerError)
 	}
 
-	user.Connects = append(user.Connects, int(sID))
+	user.Connects = append(user.Connects, &model.Connect{
+		ID:       strconv.Itoa(sID),
+		Status:   model.RequestStatusPending,
+		UserID:   senderID,
+		FriendID: receiverID,
+	})
 
-	updatedUser, err := rc.userRepo.Update(ctx, receiverID, user)
+	_, err = rc.userRepo.Update(ctx, receiverID, user)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return updatedUser, nil
+	return nil
 }
 
-func (rc *UserUC) DeleteUserConnect(ctx context.Context, user *model.User, userID string) (*model.User, error) {
+func (rc *UserUC) DeleteUserConnect(ctx context.Context, user *model.User, userID string) error {
 	for i, v := range user.Connects {
-		if strconv.Itoa(v) == userID {
+		if v.ID == userID {
 			user.Connects = append(user.Connects[:i], user.Connects[i+1:]...)
 			break
 		}
 	}
 
-	updatedUser, err := rc.userRepo.Update(ctx, userID, user)
+	_, err := rc.userRepo.Update(ctx, userID, user)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return updatedUser, nil
+	return nil
 }
 
 func (rc *UserUC) IsConnected(ctx context.Context, userID, friendID string) (bool, error) {
@@ -143,21 +148,12 @@ func (rc *UserUC) IsConnected(ctx context.Context, userID, friendID string) (boo
 	}
 
 	for _, v := range connects {
-		if strconv.Itoa(v) == friendID {
+		if v.ID == friendID {
 			return true, nil
 		}
 	}
 
 	return false, nil
-}
-
-func (rc *UserUC) GetConnects(ctx context.Context, opts *model.UserConnectsFindOpts) (*model.UserConnects, error) {
-	list, err := rc.userRepo.GetConnects(ctx, opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return list, nil
 }
 
 func (rc *UserUC) List(ctx context.Context, opts *model.UserFindOpts) (*model.UserList, error) {

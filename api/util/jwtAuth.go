@@ -40,9 +40,9 @@ func JWTAuthUser(next echo.HandlerFunc) echo.HandlerFunc {
 			})
 		}
 
-		if err := ValidateViewerRoleJWT(c); err != nil {
+		if err := ValidateEditorRoleJWT(c); err != nil {
 			return c.JSON(http.StatusUnauthorized, echo.Map{
-				"message": "Only registered Users are allowed to perform this action",
+				"message": "Only registered Editors are allowed to perform this action",
 				"error":   err.Error(),
 			})
 		}
@@ -69,7 +69,7 @@ func JWTAuthViewer(next echo.HandlerFunc) echo.HandlerFunc {
 
 		if err := ValidateViewerRoleJWT(c); err != nil {
 			return c.JSON(http.StatusUnauthorized, echo.Map{
-				"message": "Only registered Users are allowed to perform this action",
+				"message": "Only registered Viewers are allowed to perform this action",
 				"error":   err.Error(),
 			})
 		}

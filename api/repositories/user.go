@@ -152,41 +152,6 @@ func (rc *UserRepository) GetByUsernameOrEmail(ctx context.Context, usernameOrEm
 	return rc.sqlToInternal(&user), nil
 }
 
-func (rc *UserRepository) GetConnects(ctx context.Context, opts *model.UserConnectsFindOpts) (*model.UserConnects, error) {
-	if !opts.UserID.IsSended {
-		return nil, pkg.NewError(nil, "missing user id", http.StatusBadRequest)
-	}
-
-	var connects userConnects
-
-	query := rc.db.Model(&connects)
-
-	query = applyOrderBy(query, opts.OrderByOpts)
-
-	query = applyStandardQueries(query, opts.PaginationOpts)
-
-	query = rc.fillConnectsFilter(query, opts)
-
-	count, err := query.SelectAndCount()
-	if err != nil {
-		return nil, pkg.NewError(err, "failed to get user connects", http.StatusInternalServerError)
-	}
-
-	respConnects := new(model.UserConnects)
-	for _, v := range connects.Connects {
-		respConnects.Connects = append(respConnects.Connects, *rc.sqlToInternal(&v))
-	}
-
-	return &model.UserConnects{
-		Connects: respConnects.Connects,
-		Total:    count,
-		PaginationOpts: model.PaginationOpts{
-			Skip:  opts.Skip,
-			Limit: opts.Limit,
-		},
-	}, nil
-}
-
 func (rc *UserRepository) Exists(ctx context.Context, usernameOrEmail string) (bool, error) {
 	if usernameOrEmail == "" {
 		return false, pkg.NewError(nil, "invalid username or email", http.StatusBadRequest)
@@ -242,10 +207,22 @@ func (rc *UserRepository) fillFields(tx *orm.Query, opts *model.UserFindOpts) *o
 
 func (rc *UserRepository) internalToSQL(newUser *model.User) *user {
 	uID, _ := strconv.Atoi(newUser.ID)
+	connects := make([]*connect, 0)
+	for _, v := range newUser.Connects {
+		connectID, _ := strconv.Atoi(v.ID)
+		userID, _ := strconv.Atoi(v.UserID)
+		friendID, _ := strconv.Atoi(v.FriendID)
+		connects = append(connects, &connect{
+			ID:       connectID,
+			Status:   int(v.Status),
+			UserID:   userID,
+			FriendID: friendID,
+		})
+	}
 	return &user{
 		DeletedAt: newUser.DeletedAt,
 		CreatedAt: newUser.CreatedAt,
-		Connects:  newUser.Connects,
+		Connects:  connects,
 		Username:  newUser.Username,
 		Email:     newUser.Email,
 		Password:  newUser.Password,
@@ -256,10 +233,21 @@ func (rc *UserRepository) internalToSQL(newUser *model.User) *user {
 
 func (rc *UserRepository) sqlToInternal(newUser *user) *model.User {
 	uID := strconv.Itoa(newUser.ID)
+	connects := make([]*model.Connect, 0)
+	for _, v := range newUser.Connects {
+		connects = append(connects, &model.Connect{
+			ID:       strconv.Itoa(v.ID),
+			Status:   model.RequestStatus(v.Status),
+			UserID:   strconv.Itoa(v.UserID),
+			FriendID: strconv.Itoa(v.FriendID),
+			User:     *rc.sqlToInternal(v.User),
+			Friend:   *rc.sqlToInternal(v.Friend),
+		})
+	}
 	return &model.User{
 		DeletedAt: newUser.DeletedAt,
 		CreatedAt: newUser.CreatedAt,
-		Connects:  newUser.Connects,
+		Connects:  connects,
 		Username:  newUser.Username,
 		Email:     newUser.Email,
 		Password:  newUser.Password,
