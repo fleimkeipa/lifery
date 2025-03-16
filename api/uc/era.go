@@ -22,7 +22,7 @@ func NewEraUC(repo interfaces.EraRepository) *EraUC {
 }
 
 func (rc *EraUC) Create(ctx context.Context, req *model.EraCreateRequest) (*model.Era, error) {
-	ownerID := util.GetOwnerIDFromCtx(ctx)
+	userID := util.GetOwnerIDFromCtx(ctx)
 
 	timeStart, err := time.Parse(`2006-01-02`, req.TimeStart)
 	if err != nil {
@@ -38,7 +38,7 @@ func (rc *EraUC) Create(ctx context.Context, req *model.EraCreateRequest) (*mode
 		TimeEnd:   timeEnd.Format(`2006-01-02`),
 		Name:      req.Name,
 		Color:     req.Color,
-		OwnerID:   ownerID,
+		UserID:    userID,
 	}
 
 	newEra, err := rc.repo.Create(ctx, &era)
@@ -70,7 +70,7 @@ func (rc *EraUC) Update(ctx context.Context, eraID string, req *model.EraUpdateR
 		TimeEnd:   timeEnd.Format(`2006-01-02`),
 		Name:      req.Name,
 		Color:     req.Color,
-		OwnerID:   exist.OwnerID,
+		UserID:    exist.UserID,
 	}
 
 	updatedEra, err := rc.repo.Update(ctx, eraID, &era)

@@ -156,39 +156,39 @@ func (rc *EraRepository) fillFilter(tx *orm.Query, opts *model.EraFindOpts) *orm
 
 func (rc *EraRepository) internalToSQL(newEra *model.Era) *era {
 	eID, _ := strconv.Atoi(newEra.ID)
-	ownerID, _ := strconv.Atoi(newEra.OwnerID)
+	userID, _ := strconv.Atoi(newEra.UserID)
 	return &era{
 		TimeStart: newEra.TimeStart,
 		TimeEnd:   newEra.TimeEnd,
 		Name:      newEra.Name,
 		Color:     newEra.Color,
-		OwnerID:   ownerID,
+		UserID:    userID,
 		ID:        eID,
 	}
 }
 
 func (rc *EraRepository) sqlToInternal(newEra *era) *model.Era {
 	eID := strconv.Itoa(newEra.ID)
-	ownerID := strconv.Itoa(newEra.OwnerID)
+	userID := strconv.Itoa(newEra.UserID)
 	return &model.Era{
 		TimeStart: newEra.TimeStart,
 		TimeEnd:   newEra.TimeEnd,
 		Name:      newEra.Name,
 		Color:     newEra.Color,
-		OwnerID:   ownerID,
+		UserID:    userID,
 		ID:        eID,
 	}
 }
 
 func (rc *EraRepository) sqlToInternal2(newEra *eraGetResponse) *model.Era {
 	eID := strconv.Itoa(newEra.ID)
-	ownerID := strconv.Itoa(newEra.OwnerID)
+	userID := strconv.Itoa(newEra.UserID)
 	return &model.Era{
 		TimeStart: newEra.TimeStart,
 		TimeEnd:   newEra.TimeEnd,
 		Name:      newEra.Name,
 		Color:     newEra.Color,
-		OwnerID:   ownerID,
+		UserID:    userID,
 		ID:        eID,
 	}
 }

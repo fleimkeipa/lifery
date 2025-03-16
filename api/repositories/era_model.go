@@ -5,8 +5,8 @@ type era struct {
 	TimeEnd   string `json:"time_end"`
 	Name      string `json:"name"`
 	Color     string `json:"color"`
-	OwnerID   int    `json:"owner_id" pg:",notnull"`
-	Owner     *user  `json:"owner" pg:"rel:has-one"`
+	UserID    int    `json:"user_id" pg:",notnull"`
+	User      *user  `json:"user" pg:"rel:has-one"`
 	ID        int    `json:"id" pg:",pk"`
 }
 
@@ -15,8 +15,8 @@ type eraGetResponse struct {
 	TimeEnd   string    `json:"time_end"`
 	Name      string    `json:"name"`
 	Color     string    `json:"color"`
-	OwnerID   int       `json:"owner_id"`
-	Owner     *miniUser `json:"owner"`
+	UserID    int       `json:"user_id"`
+	User      *miniUser `json:"user"`
 	ID        int       `json:"id"`
 	tableName struct{}  `pg:",discard_unknown_columns"`
 }

@@ -5,7 +5,7 @@ type Era struct {
 	TimeEnd   string `json:"time_end"`
 	Name      string `json:"name"`
 	Color     string `json:"color"`
-	OwnerID   string `json:"owner_id"`
+	UserID    string `json:"user_id"`
 	ID        string `json:"id"`
 }
 
