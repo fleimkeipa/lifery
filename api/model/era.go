@@ -1,12 +1,18 @@
 package model
 
+import "time"
+
 type Era struct {
-	TimeStart string `json:"time_start"`
-	TimeEnd   string `json:"time_end"`
-	Name      string `json:"name"`
-	Color     string `json:"color"`
-	UserID    string `json:"user_id"`
-	ID        string `json:"id"`
+	TimeStart time.Time `json:"time_start"`
+	TimeEnd   time.Time `json:"time_end"`
+	Name      string    `json:"name"`
+	Color     string    `json:"color"`
+	UserID    string    `json:"user_id"`
+	ID        string    `json:"id"`
+	User      *User     `json:"user"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+	DeletedAt time.Time `json:"deleted_at"`
 }
 
 type EraCreateRequest struct {

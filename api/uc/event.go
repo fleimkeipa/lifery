@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/fleimkeipa/lifery/model"
 	"github.com/fleimkeipa/lifery/pkg"
@@ -27,28 +26,29 @@ func NewEventUC(repo interfaces.EventRepository, userUC *UserUC) *EventUC {
 func (rc *EventUC) Create(ctx context.Context, req *model.EventCreateRequest) (*model.Event, error) {
 	ownerID := util.GetOwnerIDFromCtx(ctx)
 
-	date, err := time.Parse(`2006-01-02`, req.Date)
+	date, err := util.ParseTime(req.Date)
 	if err != nil {
 		return nil, pkg.NewError(err, "failed to parse timeStart", http.StatusBadRequest)
 	}
-	timeStart, err := time.Parse(`2006-01-02`, req.TimeStart)
+	timeStart, err := util.ParseTime(req.TimeStart)
 	if err != nil {
 		return nil, pkg.NewError(err, "failed to parse timeStart", http.StatusBadRequest)
 	}
-	timeEnd, err := time.Parse(`2006-01-02`, req.TimeEnd)
+	timeEnd, err := util.ParseTime(req.TimeEnd)
 	if err != nil {
 		return nil, pkg.NewError(err, "failed to parse timeEnd", http.StatusBadRequest)
 	}
 
 	event := model.Event{
-		Date:        date.Format(`2006-01-02`),
-		TimeStart:   timeStart.Format(`2006-01-02`),
-		TimeEnd:     timeEnd.Format(`2006-01-02`),
+		Date:        date,
+		TimeStart:   timeStart,
+		TimeEnd:     timeEnd,
 		Name:        req.Name,
 		Description: req.Description,
 		Items:       req.Items,
-		OwnerID:     ownerID,
+		UserID:      ownerID,
 		Visibility:  req.Visibility,
+		CreatedAt:   util.Now(),
 	}
 
 	newEvent, err := rc.repo.Create(ctx, &event)
@@ -66,15 +66,30 @@ func (rc *EventUC) Update(ctx context.Context, eventID string, req *model.EventU
 		return nil, err
 	}
 
+	date, err := util.ParseTime(req.Date)
+	if err != nil {
+		return nil, pkg.NewError(err, "failed to parse date", http.StatusBadRequest)
+	}
+	timeStart, err := util.ParseTime(req.TimeStart)
+	if err != nil {
+		return nil, pkg.NewError(err, "failed to parse timeStart", http.StatusBadRequest)
+	}
+	timeEnd, err := util.ParseTime(req.TimeEnd)
+	if err != nil {
+		return nil, pkg.NewError(err, "failed to parse timeEnd", http.StatusBadRequest)
+	}
+
 	event := model.Event{
-		Date:        req.Date,
-		TimeStart:   req.TimeStart,
-		TimeEnd:     req.TimeEnd,
+		Date:        date,
+		TimeStart:   timeStart,
+		TimeEnd:     timeEnd,
 		Name:        req.Name,
 		Description: req.Description,
 		Items:       req.Items,
-		OwnerID:     exist.OwnerID,
+		UserID:      exist.UserID,
 		Visibility:  req.Visibility,
+		CreatedAt:   exist.CreatedAt,
+		UpdatedAt:   util.Now(),
 	}
 
 	updatedEvent, err := rc.repo.Update(ctx, eventID, &event)

@@ -1,15 +1,20 @@
 package model
 
+import "time"
+
 type Event struct {
-	Date        string      `json:"date"`
-	TimeStart   string      `json:"time_start"`
-	TimeEnd     string      `json:"time_end"`
+	Date        time.Time   `json:"date"`
+	TimeStart   time.Time   `json:"time_start"`
+	TimeEnd     time.Time   `json:"time_end"`
 	Name        string      `json:"name"`
 	Description string      `json:"description"`
 	Items       []EventItem `json:"items"`
 	ID          string      `json:"id"`
-	OwnerID     string      `json:"owner_id"`
+	UserID      string      `json:"user_id"`
 	Visibility  Visibility  `json:"visibility"`
+	CreatedAt   time.Time   `json:"created_at"`
+	UpdatedAt   time.Time   `json:"updated_at"`
+	DeletedAt   time.Time   `json:"deleted_at"`
 }
 
 type Visibility int

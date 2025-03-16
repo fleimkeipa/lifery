@@ -60,7 +60,7 @@ func (rc *EventRepository) Update(ctx context.Context, eventID string, event *mo
 
 	ownerID := util.GetOwnerIDFromCtx(ctx)
 
-	q = q.Where("id = ? AND owner_id = ?", eventID, ownerID)
+	q = q.Where("id = ? AND user_id = ?", eventID, ownerID)
 
 	result, err := q.Update()
 	if err != nil {
@@ -79,7 +79,7 @@ func (rc *EventRepository) Delete(ctx context.Context, eventID string) error {
 
 	ownerID := util.GetOwnerIDFromCtx(ctx)
 
-	q = q.Where("id = ? AND owner_id = ?", eventID, ownerID)
+	q = q.Where("id = ? AND user_id = ?", eventID, ownerID)
 
 	result, err := q.Delete()
 	if err != nil {
@@ -147,7 +147,7 @@ func (rc *EventRepository) GetByID(ctx context.Context, eventID string) (*model.
 
 func (rc *EventRepository) fillFilter(tx *orm.Query, opts *model.EventFindOpts) *orm.Query {
 	if opts.UserID.IsSended {
-		tx = applyFilterWithOperand(tx, "owner_id", opts.UserID)
+		tx = applyFilterWithOperand(tx, "user_id", opts.UserID)
 	}
 
 	if opts.Visibility.IsSended {
@@ -159,7 +159,7 @@ func (rc *EventRepository) fillFilter(tx *orm.Query, opts *model.EventFindOpts) 
 
 func (rc *EventRepository) internalToSQL(newEvent *model.Event) *event {
 	eID, _ := strconv.Atoi(newEvent.ID)
-	ownerID, _ := strconv.Atoi(newEvent.OwnerID)
+	ownerID, _ := strconv.Atoi(newEvent.UserID)
 
 	items := []eventItem{}
 	for _, v := range newEvent.Items {
@@ -177,14 +177,16 @@ func (rc *EventRepository) internalToSQL(newEvent *model.Event) *event {
 		Description: newEvent.Description,
 		Items:       items,
 		ID:          eID,
-		OwnerID:     ownerID,
+		UserID:      ownerID,
 		Visibility:  int(newEvent.Visibility),
+		CreatedAt:   newEvent.CreatedAt,
+		UpdatedAt:   newEvent.UpdatedAt,
 	}
 }
 
 func (rc *EventRepository) sqlToInternal(newEvent *event) *model.Event {
 	eID := strconv.Itoa(newEvent.ID)
-	ownerID := strconv.Itoa(newEvent.OwnerID)
+	ownerID := strconv.Itoa(newEvent.UserID)
 
 	items := []model.EventItem{}
 	for _, v := range newEvent.Items {
@@ -202,8 +204,10 @@ func (rc *EventRepository) sqlToInternal(newEvent *event) *model.Event {
 		Description: newEvent.Description,
 		Items:       items,
 		ID:          eID,
-		OwnerID:     ownerID,
+		UserID:      ownerID,
 		Visibility:  model.Visibility(newEvent.Visibility),
+		CreatedAt:   newEvent.CreatedAt,
+		UpdatedAt:   newEvent.UpdatedAt,
 	}
 }
 

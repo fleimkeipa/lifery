@@ -56,7 +56,7 @@ func (rc *EraRepository) Update(ctx context.Context, eraID string, era *model.Er
 
 	ownerID := util.GetOwnerIDFromCtx(ctx)
 
-	q = q.Where("id = ? AND owner_id = ?", eraID, ownerID)
+	q = q.Where("id = ? AND user_id = ?", eraID, ownerID)
 
 	result, err := q.Update()
 	if err != nil {
@@ -75,7 +75,7 @@ func (rc *EraRepository) Delete(ctx context.Context, id string) error {
 
 	ownerID := util.GetOwnerIDFromCtx(ctx)
 
-	q = q.Where("id = ? AND owner_id = ?", id, ownerID)
+	q = q.Where("id = ? AND user_id = ?", id, ownerID)
 
 	result, err := q.Delete()
 	if err != nil {
@@ -95,14 +95,18 @@ func (rc *EraRepository) List(ctx context.Context, opts *model.EraFindOpts) (*mo
 
 	eras := make([]era, 0)
 
-	fields := []string{"*"}
-	query := rc.db.Model(&eras).Column(fields...)
+	query := rc.db.Model(&eras)
 
 	query = applyOrderBy(query, opts.OrderByOpts)
 
 	query = applyStandardQueries(query, opts.PaginationOpts)
 
 	query = rc.fillFilter(query, opts)
+
+	query = query.Relation("User", func(q *orm.Query) (*orm.Query, error) {
+		q.Column("User.id", "User.username", "User.email")
+		return q, nil
+	})
 
 	count, err := query.SelectAndCount()
 	if err != nil {
@@ -129,17 +133,20 @@ func (rc *EraRepository) GetByID(ctx context.Context, eraID string) (*model.Era,
 		return nil, pkg.NewError(nil, "invalid era ID: "+eraID, http.StatusBadRequest)
 	}
 
-	resp := new(eraGetResponse)
+	resp := new(era)
 
-	err := rc.db.Model(&era{}).
-		Relation("Owner").
+	err := rc.db.Model(resp).
+		Relation("User", func(q *orm.Query) (*orm.Query, error) {
+			q.Column("User.id", "User.username", "User.email")
+			return q, nil
+		}).
 		Where("era.id = ?", eraID).
-		Select(resp)
+		Select()
 	if err != nil {
 		return nil, pkg.NewError(err, "failed to find era by ID "+eraID, http.StatusInternalServerError)
 	}
 
-	return rc.sqlToInternal2(resp), nil
+	return rc.sqlToInternal(resp), nil
 }
 
 func (rc *EraRepository) fillFilter(tx *orm.Query, opts *model.EraFindOpts) *orm.Query {
@@ -148,7 +155,7 @@ func (rc *EraRepository) fillFilter(tx *orm.Query, opts *model.EraFindOpts) *orm
 	}
 
 	if opts.UserID.IsSended {
-		tx = applyFilterWithOperand(tx, "owner_id", opts.UserID)
+		tx = applyFilterWithOperand(tx, "user_id", opts.UserID)
 	}
 
 	return tx
@@ -164,12 +171,20 @@ func (rc *EraRepository) internalToSQL(newEra *model.Era) *era {
 		Color:     newEra.Color,
 		UserID:    userID,
 		ID:        eID,
+		User:      &user{},
+		CreatedAt: newEra.CreatedAt,
+		UpdatedAt: newEra.UpdatedAt,
+		DeletedAt: newEra.DeletedAt,
 	}
 }
 
 func (rc *EraRepository) sqlToInternal(newEra *era) *model.Era {
 	eID := strconv.Itoa(newEra.ID)
 	userID := strconv.Itoa(newEra.UserID)
+	user := new(model.User)
+	user.ID = userID
+	user.Username = newEra.User.Username
+	user.Email = newEra.User.Email
 	return &model.Era{
 		TimeStart: newEra.TimeStart,
 		TimeEnd:   newEra.TimeEnd,
@@ -177,19 +192,10 @@ func (rc *EraRepository) sqlToInternal(newEra *era) *model.Era {
 		Color:     newEra.Color,
 		UserID:    userID,
 		ID:        eID,
-	}
-}
-
-func (rc *EraRepository) sqlToInternal2(newEra *eraGetResponse) *model.Era {
-	eID := strconv.Itoa(newEra.ID)
-	userID := strconv.Itoa(newEra.UserID)
-	return &model.Era{
-		TimeStart: newEra.TimeStart,
-		TimeEnd:   newEra.TimeEnd,
-		Name:      newEra.Name,
-		Color:     newEra.Color,
-		UserID:    userID,
-		ID:        eID,
+		User:      user,
+		CreatedAt: newEra.CreatedAt,
+		UpdatedAt: newEra.UpdatedAt,
+		DeletedAt: newEra.DeletedAt,
 	}
 }
 
