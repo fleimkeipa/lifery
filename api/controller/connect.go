@@ -81,13 +81,13 @@ func (rc *ConnectHandlers) Update(c echo.Context) error {
 		})
 	}
 
-	connect, err := rc.connectUC.Update(c.Request().Context(), id, input)
+	err := rc.connectUC.Update(c.Request().Context(), id, input)
 	if err != nil {
 		return HandleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
-		Data:    connect.Status,
+		Data:    input.Status,
 		Message: "Connect updated successfully.",
 	})
 }

@@ -98,6 +98,38 @@ func (rc *UserUC) Update(ctx context.Context, userID string, req model.UserCreat
 	return updatedUser, nil
 }
 
+func (rc *UserUC) UpdateConnects(ctx context.Context, user *model.User, senderID, receiverID string) (*model.User, error) {
+	sID, err := strconv.Atoi(senderID)
+	if err != nil {
+		return nil, pkg.NewError(err, "failed to convert senderID to int", http.StatusInternalServerError)
+	}
+
+	user.Connects = append(user.Connects, int(sID))
+
+	updatedUser, err := rc.userRepo.Update(ctx, receiverID, user)
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedUser, nil
+}
+
+func (rc *UserUC) DeleteUserConnect(ctx context.Context, user *model.User, userID string) (*model.User, error) {
+	for i, v := range user.Connects {
+		if strconv.Itoa(v) == userID {
+			user.Connects = append(user.Connects[:i], user.Connects[i+1:]...)
+			break
+		}
+	}
+
+	updatedUser, err := rc.userRepo.Update(ctx, userID, user)
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedUser, nil
+}
+
 func (rc *UserUC) IsConnected(ctx context.Context, userID, friendID string) (bool, error) {
 	// receiver exist control
 	receiver, err := rc.GetByID(ctx, userID)
@@ -117,48 +149,6 @@ func (rc *UserUC) IsConnected(ctx context.Context, userID, friendID string) (boo
 	}
 
 	return false, nil
-}
-
-func (rc *UserUC) AddConnect(ctx context.Context, userID, friendID string) (*model.User, error) {
-	// receiver exist control
-	receiver, err := rc.GetByID(ctx, userID)
-	if err != nil {
-		return nil, err
-	}
-
-	// sender exist control
-	sender, err := rc.GetByID(ctx, friendID)
-	if err != nil {
-		return nil, err
-	}
-
-	receiver, err = rc.addConnect(ctx, receiver, sender.ID, receiver.ID)
-	if err != nil {
-		return nil, err
-	}
-
-	return rc.addConnect(ctx, sender, receiver.ID, sender.ID)
-}
-
-func (rc *UserUC) DeleteConnect(ctx context.Context, userID, friendID string) (*model.User, error) {
-	// receiver exist control
-	receiver, err := rc.GetByID(ctx, userID)
-	if err != nil {
-		return nil, err
-	}
-
-	// sender exist control
-	sender, err := rc.GetByID(ctx, friendID)
-	if err != nil {
-		return nil, err
-	}
-
-	receiver, err = rc.deleteConnect(ctx, receiver, sender.ID)
-	if err != nil {
-		return nil, err
-	}
-
-	return rc.deleteConnect(ctx, sender, receiver.ID)
 }
 
 func (rc *UserUC) GetConnects(ctx context.Context, opts *model.UserConnectsFindOpts) (*model.UserConnects, error) {
@@ -212,36 +202,4 @@ func (rc *UserUC) Delete(ctx context.Context, userID string) error {
 	}
 
 	return nil
-}
-
-func (rc *UserUC) addConnect(ctx context.Context, user *model.User, senderID, receiverID string) (*model.User, error) {
-	sID, err := strconv.Atoi(senderID)
-	if err != nil {
-		return nil, err
-	}
-
-	user.Connects = append(user.Connects, int(sID))
-
-	updatedUser, err := rc.userRepo.Update(ctx, receiverID, user)
-	if err != nil {
-		return nil, err
-	}
-
-	return updatedUser, nil
-}
-
-func (rc *UserUC) deleteConnect(ctx context.Context, user *model.User, userID string) (*model.User, error) {
-	for i, v := range user.Connects {
-		if strconv.Itoa(v) == userID {
-			user.Connects = append(user.Connects[:i], user.Connects[i+1:]...)
-			break
-		}
-	}
-
-	updatedUser, err := rc.userRepo.Update(ctx, userID, user)
-	if err != nil {
-		return nil, err
-	}
-
-	return updatedUser, nil
 }
