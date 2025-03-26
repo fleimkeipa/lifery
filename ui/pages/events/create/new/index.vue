@@ -17,14 +17,14 @@ const state = reactive({
 
 const schema = yup.object({
   name: yup.string().nonNullable("Name cannot be null"),
-  description: yup.string(),
+  description: yup.string().nullable(),
   visibility: yup
     .number()
     .oneOf([1, 2, 3], "Visibility must be Public (1), Private (2), or JustMe (3)")
     .required("Visibility is required"),
-  date: yup.date(),
-  time_start: yup.date(),
-  time_end: yup.date(),
+  date: yup.date().nullable(),
+  time_start: yup.date().nullable(),
+  time_end: yup.date().nullable(),
   items: yup.array().of(
     yup.object({
       type: yup
@@ -80,22 +80,23 @@ const onSubmit = (event) => {
     <UForm @submit="onSubmit" style="display: flex; 
     flex-direction: column; 
     gap: 20px" novalidate :state="state" :schema="schema" class="mt-8 flex items-start">
-      <UFormGroup label="Name" name="event.name">
+      <UFormGroup label="Name" name="name">
         <UInput type="text" placeholder="Name" v-model="state.name" />
       </UFormGroup>
-      <UFormGroup label="Description" name="event.description">
+      <UFormGroup label="Description" name="description">
         <UInput type="text" placeholder="Description" v-model="state.description" />
       </UFormGroup>
-      <UFormGroup label="Visibility" name="event.visibility">
-        <USelect v-model="state.visibility" placeholder="Select Visibility" :options="visibilityOptions" />
+      <UFormGroup label="Visibility" name="visibility">
+        <USelect v-model="state.visibility" placeholder="Select Visibility" :options="visibilityOptions"
+          @update:modelValue="(val) => state.visibility = Number(val)" />
       </UFormGroup>
-      <UFormGroup label="Date" name="event.date">
+      <UFormGroup label="Date" name="date">
         <UInput type="date" pattern="\d{4}-\d{2}-\d{2}" placeholder="Date" v-model="state.date" />
       </UFormGroup>
-      <UFormGroup label="TimeStart" name="event.time_start">
+      <UFormGroup label="TimeStart" name="time_start">
         <UInput type="date" pattern="\d{4}-\d{2}-\d{2}" placeholder="Time Start" v-model="state.time_start" />
       </UFormGroup>
-      <UFormGroup label="TimeEnd" name="event.time_end">
+      <UFormGroup label="TimeEnd" name="time_end">
         <UInput type="date" pattern="\d{4}-\d{2}-\d{2}" placeholder="Time End" v-model="state.time_end" />
       </UFormGroup>
 
