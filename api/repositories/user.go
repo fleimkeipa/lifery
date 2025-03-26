@@ -220,7 +220,6 @@ func (rc *UserRepository) internalToSQL(newUser *model.User) *user {
 		})
 	}
 	return &user{
-		DeletedAt: newUser.DeletedAt,
 		CreatedAt: newUser.CreatedAt,
 		Connects:  connects,
 		Username:  newUser.Username,
@@ -245,7 +244,6 @@ func (rc *UserRepository) sqlToInternal(newUser *user) *model.User {
 		})
 	}
 	return &model.User{
-		DeletedAt: newUser.DeletedAt,
 		CreatedAt: newUser.CreatedAt,
 		Connects:  connects,
 		Username:  newUser.Username,

@@ -174,7 +174,6 @@ func (rc *EraRepository) internalToSQL(newEra *model.Era) *era {
 		User:      &user{},
 		CreatedAt: newEra.CreatedAt,
 		UpdatedAt: newEra.UpdatedAt,
-		DeletedAt: newEra.DeletedAt,
 	}
 }
 
@@ -195,7 +194,6 @@ func (rc *EraRepository) sqlToInternal(newEra *era) *model.Era {
 		User:      user,
 		CreatedAt: newEra.CreatedAt,
 		UpdatedAt: newEra.UpdatedAt,
-		DeletedAt: newEra.DeletedAt,
 	}
 }
 

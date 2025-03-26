@@ -5,7 +5,6 @@ import "time"
 const ZeroCreds = "zeroCreds"
 
 type User struct {
-	DeletedAt time.Time  `json:"deleted_at"`
 	CreatedAt time.Time  `json:"created_at"`
 	Connects  []*Connect `json:"connects"`
 	Username  string     `json:"username"`
