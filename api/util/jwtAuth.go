@@ -19,7 +19,7 @@ func JWTAuthAdmin(next echo.HandlerFunc) echo.HandlerFunc {
 
 		if err := ValidateAdminRoleJWT(c); err != nil {
 			return c.JSON(http.StatusUnauthorized, echo.Map{
-				"message": "Only Administrator Viewers are allowed to perform this action",
+				"message": "Only Administrators are allowed to perform this action",
 				"error":   err.Error(),
 			})
 		}

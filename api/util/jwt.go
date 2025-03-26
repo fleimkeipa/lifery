@@ -123,11 +123,11 @@ func ValidateViewerRoleJWT(c echo.Context) error {
 	}
 
 	userRole := uint(claims["role"].(float64))
-	if userRole == model.ViewerRole || userRole == model.AdminRole {
+	if userRole == model.EditorRole || userRole == model.ViewerRole || userRole == model.AdminRole {
 		return nil
 	}
 
-	return errors.New("invalid viewer or admin token provided")
+	return errors.New("invalid editor, viewer or admin token provided")
 }
 
 // GetUserIDOnToken return user id
@@ -258,7 +258,7 @@ func IsUserPublic(c echo.Context) bool {
 	}
 
 	userRole := uint(claims["role"].(float64))
-	if userRole == model.ViewerRole || userRole == model.AdminRole {
+	if userRole == model.EditorRole || userRole == model.ViewerRole || userRole == model.AdminRole {
 		return false
 	}
 
