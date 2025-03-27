@@ -1,9 +1,9 @@
 <script setup>
 import * as yup from "yup";
 
-// definePageMeta({
-//   middleware: "auth",
-// });
+definePageMeta({
+  middleware: "auth",
+});
 
 const state = reactive({
   name: null,

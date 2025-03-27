@@ -1,7 +1,8 @@
 <script setup lang="ts">
-// definePageMeta({
-//   middleware: "auth",
-// });
+
+definePageMeta({
+  middleware: "auth",
+});
 
 type Row = {
   id: number;
@@ -67,28 +68,15 @@ const handleDelete = async (uid: number) => {
       <UButton icon="i-heroicons-plus">
         <NuxtLink to="/connects/create/new">Create New</NuxtLink>
       </UButton>
-      <UButton
-        icon="i-heroicons-arrow-path"
-        :loading="isFetching"
-        @click="fetchConnects"
-      ></UButton>
+      <UButton icon="i-heroicons-arrow-path" :loading="isFetching" @click="fetchConnects"></UButton>
     </div>
-    <UTable
-      :columns="columns"
-      :rows="items.data.connects"
-      :loading="isFetching"
-      :loading-state="{
-        icon: 'i-heroicons-arrow-path-20-solid',
-        label: 'Loading...',
-      }"
-    >
+    <UTable :columns="columns" :rows="items.data.connects" :loading="isFetching" :loading-state="{
+      icon: 'i-heroicons-arrow-path-20-solid',
+      label: 'Loading...',
+    }">
       <template #actions-data="{ row }">
         <UDropdown :items="actions(row)">
-          <UButton
-            color="gray"
-            variant="ghost"
-            icon="i-heroicons-ellipsis-horizontal-20-solid"
-          />
+          <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" />
         </UDropdown>
       </template>
     </UTable>

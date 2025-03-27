@@ -1,9 +1,9 @@
 <script setup>
 import * as yup from "yup";
 
-// definePageMeta({
-//   middleware: "auth",
-// });
+definePageMeta({
+  middleware: "auth",
+});
 
 const state = reactive({
   name: null,
@@ -54,14 +54,8 @@ const onSubmit = (era) => {
   <div>
     <h1 class="text-2xl font-bold">Update Era</h1>
     <div v-if="isFetching">Loading...</div>
-    <UForm
-      @submit="onSubmit"
-      style="display: flex; flex-direction: column; gap: 20px"
-      novalidate
-      :state="state"
-      :schema="schema"
-      class="mt-8 flex items-start"
-    >
+    <UForm @submit="onSubmit" style="display: flex; flex-direction: column; gap: 20px" novalidate :state="state"
+      :schema="schema" class="mt-8 flex items-start">
       <UFormGroup label="Name" name="name">
         <UInput type="text" placeholder="Name" v-model="state.name" />
       </UFormGroup>
@@ -71,20 +65,10 @@ const onSubmit = (era) => {
       </UFormGroup>
 
       <UFormGroup label="TimeStart" name="time_start">
-        <UInput
-          type="date"
-          pattern="\d{4}-\d{2}-\d{2}"
-          placeholder="Time Start"
-          v-model="state.time_start"
-        />
+        <UInput type="date" pattern="\d{4}-\d{2}-\d{2}" placeholder="Time Start" v-model="state.time_start" />
       </UFormGroup>
       <UFormGroup label="TimeEnd" name="time_end">
-        <UInput
-          type="date"
-          pattern="\d{4}-\d{2}-\d{2}"
-          placeholder="Time End"
-          v-model="state.time_end"
-        />
+        <UInput type="date" pattern="\d{4}-\d{2}-\d{2}" placeholder="Time End" v-model="state.time_end" />
       </UFormGroup>
 
       <UButton :loading="loading" type="submit">Submit</UButton>
