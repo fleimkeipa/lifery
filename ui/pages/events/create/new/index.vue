@@ -107,17 +107,14 @@ const onSubmit = (event) => {
             Add Item
           </UButton>
         </div>
+        
         <div class="mb-4 flex flex-col gap-y-4" v-if="state.items.length">
           <div :key="item.key" v-for="(item, idx) in state.items"
             class="flex flex-row items-start justify-center gap-x-6">
             <UFormGroup label="Type" :type="`items[${idx}].type`">
-              <USelect v-model="item.type" placeholder="Select Type" :options="typeOptions" />
+              <USelect v-model="item.type" placeholder="Select Type" :options="typeOptions"
+                @update:modelValue="(val) => item.type = Number(val)" />
             </UFormGroup>
-
-            <!-- 
-            <UFormGroup label="Type" :type="`items[${idx}].type`">
-              <UInput type="number" v-model="item.type" />
-            </UFormGroup> -->
 
             <UFormGroup label="Data" :name="`items[${idx}].data`">
               <UInput type="text" placeholder="Data of item" v-model="item.data" />
