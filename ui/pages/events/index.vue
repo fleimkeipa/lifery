@@ -47,13 +47,16 @@ const columns = [
     key: "items",
     label: "Items",
   },
+  {
+    key: "actions",
+  },
 ];
 
 const {
   data: items,
   error,
   isFetching,
-  execute: fetchPods,
+  execute: fetchEvents,
 } = useApi<{ data: { items: Row[] } }>("/events").json();
 
 const router = useRouter();
@@ -63,7 +66,7 @@ const actions = (row: Row) => [
     {
       label: "Edit",
       icon: "i-heroicons-pencil-square-20-solid",
-      click: () => router.push(`/pods/${row.id}`),
+      click: () => router.push(`/events/${row.id}`),
     },
     {
       label: "Delete",
@@ -75,7 +78,7 @@ const actions = (row: Row) => [
 
 const handleDelete = async (uid: number) => {
   useApi(`/events/${uid}`, {
-    afterFetch: () => fetchPods(),
+    afterFetch: () => fetchEvents(),
   }).delete();
 };
 </script>
@@ -87,7 +90,7 @@ const handleDelete = async (uid: number) => {
       <UButton icon="i-heroicons-plus">
         <NuxtLink to="/events/create/new">Create New</NuxtLink>
       </UButton>
-      <UButton icon="i-heroicons-arrow-path" :loading="isFetching" @click="fetchPods"></UButton>
+      <UButton icon="i-heroicons-arrow-path" :loading="isFetching" @click="fetchEvents"></UButton>
     </div>
     <UTable :columns="columns" :rows="items.data.events" :loading="isFetching" :loading-state="{
       icon: 'i-heroicons-arrow-path-20-solid',
