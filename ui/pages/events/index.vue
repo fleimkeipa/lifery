@@ -3,6 +3,8 @@ definePageMeta({
   middleware: "auth",
 });
 
+const { t, locale } = useI18n();
+
 type Row = {
   id: number;
   name: string;
@@ -21,31 +23,31 @@ const columns = [
   },
   {
     key: "name",
-    label: "Name",
+    label: t('common.name'),
   },
   {
     key: "description",
-    label: "Description",
+    label: t('common.description'),
   },
   {
     key: "visibility",
-    label: "Visibility",
+    label: t('event.visibility'),
   },
   {
     key: "date",
-    label: "Date",
+    label: t('common.date'),
   },
   {
     key: "time_start",
-    label: "TimeStart",
+    label: t('common.time_start'),
   },
   {
     key: "time_end",
-    label: "TimeEnd",
+    label: t('common.time_end'),
   },
   {
     key: "items",
-    label: "Items",
+    label: t('event.items'),
   },
   {
     key: "actions",
@@ -64,12 +66,12 @@ const router = useRouter();
 const actions = (row: Row) => [
   [
     {
-      label: "Edit",
+      label: t('common.edit'),
       icon: "i-heroicons-pencil-square-20-solid",
       click: () => router.push(`/events/${row.id}`),
     },
     {
-      label: "Delete",
+      label: t('common.delete'),
       icon: "i-heroicons-trash-20-solid",
       click: () => handleDelete(row.id),
     },
@@ -88,7 +90,7 @@ const handleDelete = async (uid: number) => {
   <div v-else>
     <div class="flex flex-row items-center justify-between">
       <UButton icon="i-heroicons-plus">
-        <NuxtLink to="/events/create/new">Create New</NuxtLink>
+        <NuxtLink to="/events/create/new">{{ t('common.create_new') }}</NuxtLink>
       </UButton>
       <UButton icon="i-heroicons-arrow-path" :loading="isFetching" @click="fetchEvents"></UButton>
     </div>
@@ -98,7 +100,7 @@ const handleDelete = async (uid: number) => {
     }">
       <template #expand="{ row }">
         <div class="p-4">
-          <b>Items:</b>
+          <b>{{ t('event.items') }}:</b>
           <pre>{{ row.items }}</pre>
         </div>
       </template>

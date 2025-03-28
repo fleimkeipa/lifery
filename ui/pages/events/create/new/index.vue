@@ -5,6 +5,8 @@ definePageMeta({
   middleware: "auth",
 });
 
+const { t, locale } = useI18n();
+
 const state = reactive({
   name: null,
   description: null,
@@ -16,12 +18,12 @@ const state = reactive({
 });
 
 const schema = yup.object({
-  name: yup.string().nonNullable("Name cannot be null"),
+  name: yup.string().nonNullable(t('common.name')),
   description: yup.string().nullable(),
   visibility: yup
     .number()
-    .oneOf([1, 2, 3], "Visibility must be Public (1), Private (2), or JustMe (3)")
-    .required("Visibility is required"),
+    .oneOf([1, 2, 3], t('event.validation.one_of.visibility'))
+    .required(t('event.validation.required.visibility')),
   date: yup.date().nullable(),
   time_start: yup.date().nullable(),
   time_end: yup.date().nullable(),
@@ -29,9 +31,9 @@ const schema = yup.object({
     yup.object({
       type: yup
         .number()
-        .oneOf([10, 11, 12, 13], "Type must be Text(10), Photo(11), Video(12), or Voice Record(13)"),
-      // .required("Type is required"),
-      data: yup.string().required("Item data cannot be empty"),
+        .oneOf([10, 11, 12, 13], t('event.validation.one_of.type'))
+        .required(t('event.validation.required.type')),
+      data: yup.string().required(t('event.validation.required.data')),
     })
   ),
 });
@@ -44,16 +46,16 @@ const remove = (idx) => {
 };
 
 const visibilityOptions = [
-  { label: "Public", value: 1 },
-  { label: "Private", value: 2 },
-  { label: "Just Me", value: 3 }
+  { label: t('event.visibilityOpts.public'), value: 1 },
+  { label: t('event.visibilityOpts.private'), value: 2 },
+  { label: t('event.visibilityOpts.just_me'), value: 3 }
 ];
 
 const typeOptions = [
-  { label: "Text", value: 10 },
-  { label: "Photo", value: 11 },
-  { label: "Video", value: 12 },
-  { label: "Voice Record", value: 13 }
+  { label: t('event.typeOpts.text'), value: 10 },
+  { label: t('event.typeOpts.photo'), value: 11 },
+  { label: t('event.typeOpts.video'), value: 12 },
+  { label: t('event.typeOpts.voice_record'), value: 13 }
 ];
 
 const router = useRouter();
@@ -76,60 +78,60 @@ const onSubmit = (event) => {
 
 <template>
   <div>
-    <h1 class="text-2xl font-bold">Create Event</h1>
+    <h1 class="text-2xl font-bold">{{ t('common.create_new') }}</h1>
     <UForm @submit="onSubmit" style="display: flex; 
     flex-direction: column; 
     gap: 20px" novalidate :state="state" :schema="schema" class="mt-8 flex items-start">
-      <UFormGroup label="Name" name="name">
-        <UInput type="text" placeholder="Name" v-model="state.name" />
+      <UFormGroup :label="t('common.name')" name="name">
+        <UInput type="text" :placeholder="t('common.write_name')" v-model="state.name" />
       </UFormGroup>
-      <UFormGroup label="Description" name="description">
-        <UInput type="text" placeholder="Description" v-model="state.description" />
+      <UFormGroup :label="t('common.description')" name="description">
+        <UInput type="text" :placeholder="t(`common.write_desc`)" v-model="state.description" />
       </UFormGroup>
-      <UFormGroup label="Visibility" name="visibility">
-        <USelect v-model="state.visibility" placeholder="Select Visibility" :options="visibilityOptions"
+      <UFormGroup :label="t('event.visibility')" name="visibility">
+        <USelect v-model="state.visibility" :placeholder="t(`event.select_visibility`)" :options="visibilityOptions"
           @update:modelValue="(val) => state.visibility = Number(val)" />
       </UFormGroup>
-      <UFormGroup label="Date" name="date">
-        <UInput type="date" pattern="\d{4}-\d{2}-\d{2}" placeholder="Date" v-model="state.date" />
+      <UFormGroup :label="t('common.date')" name="date">
+        <UInput type="date" pattern="\d{4}-\d{2}-\d{2}" :placeholder="t(`common.date`)" v-model="state.date" />
       </UFormGroup>
-      <UFormGroup label="TimeStart" name="time_start">
+      <UFormGroup :label="t('common.time_start')" name="time_start">
         <UInput type="date" pattern="\d{4}-\d{2}-\d{2}" placeholder="Time Start" v-model="state.time_start" />
       </UFormGroup>
-      <UFormGroup label="TimeEnd" name="time_end">
+      <UFormGroup :label="t('common.time_end')" name="time_end">
         <UInput type="date" pattern="\d{4}-\d{2}-\d{2}" placeholder="Time End" v-model="state.time_end" />
       </UFormGroup>
 
       <div>
         <div class="mb-4 flex flex-row items-center gap-x-4">
-          <h1 class="text-xl">Items</h1>
+          <h1 class="text-xl">{{ t(`event.items`) }}</h1>
           <UButton @click="push()" size="sm" :ui="{ rounded: 'rounded-full' }" color="blue" icon="i-heroicons-plus">
-            Add Item
+            {{ t(`event.add_item`) }}
           </UButton>
         </div>
-        
+
         <div class="mb-4 flex flex-col gap-y-4" v-if="state.items.length">
           <div :key="item.key" v-for="(item, idx) in state.items"
             class="flex flex-row items-start justify-center gap-x-6">
-            <UFormGroup label="Type" :type="`items[${idx}].type`">
-              <USelect v-model="item.type" placeholder="Select Type" :options="typeOptions"
+            <UFormGroup :label="t('event.item')" :type="`items[${idx}].type`">
+              <USelect v-model="item.type" :placeholder="t('event.select_item')" :options="typeOptions"
                 @update:modelValue="(val) => item.type = Number(val)" />
             </UFormGroup>
 
-            <UFormGroup label="Data" :name="`items[${idx}].data`">
-              <UInput type="text" placeholder="Data of item" v-model="item.data" />
+            <UFormGroup :label="t('event.data')" :name="`items[${idx}].data`">
+              <UInput type="text" :placeholder="t('event.data_of_item')" v-model="item.data" />
             </UFormGroup>
 
             <UButton @click="remove(idx)" size="sm" :ui="{ rounded: 'rounded-full' }" color="red"
-              icon="i-heroicons-trash" class="self-center">Remove Item</UButton>
+              icon="i-heroicons-trash" class="self-center">{{ t(`event.remove_item`) }}</UButton>
           </div>
         </div>
         <div v-else>
-          <span class="text-md font-bold">No item</span>
+          <span class="text-md font-bold">{{ t(`event.no_item`) }}</span>
         </div>
       </div>
 
-      <UButton :loading="loading" type="submit">Submit</UButton>
+      <UButton :loading="loading" type="submit">{{ t(`event.add_item`) }}</UButton>
       <div v-if="error" class="flex items-center gap-x-2 rounded-lg border px-2 py-1">
         <span @click="error = null" class="cursor-pointer">X</span>
         <span class="text-sm text-red-500">{{ error }}</span>

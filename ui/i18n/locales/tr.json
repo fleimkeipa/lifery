@@ -37,5 +37,53 @@
                 "password": "Şifre en az 8 karakter olmalıdır"
             }
         }
+    },
+    "common": {
+        "edit": "Düzenle",
+        "delete": "Sil",
+        "submit": "Gönder",
+        "name": "İsim",
+        "write_name": "İsim yaz",
+        "description": "Açıklama",
+        "write_desc": "Açıklama yaz",
+        "date": "Tarih",
+        "time_start": "Başlangıç",
+        "time_end": "Bitiş",
+        "create_new": "Oluştur"
+    },
+    "event": {
+        "visibility": "Görünürlük",
+        "select_visibility": "Görünürlük seç",
+        "items": "İtemler",
+        "item": "İtem",
+        "data": "Veri",
+        "add_item": "İtem ekle",
+        "select_item": "İtem seç",
+        "remove_item": "İtem sil",
+        "data_of_item": "İtem verisi",
+        "no_item": "İtem yok",
+        "visibilityOpts": {
+            "public": "Herkese açık",
+            "private": "Gizli",
+            "just_me": "Sadece ben"
+        },
+        "typeOpts": {
+            "text": "Yazı",
+            "photo": "Fotoğraf",
+            "video": "Video",
+            "voice_record": "Ses Kaydı"
+        },
+        "validation": {
+            "required": {
+                "name": "İsim boş olamaz",
+                "visibility": "Görünürlük boş olamaz",
+                "type": "İtem tipi boş olamaz",
+                "data": "İtem verisi boş olamaz"
+            },
+            "one_of": {
+                "visibility": "Görünürlük Herkese açık (1), Gizli (2), veya Sadece ben (3) olmalıdır",
+                "type": "İtem tipi Yazı(10), Fotoğraf(11), Video(12), yada Ses Kaydı(13) olmalıdır"
+            }
+        }
     }
 }

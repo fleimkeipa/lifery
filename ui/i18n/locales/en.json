@@ -37,5 +37,53 @@
                 "password": "Password must be at least 8 characters"
             }
         }
+    },
+    "common": {
+        "edit": "Edit",
+        "delete": "Delete",
+        "submit": "Submit",
+        "name": "Name",
+        "write_name": "Write name",
+        "description": "Description",
+        "write_desc": "Write Description",
+        "date": "Date",
+        "time_start": "Start time",
+        "time_end": "End time",
+        "create_new": "Create New"
+    },
+    "event": {
+        "visibility": "Visibility",
+        "select_visibility": "Select Visibility",
+        "items": "Items",
+        "item": "Item",
+        "data": "Data",
+        "add_item": "Add item",
+        "select_item": "Select item",
+        "remove_item": "Remove item",
+        "data_of_item": "Data of item",
+        "no_item": "No item",
+        "visibilityOpts": {
+            "public": "Public",
+            "private": "Private",
+            "just_me": "Just Me"
+        },
+        "typeOpts": {
+            "text": "Text",
+            "photo": "Photo",
+            "video": "Video",
+            "voice_record": "Voice Record"
+        },
+        "validation": {
+            "required": {
+                "name": "Name cannot be null",
+                "visibility": "Visibility cannot be null",
+                "type": "Item type cannot be null",
+                "data": "Item data cannot be null"
+            },
+            "one_of": {
+                "visibility": "Visibility must be Public (1), Private (2), or JustMe (3)",
+                "type": "Type must be Text(10), Photo(11), Video(12), or Voice Record(13)"
+            }
+        }
     }
 }
