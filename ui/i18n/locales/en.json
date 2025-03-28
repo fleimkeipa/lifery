@@ -49,7 +49,9 @@
         "date": "Date",
         "time_start": "Start time",
         "time_end": "End time",
-        "create_new": "Create New"
+        "create_new": "Create New",
+        "update": "Update",
+        "loading": "Loading..."
     },
     "event": {
         "visibility": "Visibility",

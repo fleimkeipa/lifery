@@ -49,7 +49,9 @@
         "date": "Tarih",
         "time_start": "Başlangıç",
         "time_end": "Bitiş",
-        "create_new": "Oluştur"
+        "create_new": "Oluştur",
+        "update": "Güncelle",
+        "loading": "Yükleniyor..."
     },
     "event": {
         "visibility": "Görünürlük",

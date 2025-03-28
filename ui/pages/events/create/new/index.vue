@@ -123,7 +123,8 @@ const onSubmit = (event) => {
             </UFormGroup>
 
             <UButton @click="remove(idx)" size="sm" :ui="{ rounded: 'rounded-full' }" color="red"
-              icon="i-heroicons-trash" class="self-center">{{ t(`event.remove_item`) }}</UButton>
+              icon="i-heroicons-trash" class="self-center">{{ t(`event.remove_item`) }}
+            </UButton>
           </div>
         </div>
         <div v-else>
