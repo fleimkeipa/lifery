@@ -1,12 +1,21 @@
 package util
 
 import (
+	"strings"
 	"time"
 )
 
 const (
 	timeFormat = "2006-01-02"
 )
+
+func Format(timeStr string) string {
+	if timeStr == "" {
+		return ""
+	}
+	splitted := strings.Split(timeStr, " ")
+	return splitted[0]
+}
 
 func ParseTime(timeStr string) (time.Time, error) {
 	return time.Parse(timeFormat, timeStr)

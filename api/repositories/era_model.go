@@ -1,12 +1,10 @@
 package repositories
 
-import (
-	"time"
-)
+import "time"
 
 type era struct {
-	TimeStart time.Time `json:"time_start"`
-	TimeEnd   time.Time `json:"time_end"`
+	TimeStart string    `json:"time_start"`
+	TimeEnd   string    `json:"time_end"`
 	Name      string    `json:"name"`
 	Color     string    `json:"color"`
 	UserID    int       `json:"user_id" pg:",notnull,on_delete:CASCADE"`

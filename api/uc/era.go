@@ -23,18 +23,18 @@ func NewEraUC(repo interfaces.EraRepository) *EraUC {
 func (rc *EraUC) Create(ctx context.Context, req *model.EraCreateRequest) (*model.Era, error) {
 	userID := util.GetOwnerIDFromCtx(ctx)
 
-	timeStart, err := util.ParseTime(req.TimeStart)
+	_, err := util.ParseTime(req.TimeStart)
 	if err != nil {
-		return nil, pkg.NewError(err, "failed to parse timeStart", http.StatusBadRequest)
+		return nil, pkg.NewError(err, "failed to parse start time", http.StatusBadRequest)
 	}
-	timeEnd, err := util.ParseTime(req.TimeEnd)
+	_, err = util.ParseTime(req.TimeEnd)
 	if err != nil {
-		return nil, pkg.NewError(err, "failed to parse timeEnd", http.StatusBadRequest)
+		return nil, pkg.NewError(err, "failed to parse end time", http.StatusBadRequest)
 	}
 
 	era := model.Era{
-		TimeStart: timeStart,
-		TimeEnd:   timeEnd,
+		TimeStart: req.TimeStart,
+		TimeEnd:   req.TimeEnd,
 		Name:      req.Name,
 		Color:     req.Color,
 		UserID:    userID,
@@ -56,18 +56,18 @@ func (rc *EraUC) Update(ctx context.Context, eraID string, req *model.EraUpdateR
 		return nil, err
 	}
 
-	timeStart, err := util.ParseTime(req.TimeStart)
+	_, err = util.ParseTime(req.TimeStart)
 	if err != nil {
-		return nil, pkg.NewError(err, "failed to parse timeStart", http.StatusBadRequest)
+		return nil, pkg.NewError(err, "failed to parse start time", http.StatusBadRequest)
 	}
-	timeEnd, err := util.ParseTime(req.TimeEnd)
+	_, err = util.ParseTime(req.TimeEnd)
 	if err != nil {
-		return nil, pkg.NewError(err, "failed to parse timeEnd", http.StatusBadRequest)
+		return nil, pkg.NewError(err, "failed to parse end time", http.StatusBadRequest)
 	}
 
 	era := model.Era{
-		TimeStart: timeStart,
-		TimeEnd:   timeEnd,
+		TimeStart: req.TimeStart,
+		TimeEnd:   req.TimeEnd,
 		Name:      req.Name,
 		Color:     req.Color,
 		UserID:    exist.UserID,
