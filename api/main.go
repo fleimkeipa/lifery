@@ -81,7 +81,7 @@ func serveApplication() {
 
 	// Define user routes
 	userRoutes := e.Group("")
-	userRoutes.Use(util.JWTAuthUser)
+	userRoutes.Use(util.JWTAuthEditor)
 
 	// Define events routes
 	eventsRoutes := userRoutes.Group("/events")

@@ -31,7 +31,7 @@ func JWTAuthAdmin(next echo.HandlerFunc) echo.HandlerFunc {
 }
 
 // check for valid user token
-func JWTAuthUser(next echo.HandlerFunc) echo.HandlerFunc {
+func JWTAuthEditor(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		if err := ValidateJWT(c); err != nil {
 			return c.JSON(http.StatusUnauthorized, echo.Map{
