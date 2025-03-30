@@ -4,6 +4,8 @@ definePageMeta({
   middleware: "auth",
 });
 
+const { t, locale } = useI18n();
+
 type Row = {
   id: number;
   user_id: string;
@@ -26,7 +28,7 @@ const columns = [
   },
   {
     key: "status",
-    label: "Status",
+    label: t('connect.status'),
   },
   {
     key: "actions",
@@ -42,12 +44,12 @@ const router = useRouter();
 const actions = (row: Row) => [
   [
     {
-      label: "Edit",
+      label: t('common.edit'),
       icon: "i-heroicons-pencil-square-20-solid",
       click: () => router.push(`/connects/${row.id}`),
     },
     {
-      label: "Delete",
+      label: t('common.delete'),
       icon: "i-heroicons-trash-20-solid",
       click: () => handleDelete(row.id),
     },
@@ -66,13 +68,13 @@ const handleDelete = async (uid: number) => {
   <div v-else>
     <div class="flex flex-row items-center justify-between">
       <UButton icon="i-heroicons-plus">
-        <NuxtLink to="/connects/create/new">Create New</NuxtLink>
+        <NuxtLink to="/connects/create/new">{{ t('common.create_new') }}</NuxtLink>
       </UButton>
       <UButton icon="i-heroicons-arrow-path" :loading="isFetching" @click="fetchConnects"></UButton>
     </div>
     <UTable :columns="columns" :rows="items.data.connects" :loading="isFetching" :loading-state="{
       icon: 'i-heroicons-arrow-path-20-solid',
-      label: 'Loading...',
+      label: t('common.loading'),
     }">
       <template #actions-data="{ row }">
         <UDropdown :items="actions(row)">

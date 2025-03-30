@@ -95,5 +95,8 @@
                 "color": "Renk doğru hex koduna sahip olmalıdır"
             }
         }
+    },
+    "connect":{
+        "status":"Durum"
     }
 }

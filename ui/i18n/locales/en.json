@@ -95,5 +95,8 @@
                 "color": "Color must be a valid hex color"
             }
         }
+    },
+    "connect":{
+        "status":"Status"
     }
 }
