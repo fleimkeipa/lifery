@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/fleimkeipa/lifery/model"
 	"github.com/fleimkeipa/lifery/pkg"
@@ -27,29 +26,27 @@ func NewEventUC(repo interfaces.EventRepository, userUC *UserUC) *EventUC {
 func (rc *EventUC) Create(ctx context.Context, req *model.EventCreateRequest) (*model.Event, error) {
 	ownerID := util.GetOwnerIDFromCtx(ctx)
 
-	var err error
-	var date, timeStart, timeEnd time.Time
 	if req.Date != "" {
-		date, err = util.ParseTime(req.Date)
+		_, err := util.ParseTime(req.Date)
 		if err != nil {
 			return nil, pkg.NewError(err, "failed to parse timeStart", http.StatusBadRequest)
 		}
 	}
 	if req.TimeStart != "" && req.TimeEnd != "" {
-		timeStart, err = util.ParseTime(req.TimeStart)
+		_, err := util.ParseTime(req.TimeStart)
 		if err != nil {
 			return nil, pkg.NewError(err, "failed to parse timeStart", http.StatusBadRequest)
 		}
-		timeEnd, err = util.ParseTime(req.TimeEnd)
+		_, err = util.ParseTime(req.TimeEnd)
 		if err != nil {
 			return nil, pkg.NewError(err, "failed to parse timeEnd", http.StatusBadRequest)
 		}
 	}
 
 	event := model.Event{
-		Date:        date,
-		TimeStart:   timeStart,
-		TimeEnd:     timeEnd,
+		Date:        req.Date,
+		TimeStart:   req.TimeStart,
+		TimeEnd:     req.TimeEnd,
 		Name:        req.Name,
 		Description: req.Description,
 		Items:       req.Items,
@@ -73,23 +70,27 @@ func (rc *EventUC) Update(ctx context.Context, eventID string, req *model.EventU
 		return nil, err
 	}
 
-	date, err := util.ParseTime(req.Date)
-	if err != nil {
-		return nil, pkg.NewError(err, "failed to parse date", http.StatusBadRequest)
+	if req.Date != "" {
+		_, err := util.ParseTime(req.Date)
+		if err != nil {
+			return nil, pkg.NewError(err, "failed to parse timeStart", http.StatusBadRequest)
+		}
 	}
-	timeStart, err := util.ParseTime(req.TimeStart)
-	if err != nil {
-		return nil, pkg.NewError(err, "failed to parse timeStart", http.StatusBadRequest)
-	}
-	timeEnd, err := util.ParseTime(req.TimeEnd)
-	if err != nil {
-		return nil, pkg.NewError(err, "failed to parse timeEnd", http.StatusBadRequest)
+	if req.TimeStart != "" && req.TimeEnd != "" {
+		_, err := util.ParseTime(req.TimeStart)
+		if err != nil {
+			return nil, pkg.NewError(err, "failed to parse timeStart", http.StatusBadRequest)
+		}
+		_, err = util.ParseTime(req.TimeEnd)
+		if err != nil {
+			return nil, pkg.NewError(err, "failed to parse timeEnd", http.StatusBadRequest)
+		}
 	}
 
 	event := model.Event{
-		Date:        date,
-		TimeStart:   timeStart,
-		TimeEnd:     timeEnd,
+		Date:        req.Date,
+		TimeStart:   req.TimeStart,
+		TimeEnd:     req.TimeEnd,
 		Name:        req.Name,
 		Description: req.Description,
 		Items:       req.Items,

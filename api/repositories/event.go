@@ -170,9 +170,9 @@ func (rc *EventRepository) internalToSQL(newEvent *model.Event) *event {
 	}
 
 	return &event{
-		Date:        newEvent.Date,
-		TimeStart:   newEvent.TimeStart,
-		TimeEnd:     newEvent.TimeEnd,
+		Date:        util.Format(newEvent.Date),
+		TimeStart:   util.Format(newEvent.TimeStart),
+		TimeEnd:     util.Format(newEvent.TimeEnd),
 		Name:        newEvent.Name,
 		Description: newEvent.Description,
 		Items:       items,
@@ -197,9 +197,9 @@ func (rc *EventRepository) sqlToInternal(newEvent *event) *model.Event {
 	}
 
 	return &model.Event{
-		Date:        newEvent.Date,
-		TimeStart:   newEvent.TimeStart,
-		TimeEnd:     newEvent.TimeEnd,
+		Date:        util.Format(newEvent.Date),
+		TimeStart:   util.Format(newEvent.TimeStart),
+		TimeEnd:     util.Format(newEvent.TimeEnd),
 		Name:        newEvent.Name,
 		Description: newEvent.Description,
 		Items:       items,

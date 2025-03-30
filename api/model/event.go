@@ -3,9 +3,9 @@ package model
 import "time"
 
 type Event struct {
-	Date        time.Time   `json:"date"`
-	TimeStart   time.Time   `json:"time_start"`
-	TimeEnd     time.Time   `json:"time_end"`
+	Date        string      `json:"date"`
+	TimeStart   string      `json:"time_start"`
+	TimeEnd     string      `json:"time_end"`
 	Name        string      `json:"name"`
 	Description string      `json:"description"`
 	Items       []EventItem `json:"items"`
