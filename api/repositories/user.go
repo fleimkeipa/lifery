@@ -30,10 +30,6 @@ func NewUserRepository(db *pg.DB) *UserRepository {
 }
 
 func (rc *UserRepository) Create(ctx context.Context, newUser *model.User) (*model.User, error) {
-	if newUser.RoleID <= 0 {
-		newUser.RoleID = model.ViewerRole
-	}
-
 	sqlUser := rc.internalToSQL(newUser)
 
 	q := rc.db.Model(sqlUser)

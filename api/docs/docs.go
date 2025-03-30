@@ -1229,9 +1229,6 @@ const docTemplate = `{
                 "password": {
                     "type": "string"
                 },
-                "role_id": {
-                    "type": "integer"
-                },
                 "username": {
                     "type": "string"
                 }
@@ -1256,7 +1253,6 @@ const docTemplate = `{
                 "confirm_password",
                 "email",
                 "password",
-                "role_id",
                 "username"
             ],
             "properties": {
@@ -1268,9 +1264,6 @@ const docTemplate = `{
                 },
                 "password": {
                     "type": "string"
-                },
-                "role_id": {
-                    "type": "integer"
                 },
                 "username": {
                     "type": "string"

@@ -16,7 +16,6 @@ type Register struct {
 	Email           string `json:"email"`
 	Password        string `json:"password" binding:"required"`
 	ConfirmPassword string `json:"confirm_password" binding:"required"`
-	RoleID          uint   `json:"role_id"`
 }
 
 type TokenOwner struct {

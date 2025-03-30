@@ -1218,9 +1218,6 @@
                 "password": {
                     "type": "string"
                 },
-                "role_id": {
-                    "type": "integer"
-                },
                 "username": {
                     "type": "string"
                 }
@@ -1245,7 +1242,6 @@
                 "confirm_password",
                 "email",
                 "password",
-                "role_id",
                 "username"
             ],
             "properties": {
@@ -1257,9 +1253,6 @@
                 },
                 "password": {
                     "type": "string"
-                },
-                "role_id": {
-                    "type": "integer"
                 },
                 "username": {
                     "type": "string"

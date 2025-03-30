@@ -31,7 +31,6 @@ type UserCreateRequest struct {
 	Email           string `json:"email" binding:"required"`
 	Password        string `json:"password" binding:"required"`
 	ConfirmPassword string `json:"confirm_password" binding:"required"`
-	RoleID          uint   `json:"role_id" binding:"required"`
 }
 
 type UserFindOpts struct {

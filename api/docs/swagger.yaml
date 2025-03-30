@@ -139,8 +139,6 @@ definitions:
         type: string
       password:
         type: string
-      role_id:
-        type: integer
       username:
         type: string
     required:
@@ -166,15 +164,12 @@ definitions:
         type: string
       password:
         type: string
-      role_id:
-        type: integer
       username:
         type: string
     required:
     - confirm_password
     - email
     - password
-    - role_id
     - username
     type: object
   model.Visibility:

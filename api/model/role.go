@@ -2,6 +2,6 @@ package model
 
 const (
 	AdminRole  = 7
-	ViewerRole = 5
-	EditorRole = 1
+	EditorRole = 5
+	ViewerRole = 1
 )
