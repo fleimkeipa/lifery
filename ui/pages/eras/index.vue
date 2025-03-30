@@ -3,6 +3,8 @@ definePageMeta({
   middleware: "auth",
 });
 
+const { t, locale } = useI18n();
+
 type Row = {
   id: number;
   name: string;
@@ -18,19 +20,19 @@ const columns = [
   },
   {
     key: "name",
-    label: "Name",
+    label: t('common.name'),
   },
   {
     key: "color",
-    label: "Color",
+    label: t('common.color'),
   },
   {
     key: "time_start",
-    label: "Time Start",
+    label: t('common.time_start'),
   },
   {
     key: "time_end",
-    label: "Time End",
+    label: t('common.time_end'),
   },
   {
     key: "actions",
@@ -46,12 +48,12 @@ const router = useRouter();
 const actions = (row: Row) => [
   [
     {
-      label: "Edit",
+      label: t('common.edit'),
       icon: "i-heroicons-pencil-square-20-solid",
       click: () => router.push(`/eras/${row.id}`),
     },
     {
-      label: "Delete",
+      label: t('common.delete'),
       icon: "i-heroicons-trash-20-solid",
       click: () => handleDelete(row.id),
     },
@@ -70,7 +72,7 @@ const handleDelete = async (id: number) => {
   <div v-else>
     <div class="flex flex-row items-center justify-between">
       <UButton icon="i-heroicons-plus">
-        <NuxtLink to="/eras/create/new">Create New</NuxtLink>
+        <NuxtLink to="/eras/create/new">{{ t('common.create_new') }}</NuxtLink>
       </UButton>
       <UButton
         icon="i-heroicons-arrow-path"
@@ -84,7 +86,7 @@ const handleDelete = async (id: number) => {
       :loading="isFetching"
       :loading-state="{
         icon: 'i-heroicons-arrow-path-20-solid',
-        label: 'Loading...',
+        label: t('common.loading'),
       }"
     >
       <template #actions-data="{ row }">

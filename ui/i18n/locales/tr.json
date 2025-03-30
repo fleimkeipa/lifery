@@ -45,6 +45,7 @@
         "name": "İsim",
         "write_name": "İsim yaz",
         "description": "Açıklama",
+        "color": "Renk",
         "write_desc": "Açıklama yaz",
         "date": "Tarih",
         "time_start": "Başlangıç",
@@ -85,6 +86,13 @@
             "one_of": {
                 "visibility": "Görünürlük Herkese açık (1), Gizli (2), veya Sadece ben (3) olmalıdır",
                 "type": "İtem tipi Yazı(10), Fotoğraf(11), Video(12), yada Ses Kaydı(13) olmalıdır"
+            }
+        }
+    },
+    "era": {
+        "validation": {
+            "required": {
+                "color": "Renk doğru hex koduna sahip olmalıdır"
             }
         }
     }

@@ -96,7 +96,7 @@ const handleDelete = async (uid: number) => {
     </div>
     <UTable :columns="columns" :rows="items.data.events" :loading="isFetching" :loading-state="{
       icon: 'i-heroicons-arrow-path-20-solid',
-      label: 'Loading...',
+      label: t('common.loading'),
     }">
       <template #expand="{ row }">
         <div class="p-4">

@@ -5,6 +5,8 @@ definePageMeta({
   middleware: "auth",
 });
 
+const { t, locale } = useI18n();
+
 const state = reactive({
   name: null,
   color: null,
@@ -13,10 +15,10 @@ const state = reactive({
 });
 
 const schema = yup.object({
-  name: yup.string().nonNullable("Name cannot be null"),
+  name: yup.string().nonNullable(t('common.name')),
   color: yup
     .string()
-    .matches(/^#([0-9A-F]{3}){1,2}$/i, "Color must be a valid hex color"),
+    .matches(/^#([0-9A-F]{3}){1,2}$/i, t('era.validation.required.color')),
   time_start: yup.date().required("Start time cannot be empty"),
   time_end: yup.date().required("End time cannot be empty"),
 });
@@ -41,7 +43,7 @@ const onSubmit = (era) => {
 
 <template>
   <div>
-    <h1 class="text-2xl font-bold">Create Era</h1>
+    <h1 class="text-2xl font-bold">{{ t('common.create_new') }}</h1>
     <UForm
       @submit="onSubmit"
       style="display: flex; flex-direction: column; gap: 20px"
@@ -50,15 +52,15 @@ const onSubmit = (era) => {
       :schema="schema"
       class="mt-8 flex items-start"
     >
-      <UFormGroup label="Name" name="name">
-        <UInput type="text" placeholder="Name" v-model="state.name" />
+      <UFormGroup :label="t('common.name')" name="name">
+        <UInput type="text" :placeholder="t('common.write_name')" v-model="state.name" />
       </UFormGroup>
 
-      <UFormGroup label="Color" name="color">
+      <UFormGroup :label="t('common.color')" name="color">
         <UInput type="color" placeholder="Color" v-model="state.color" />
       </UFormGroup>
 
-      <UFormGroup label="TimeStart" name="time_start">
+      <UFormGroup :label="t('common.time_start')" name="time_start">
         <UInput
           type="date"
           pattern="\d{4}-\d{2}-\d{2}"
@@ -66,7 +68,7 @@ const onSubmit = (era) => {
           v-model="state.time_start"
         />
       </UFormGroup>
-      <UFormGroup label="TimeEnd" name="time_end">
+      <UFormGroup :label="t('common.time_end')" name="time_end">
         <UInput
           type="date"
           pattern="\d{4}-\d{2}-\d{2}"
@@ -75,7 +77,7 @@ const onSubmit = (era) => {
         />
       </UFormGroup>
 
-      <UButton :loading="loading" type="submit">Submit</UButton>
+      <UButton :loading="loading" type="submit">{{t('common.submit')}}</UButton>
       <div v-if="error" class="flex items-center gap-x-2 rounded-lg border px-2 py-1">
         <span @click="error = null" class="cursor-pointer">X</span>
         <span class="text-sm text-red-500">{{ error }}</span>

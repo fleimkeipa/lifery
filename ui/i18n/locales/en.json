@@ -45,6 +45,7 @@
         "name": "Name",
         "write_name": "Write name",
         "description": "Description",
+        "color": "Color",
         "write_desc": "Write Description",
         "date": "Date",
         "time_start": "Start time",
@@ -85,6 +86,13 @@
             "one_of": {
                 "visibility": "Visibility must be Public (1), Private (2), or JustMe (3)",
                 "type": "Type must be Text(10), Photo(11), Video(12), or Voice Record(13)"
+            }
+        }
+    },
+    "era": {
+        "validation": {
+            "required": {
+                "color": "Color must be a valid hex color"
             }
         }
     }
