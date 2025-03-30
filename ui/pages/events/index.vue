@@ -16,6 +16,12 @@ type Row = {
   items: [];
 };
 
+const visibilityOptions = [
+  { label: t('event.visibilityOpts.public'), value: 1 },
+  { label: t('event.visibilityOpts.private'), value: 2 },
+  { label: t('event.visibilityOpts.just_me'), value: 3 }
+];
+
 const columns = [
   {
     key: "id",
@@ -98,6 +104,9 @@ const handleDelete = async (uid: number) => {
       icon: 'i-heroicons-arrow-path-20-solid',
       label: t('common.loading'),
     }">
+      <template #visibility-data="{ row }">
+        {{visibilityOptions.find(option => option.value === row.visibility)?.label || '-'}}
+      </template>
       <template #expand="{ row }">
         <div class="p-4">
           <b>{{ t('event.items') }}:</b>
