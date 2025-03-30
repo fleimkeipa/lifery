@@ -74,28 +74,22 @@ const handleDelete = async (id: number) => {
       <UButton icon="i-heroicons-plus">
         <NuxtLink to="/eras/create/new">{{ t('common.create_new') }}</NuxtLink>
       </UButton>
-      <UButton
-        icon="i-heroicons-arrow-path"
-        :loading="isFetching"
-        @click="fetchEras"
-      ></UButton>
+      <UButton icon="i-heroicons-arrow-path" :loading="isFetching" @click="fetchEras"></UButton>
     </div>
-    <UTable
-      :columns="columns"
-      :rows="items.data.eras"
-      :loading="isFetching"
-      :loading-state="{
-        icon: 'i-heroicons-arrow-path-20-solid',
-        label: t('common.loading'),
-      }"
-    >
+    <UTable :columns="columns" :rows="items.data.eras" :loading="isFetching" :loading-state="{
+      icon: 'i-heroicons-arrow-path-20-solid',
+      label: t('common.loading'),
+    }">
+      <template #color-data="{ row }">
+        <div class="flex items-center gap-2">
+          <div class="w-6 h-6 rounded-full" :style="{ backgroundColor: row.color }"></div>
+          <span>{{ row.color }}</span>
+        </div>
+      </template>
+
       <template #actions-data="{ row }">
         <UDropdown :items="actions(row)">
-          <UButton
-            color="gray"
-            variant="ghost"
-            icon="i-heroicons-ellipsis-horizontal-20-solid"
-          />
+          <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" />
         </UDropdown>
       </template>
     </UTable>
