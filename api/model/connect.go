@@ -2,11 +2,11 @@ package model
 
 type Connect struct {
 	ID       string        `json:"id"`
-	Status   RequestStatus `json:"status"`
 	UserID   string        `json:"user_id"`
-	User     User          `json:"user"`
 	FriendID string        `json:"friend_id"`
+	User     User          `json:"user"`
 	Friend   User          `json:"friend"`
+	Status   RequestStatus `json:"status"`
 }
 
 type ConnectList struct {
@@ -36,9 +36,9 @@ type DisconnectRequest struct {
 }
 
 type ConnectFindOpts struct {
+	OrderByOpts
 	Status Filter
 	UserID Filter
 	FieldsOpts
-	OrderByOpts
 	PaginationOpts
 }

@@ -77,11 +77,11 @@ func TestEventRepository_List(t *testing.T) {
 		opts *model.EventFindOpts
 	}
 	tests := []struct {
+		args      args
+		fields    fields
+		want      *model.EventList
 		name      string
 		tempDatas tempDatas
-		fields    fields
-		args      args
-		want      *model.EventList
 		wantErr   bool
 	}{
 		{

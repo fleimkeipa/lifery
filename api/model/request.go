@@ -6,9 +6,9 @@ type PaginationOpts struct {
 }
 
 type OrderByOpts struct {
-	IsSended bool
 	Column   string
 	OrderBy  string
+	IsSended bool
 }
 
 type Operand string

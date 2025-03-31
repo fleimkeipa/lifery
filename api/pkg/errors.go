@@ -3,8 +3,8 @@ package pkg
 // Error struct defines a custom error type with an error, status code, and message.
 type Error struct {
 	err        error
-	statusCode int
 	message    string
+	statusCode int
 }
 
 // NewError creates a new instance of the Error struct.

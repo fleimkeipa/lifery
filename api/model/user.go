@@ -6,11 +6,11 @@ const ZeroCreds = "zeroCreds"
 
 type User struct {
 	CreatedAt time.Time  `json:"created_at"`
-	Connects  []*Connect `json:"connects"`
 	Username  string     `json:"username"`
 	Email     string     `json:"email"`
 	Password  string     `json:"password"`
 	ID        string     `json:"id"`
+	Connects  []*Connect `json:"connects"`
 	RoleID    uint       `json:"role_id"`
 }
 
@@ -34,17 +34,17 @@ type UserCreateRequest struct {
 }
 
 type UserFindOpts struct {
+	OrderByOpts
 	Username Filter
 	Email    Filter
 	RoleID   Filter
 	FieldsOpts
 	PaginationOpts
-	OrderByOpts
 }
 
 type UserConnectsFindOpts struct {
+	OrderByOpts
 	UserID Filter
 	FieldsOpts
 	PaginationOpts
-	OrderByOpts
 }

@@ -3,18 +3,18 @@ package model
 import "time"
 
 type Event struct {
+	CreatedAt   time.Time   `json:"created_at"`
+	UpdatedAt   time.Time   `json:"updated_at"`
+	DeletedAt   time.Time   `json:"deleted_at"`
 	Date        string      `json:"date"`
 	TimeStart   string      `json:"time_start"`
 	TimeEnd     string      `json:"time_end"`
 	Name        string      `json:"name"`
 	Description string      `json:"description"`
-	Items       []EventItem `json:"items"`
 	ID          string      `json:"id"`
 	UserID      string      `json:"user_id"`
+	Items       []EventItem `json:"items"`
 	Visibility  Visibility  `json:"visibility"`
-	CreatedAt   time.Time   `json:"created_at"`
-	UpdatedAt   time.Time   `json:"updated_at"`
-	DeletedAt   time.Time   `json:"deleted_at"`
 }
 
 type Visibility int
@@ -67,8 +67,8 @@ type EventList struct {
 }
 
 type EventFindOpts struct {
+	OrderByOpts
 	UserID     Filter
 	Visibility Filter
 	PaginationOpts
-	OrderByOpts
 }

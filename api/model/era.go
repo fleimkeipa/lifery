@@ -3,15 +3,15 @@ package model
 import "time"
 
 type Era struct {
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+	User      *User     `json:"user"`
 	TimeStart string    `json:"time_start"`
 	TimeEnd   string    `json:"time_end"`
 	Name      string    `json:"name"`
 	Color     string    `json:"color"`
 	UserID    string    `json:"user_id"`
 	ID        string    `json:"id"`
-	User      *User     `json:"user"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
 }
 
 type EraCreateRequest struct {
@@ -26,7 +26,6 @@ type EraUpdateRequest struct {
 	TimeEnd   string `json:"time_end"`
 	Name      string `json:"name"`
 	Color     string `json:"color"`
-	ID        int64  `json:"id"`
 }
 
 type EraList struct {
@@ -36,8 +35,8 @@ type EraList struct {
 }
 
 type EraFindOpts struct {
+	OrderByOpts
 	Name   Filter
 	UserID Filter
-	OrderByOpts
 	PaginationOpts
 }
