@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/fleimkeipa/lifery/model"
@@ -35,15 +34,12 @@ func (rc *EraController) Create(c echo.Context) error {
 	var request model.EraCreateRequest
 
 	if err := c.Bind(&request); err != nil {
-		return c.JSON(http.StatusBadRequest, FailureResponse{
-			Error:   fmt.Sprintf("Failed to bind request: %v", err),
-			Message: "Invalid request data. Please check your input and try again.",
-		})
+		return handleBindingErrors(c, err)
 	}
 
 	era, err := rc.EraDBUC.Create(c.Request().Context(), &request)
 	if err != nil {
-		return HandleEchoError(c, err)
+		return handleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusCreated, SuccessResponse{
@@ -70,15 +66,12 @@ func (rc *EraController) Update(c echo.Context) error {
 	var request model.EraUpdateRequest
 
 	if err := c.Bind(&request); err != nil {
-		return c.JSON(http.StatusBadRequest, FailureResponse{
-			Error:   fmt.Sprintf("Failed to bind request: %v", err),
-			Message: "Invalid request data. Please check your input and try again.",
-		})
+		return handleBindingErrors(c, err)
 	}
 
 	era, err := rc.EraDBUC.Update(c.Request().Context(), eraID, &request)
 	if err != nil {
-		return HandleEchoError(c, err)
+		return handleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
@@ -104,7 +97,7 @@ func (rc *EraController) Delete(c echo.Context) error {
 	eraID := c.Param("id")
 
 	if err := rc.EraDBUC.Delete(c.Request().Context(), eraID); err != nil {
-		return HandleEchoError(c, err)
+		return handleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
@@ -134,7 +127,7 @@ func (rc *EraController) List(c echo.Context) error {
 
 	list, err := rc.EraDBUC.List(c.Request().Context(), &opts)
 	if err != nil {
-		return HandleEchoError(c, err)
+		return handleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
@@ -161,7 +154,7 @@ func (rc *EraController) GetByID(c echo.Context) error {
 
 	era, err := rc.EraDBUC.GetByID(c.Request().Context(), eraID)
 	if err != nil {
-		return HandleEchoError(c, err)
+		return handleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{

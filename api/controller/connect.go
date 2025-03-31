@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/fleimkeipa/lifery/model"
@@ -40,15 +39,12 @@ func (rc *ConnectHandlers) Create(c echo.Context) error {
 	var input model.ConnectCreateRequest
 
 	if err := c.Bind(&input); err != nil {
-		return c.JSON(http.StatusBadRequest, FailureResponse{
-			Error:   fmt.Sprintf("Failed to bind request: %v", err),
-			Message: "Invalid request data. Please check your input and try again.",
-		})
+		return handleBindingErrors(c, err)
 	}
 
 	connect, err := rc.connectUC.Create(c.Request().Context(), input)
 	if err != nil {
-		return HandleEchoError(c, err)
+		return handleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusCreated, SuccessResponse{
@@ -76,15 +72,12 @@ func (rc *ConnectHandlers) Update(c echo.Context) error {
 	var input model.ConnectUpdateRequest
 
 	if err := c.Bind(&input); err != nil {
-		return c.JSON(http.StatusBadRequest, FailureResponse{
-			Error:   fmt.Sprintf("Failed to bind request: %v", err),
-			Message: "Invalid request data. Please check your input and try again.",
-		})
+		return handleBindingErrors(c, err)
 	}
 
 	err := rc.connectUC.Update(c.Request().Context(), id, input)
 	if err != nil {
-		return HandleEchoError(c, err)
+		return handleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
@@ -112,7 +105,7 @@ func (rc *ConnectHandlers) ConnectsRequests(c echo.Context) error {
 
 	list, err := rc.connectUC.ConnectsRequests(c.Request().Context(), &opts)
 	if err != nil {
-		return HandleEchoError(c, err)
+		return handleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{

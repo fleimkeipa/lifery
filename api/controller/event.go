@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/fleimkeipa/lifery/model"
@@ -35,15 +34,12 @@ func (rc *EventController) Create(c echo.Context) error {
 	var request model.EventCreateRequest
 
 	if err := c.Bind(&request); err != nil {
-		return c.JSON(http.StatusBadRequest, FailureResponse{
-			Error:   fmt.Sprintf("Failed to bind request: %v", err),
-			Message: "Invalid request data. Please check your input and try again.",
-		})
+		return handleBindingErrors(c, err)
 	}
 
 	event, err := rc.EventDBUC.Create(c.Request().Context(), &request)
 	if err != nil {
-		return HandleEchoError(c, err)
+		return handleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusCreated, SuccessResponse{
@@ -70,15 +66,12 @@ func (rc *EventController) Update(c echo.Context) error {
 	var request model.EventUpdateRequest
 
 	if err := c.Bind(&request); err != nil {
-		return c.JSON(http.StatusBadRequest, FailureResponse{
-			Error:   fmt.Sprintf("Failed to bind request: %v", err),
-			Message: "Invalid request data. Please check your input and try again.",
-		})
+		return handleBindingErrors(c, err)
 	}
 
 	event, err := rc.EventDBUC.Update(c.Request().Context(), eventID, &request)
 	if err != nil {
-		return HandleEchoError(c, err)
+		return handleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
@@ -104,7 +97,7 @@ func (rc *EventController) Delete(c echo.Context) error {
 	eventID := c.Param("id")
 
 	if err := rc.EventDBUC.Delete(c.Request().Context(), eventID); err != nil {
-		return HandleEchoError(c, err)
+		return handleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
@@ -134,7 +127,7 @@ func (rc *EventController) List(c echo.Context) error {
 
 	list, err := rc.EventDBUC.List(c.Request().Context(), &opts)
 	if err != nil {
-		return HandleEchoError(c, err)
+		return handleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
@@ -161,7 +154,7 @@ func (rc *EventController) GetByID(c echo.Context) error {
 
 	event, err := rc.EventDBUC.GetByID(c.Request().Context(), eventID)
 	if err != nil {
-		return HandleEchoError(c, err)
+		return handleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{

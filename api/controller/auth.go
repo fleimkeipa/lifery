@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 
@@ -9,7 +8,6 @@ import (
 	"github.com/fleimkeipa/lifery/uc"
 	"github.com/fleimkeipa/lifery/util"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 )
 
@@ -39,19 +37,7 @@ func (rc *AuthHandlers) Register(c echo.Context) error {
 	var input model.Register
 
 	if err := c.Bind(&input); err != nil {
-		var errorMessage string
-		var validationErrors validator.ValidationErrors
-		if errors.As(err, &validationErrors) {
-			validationError := validationErrors[0]
-			if validationError.Tag() == "required" {
-				errorMessage = fmt.Sprintf("%s not provided", validationError.Field())
-			}
-		}
-
-		return c.JSON(http.StatusBadRequest, FailureResponse{
-			Error:   fmt.Sprintf("Failed to bind request: %v", errorMessage),
-			Message: "Invalid register details. Please ensure all required fields are provided and try again.",
-		})
+		return handleBindingErrors(c, err)
 	}
 
 	newUser := model.UserCreateRequest{
@@ -63,7 +49,7 @@ func (rc *AuthHandlers) Register(c echo.Context) error {
 
 	user, err := rc.userUC.Create(c.Request().Context(), newUser)
 	if err != nil {
-		return HandleEchoError(c, err)
+		return handleEchoError(c, err)
 	}
 
 	jwt, err := util.GenerateJWT(user)
@@ -98,24 +84,12 @@ func (rc *AuthHandlers) Login(c echo.Context) error {
 	var input model.Login
 
 	if err := c.Bind(&input); err != nil {
-		var errorMessage string
-		var validationErrors validator.ValidationErrors
-		if errors.As(err, &validationErrors) {
-			validationError := validationErrors[0]
-			if validationError.Tag() == "required" {
-				errorMessage = fmt.Sprintf("%s not provided", validationError.Field())
-			}
-		}
-
-		return c.JSON(http.StatusBadRequest, FailureResponse{
-			Error:   fmt.Sprintf("Failed to bind request: %v", errorMessage),
-			Message: "Invalid login details. Please ensure all required fields are provided and try again.",
-		})
+		return handleBindingErrors(c, err)
 	}
 
 	user, err := rc.userUC.GetByUsernameOrEmail(c.Request().Context(), input.Username)
 	if err != nil {
-		return HandleEchoError(c, err)
+		return handleEchoError(c, err)
 	}
 
 	if err := model.ValidateUserPassword(user.Password, input.Password); err != nil {

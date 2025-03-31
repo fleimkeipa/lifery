@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/fleimkeipa/lifery/model"
@@ -37,15 +36,12 @@ func (rc *UserHandlers) Create(c echo.Context) error {
 	var input model.UserCreateRequest
 
 	if err := c.Bind(&input); err != nil {
-		return c.JSON(http.StatusBadRequest, FailureResponse{
-			Error:   fmt.Sprintf("Failed to bind request: %v", err),
-			Message: "Invalid request data. Please check your input and try again.",
-		})
+		return handleBindingErrors(c, err)
 	}
 
 	user, err := rc.userUC.Create(c.Request().Context(), input)
 	if err != nil {
-		return HandleEchoError(c, err)
+		return handleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusCreated, SuccessResponse{
@@ -72,15 +68,12 @@ func (rc *UserHandlers) UpdateUser(c echo.Context) error {
 	var input model.UserCreateRequest
 
 	if err := c.Bind(&input); err != nil {
-		return c.JSON(http.StatusBadRequest, FailureResponse{
-			Error:   fmt.Sprintf("Failed to bind request: %v", err),
-			Message: "Invalid request data. Please check your input and try again.",
-		})
+		return handleBindingErrors(c, err)
 	}
 
 	user, err := rc.userUC.Update(c.Request().Context(), id, input)
 	if err != nil {
-		return HandleEchoError(c, err)
+		return handleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
@@ -111,7 +104,7 @@ func (rc *UserHandlers) List(c echo.Context) error {
 
 	list, err := rc.userUC.List(c.Request().Context(), &opts)
 	if err != nil {
-		return HandleEchoError(c, err)
+		return handleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
@@ -137,7 +130,7 @@ func (rc *UserHandlers) GetByID(c echo.Context) error {
 
 	user, err := rc.userUC.GetByID(c.Request().Context(), id)
 	if err != nil {
-		return HandleEchoError(c, err)
+		return handleEchoError(c, err)
 	}
 
 	// Remove the password from the user object before returning it
@@ -164,7 +157,7 @@ func (rc *UserHandlers) DeleteUser(c echo.Context) error {
 	id := c.Param("id")
 
 	if err := rc.userUC.Delete(c.Request().Context(), id); err != nil {
-		return HandleEchoError(c, err)
+		return handleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
