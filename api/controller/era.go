@@ -47,8 +47,7 @@ func (rc *EraController) Create(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusCreated, SuccessResponse{
-		Data:    era.Name,
-		Message: "Era created successfully.",
+		Data: era.Name,
 	})
 }
 
@@ -83,8 +82,7 @@ func (rc *EraController) Update(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
-		Data:    era.Name,
-		Message: "Era updated successfully.",
+		Data: era.Name,
 	})
 }
 
@@ -108,9 +106,7 @@ func (rc *EraController) Delete(c echo.Context) error {
 		return handleEchoError(c, err)
 	}
 
-	return c.JSON(http.StatusOK, SuccessResponse{
-		Message: "Era deleted successfully.",
-	})
+	return c.JSON(http.StatusOK, SuccessResponse{})
 }
 
 // List handles the retrieval of a list of eras.
@@ -139,8 +135,10 @@ func (rc *EraController) List(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
-		Data:    list,
-		Message: "Eras retrieved successfully.",
+		Data:  list,
+		Total: list.Total,
+		Limit: list.Limit,
+		Skip:  list.Skip,
 	})
 }
 
@@ -166,8 +164,7 @@ func (rc *EraController) GetByID(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
-		Data:    era,
-		Message: "Era retrieved successfully.",
+		Data: era,
 	})
 }
 

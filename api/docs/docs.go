@@ -1046,8 +1046,14 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "data": {},
-                "message": {
-                    "type": "string"
+                "limit": {
+                    "type": "integer"
+                },
+                "skip": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
                 }
             }
         },

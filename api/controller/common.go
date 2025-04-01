@@ -15,8 +15,10 @@ type FailureResponse struct {
 }
 
 type SuccessResponse struct {
-	Data    interface{} `json:"data"`
-	Message string      `json:"message"`
+	Data  interface{} `json:"data"`
+	Total int         `json:"total"`
+	Limit int         `json:"limit"`
+	Skip  int         `json:"skip"`
 }
 
 type AuthResponse struct {

@@ -21,8 +21,12 @@ definitions:
   controller.SuccessResponse:
     properties:
       data: {}
-      message:
-        type: string
+      limit:
+        type: integer
+      skip:
+        type: integer
+      total:
+        type: integer
     type: object
   model.ConnectCreateInput:
     properties:

@@ -47,8 +47,7 @@ func (rc *EventController) Create(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusCreated, SuccessResponse{
-		Data:    event.Name,
-		Message: "Event created successfully.",
+		Data: event.Name,
 	})
 }
 
@@ -83,8 +82,7 @@ func (rc *EventController) Update(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
-		Data:    event.Name,
-		Message: "Event updated successfully.",
+		Data: event.Name,
 	})
 }
 
@@ -108,9 +106,7 @@ func (rc *EventController) Delete(c echo.Context) error {
 		return handleEchoError(c, err)
 	}
 
-	return c.JSON(http.StatusOK, SuccessResponse{
-		Message: "Event deleted successfully.",
-	})
+	return c.JSON(http.StatusOK, SuccessResponse{})
 }
 
 // List handles the retrieval of a list of events.
@@ -139,8 +135,10 @@ func (rc *EventController) List(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
-		Data:    list,
-		Message: "Events retrieved successfully.",
+		Data:  list,
+		Total: list.Total,
+		Limit: list.Limit,
+		Skip:  list.Skip,
 	})
 }
 
@@ -166,8 +164,7 @@ func (rc *EventController) GetByID(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
-		Data:    event,
-		Message: "Event retrieved successfully.",
+		Data: event,
 	})
 }
 

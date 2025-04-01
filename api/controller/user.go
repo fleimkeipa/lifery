@@ -49,8 +49,7 @@ func (rc *UserHandlers) Create(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusCreated, SuccessResponse{
-		Data:    user.Username,
-		Message: "User created successfully.",
+		Data: user.Username,
 	})
 }
 
@@ -85,8 +84,7 @@ func (rc *UserHandlers) Update(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
-		Data:    user.Username,
-		Message: "User updated successfully.",
+		Data: user.Username,
 	})
 }
 
@@ -116,8 +114,10 @@ func (rc *UserHandlers) List(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
-		Data:    list,
-		Message: "Users retrieved successfully.",
+		Data:  list,
+		Total: list.Total,
+		Limit: list.Limit,
+		Skip:  list.Skip,
 	})
 }
 
@@ -145,8 +145,7 @@ func (rc *UserHandlers) GetByID(c echo.Context) error {
 	user.Password = ""
 
 	return c.JSON(http.StatusOK, SuccessResponse{
-		Data:    user,
-		Message: "User retrieved successfully.",
+		Data: user,
 	})
 }
 
@@ -168,9 +167,7 @@ func (rc *UserHandlers) DeleteUser(c echo.Context) error {
 		return handleEchoError(c, err)
 	}
 
-	return c.JSON(http.StatusOK, SuccessResponse{
-		Message: "User deleted successfully.",
-	})
+	return c.JSON(http.StatusOK, SuccessResponse{})
 }
 
 func (rc *UserHandlers) getUsersFindOpts(c echo.Context, fields ...string) model.UserFindOpts {

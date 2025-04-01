@@ -52,8 +52,7 @@ func (rc *ConnectHandlers) Create(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusCreated, SuccessResponse{
-		Data:    connect.Status,
-		Message: "Connect created successfully.",
+		Data: connect.Status,
 	})
 }
 
@@ -89,8 +88,7 @@ func (rc *ConnectHandlers) Update(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
-		Data:    input.Status,
-		Message: "Connect updated successfully.",
+		Data: input.Status,
 	})
 }
 
@@ -117,8 +115,10 @@ func (rc *ConnectHandlers) ConnectsRequests(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
-		Data:    list,
-		Message: "Connects requests retrieved successfully.",
+		Data:  list,
+		Total: list.Total,
+		Limit: list.Limit,
+		Skip:  list.Skip,
 	})
 }
 
