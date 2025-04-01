@@ -72,7 +72,7 @@ const handleDelete = async (uid: number) => {
       </UButton>
       <UButton icon="i-heroicons-arrow-path" :loading="isFetching" @click="fetchConnects"></UButton>
     </div>
-    <UTable :columns="columns" :rows="items.data.connects" :loading="isFetching" :loading-state="{
+    <UTable :columns="columns" :rows="items.data" :loading="isFetching" :loading-state="{
       icon: 'i-heroicons-arrow-path-20-solid',
       label: t('common.loading'),
     }">
