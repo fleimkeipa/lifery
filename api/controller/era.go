@@ -20,24 +20,28 @@ func NewEraController(eraUC *uc.EraUC) *EraController {
 // Create handles the creation of a new era.
 //
 //	@Summary		Create a new era
-//	@Description	This endpoint creates a new era by binding the incoming JSON request to the EraCreateRequest model.
+//	@Description	This endpoint creates a new era by binding the incoming JSON request to the EraCreateInput model.
 //	@Tags			eras
 //	@Accept			json
 //	@Produce		json
 //	@Security		ApiKeyAuth
-//	@Param			Body	body		model.EraCreateRequest	true	"Era creation input"
+//	@Param			Body	body		model.EraCreateInput	true	"Era creation input"
 //	@Success		201		{object}	SuccessResponse			"Era created successfully"
 //	@Failure		400		{object}	FailureResponse			"Invalid request data"
 //	@Failure		500		{object}	FailureResponse			"Era creation failed"
 //	@Router			/eras [post]
 func (rc *EraController) Create(c echo.Context) error {
-	var request model.EraCreateRequest
+	var input model.EraCreateInput
 
-	if err := c.Bind(&request); err != nil {
+	if err := c.Bind(&input); err != nil {
 		return handleBindingErrors(c, err)
 	}
 
-	era, err := rc.EraDBUC.Create(c.Request().Context(), &request)
+	if err := c.Validate(&input); err != nil {
+		return handleValidatingErrors(c, err)
+	}
+
+	era, err := rc.EraDBUC.Create(c.Request().Context(), &input)
 	if err != nil {
 		return handleEchoError(c, err)
 	}
@@ -51,25 +55,29 @@ func (rc *EraController) Create(c echo.Context) error {
 // Update handles the update of an existing era.
 //
 //	@Summary		Update an existing era
-//	@Description	This endpoint updates an existing era by binding the incoming JSON request to the EraUpdateRequest model.
+//	@Description	This endpoint updates an existing era by binding the incoming JSON request to the EraUpdateInput model.
 //	@Tags			eras
 //	@Accept			json
 //	@Produce		json
 //	@Security		ApiKeyAuth
-//	@Param			Body	body		model.EraUpdateRequest	true	"Era update input"
+//	@Param			Body	body		model.EraUpdateInput	true	"Era update input"
 //	@Success		200		{object}	SuccessResponse			"Era updated successfully"
 //	@Failure		400		{object}	FailureResponse			"Invalid request data"
 //	@Failure		500		{object}	FailureResponse			"Era update failed"
 //	@Router			/eras/{id} [patch]
 func (rc *EraController) Update(c echo.Context) error {
 	eraID := c.Param("id")
-	var request model.EraUpdateRequest
+	var input model.EraUpdateInput
 
-	if err := c.Bind(&request); err != nil {
+	if err := c.Bind(&input); err != nil {
 		return handleBindingErrors(c, err)
 	}
 
-	era, err := rc.EraDBUC.Update(c.Request().Context(), eraID, &request)
+	if err := c.Validate(&input); err != nil {
+		return handleValidatingErrors(c, err)
+	}
+
+	era, err := rc.EraDBUC.Update(c.Request().Context(), eraID, &input)
 	if err != nil {
 		return handleEchoError(c, err)
 	}

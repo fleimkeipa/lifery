@@ -20,24 +20,28 @@ func NewEventController(eventUC *uc.EventUC) *EventController {
 // Create handles the creation of a new event.
 //
 //	@Summary		Create a new event
-//	@Description	This endpoint creates a new event by binding the incoming JSON request to the EventCreateRequest model.
+//	@Description	This endpoint creates a new event by binding the incoming JSON request to the EventCreateInput model.
 //	@Tags			events
 //	@Accept			json
 //	@Produce		json
 //	@Security		ApiKeyAuth
-//	@Param			Body	body		model.EventCreateRequest	true	"Event creation input"
+//	@Param			Body	body		model.EventCreateInput	true	"Event creation input"
 //	@Success		201		{object}	SuccessResponse				"Event created successfully"
 //	@Failure		400		{object}	FailureResponse				"Invalid request data"
 //	@Failure		500		{object}	FailureResponse				"Event creation failed"
 //	@Router			/events [post]
 func (rc *EventController) Create(c echo.Context) error {
-	var request model.EventCreateRequest
+	var input model.EventCreateInput
 
-	if err := c.Bind(&request); err != nil {
+	if err := c.Bind(&input); err != nil {
 		return handleBindingErrors(c, err)
 	}
 
-	event, err := rc.EventDBUC.Create(c.Request().Context(), &request)
+	if err := c.Validate(&input); err != nil {
+		return handleValidatingErrors(c, err)
+	}
+
+	event, err := rc.EventDBUC.Create(c.Request().Context(), &input)
 	if err != nil {
 		return handleEchoError(c, err)
 	}
@@ -51,25 +55,29 @@ func (rc *EventController) Create(c echo.Context) error {
 // Update handles the update of an existing event.
 //
 //	@Summary		Update an existing event
-//	@Description	This endpoint updates an existing event by binding the incoming JSON request to the EventUpdateRequest model.
+//	@Description	This endpoint updates an existing event by binding the incoming JSON request to the EventUpdateInput model.
 //	@Tags			events
 //	@Accept			json
 //	@Produce		json
 //	@Security		ApiKeyAuth
-//	@Param			Body	body		model.EventUpdateRequest	true	"Event update input"
+//	@Param			Body	body		model.EventUpdateInput	true	"Event update input"
 //	@Success		200		{object}	SuccessResponse				"Event updated successfully"
 //	@Failure		400		{object}	FailureResponse				"Invalid request data"
 //	@Failure		500		{object}	FailureResponse				"Event update failed"
 //	@Router			/events/{id} [patch]
 func (rc *EventController) Update(c echo.Context) error {
 	eventID := c.Param("id")
-	var request model.EventUpdateRequest
+	var input model.EventUpdateInput
 
-	if err := c.Bind(&request); err != nil {
+	if err := c.Bind(&input); err != nil {
 		return handleBindingErrors(c, err)
 	}
 
-	event, err := rc.EventDBUC.Update(c.Request().Context(), eventID, &request)
+	if err := c.Validate(&input); err != nil {
+		return handleValidatingErrors(c, err)
+	}
+
+	event, err := rc.EventDBUC.Update(c.Request().Context(), eventID, &input)
 	if err != nil {
 		return handleEchoError(c, err)
 	}

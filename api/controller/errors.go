@@ -42,17 +42,46 @@ func handleEchoError(c echo.Context, err error) error {
 }
 
 func handleBindingErrors(c echo.Context, err error) error {
-	var errorMessage string
+	return c.JSON(http.StatusBadRequest, FailureResponse{
+		Error:   fmt.Sprintf("Failed to bind request: %v", err),
+		Message: "Invalid request data. Please check your input and try again.",
+	})
+}
+
+func handleValidatingErrors(c echo.Context, err error) error {
 	var validationErrors validator.ValidationErrors
-	if errors.As(err, &validationErrors) {
-		validationError := validationErrors[0]
-		if validationError.Tag() == "required" {
-			errorMessage = fmt.Sprintf("%s not provided", validationError.Field())
+	if !errors.As(err, &validationErrors) {
+		return c.JSON(http.StatusBadRequest, FailureResponse{
+			Error:   fmt.Sprintf("Failed to bind request: %v", err.Error()),
+			Message: "Invalid request data. Please check your input and try again.",
+		})
+	}
+
+	var allErrMessages string
+	for _, vErr := range validationErrors {
+		var errorMessage string
+		switch vErr.Tag() {
+		case "required":
+			errorMessage = fmt.Sprintf("%s field not provided", vErr.Field())
+		case "iscolor":
+			errorMessage = fmt.Sprintf("%s field is not color(hexcolor|rgb|rgba|hsl|hsla)", vErr.Field())
+		default:
+			errorMessage = vErr.Error()
+		}
+
+		if allErrMessages == "" {
+			allErrMessages = errorMessage
+		} else {
+			allErrMessages = fmt.Sprintf("%s | %s", allErrMessages, errorMessage)
 		}
 	}
 
+	if allErrMessages == "" {
+		allErrMessages = err.Error()
+	}
+
 	return c.JSON(http.StatusBadRequest, FailureResponse{
-		Error:   fmt.Sprintf("Failed to bind request: %v", errorMessage),
+		Error:   fmt.Sprintf("Failed to bind request: %v", allErrMessages),
 		Message: "Invalid request data. Please check your input and try again.",
 	})
 }

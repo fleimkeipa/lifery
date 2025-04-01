@@ -25,21 +25,25 @@ func NewConnectHandlers(connectUC *uc.ConnectsUC, userUC *uc.UserUC) *ConnectHan
 // Create godoc
 //
 //	@Summary		Create creates a new connection
-//	@Description	This endpoint creates a new connection by binding the incoming JSON request to the ConnectCreateRequest model.
+//	@Description	This endpoint creates a new connection by binding the incoming JSON request to the ConnectCreateInput model.
 //	@Tags			connects
 //	@Accept			json
 //	@Produce		json
 //	@Security		ApiKeyAuth
-//	@Param			Body	body		model.ConnectCreateRequest	true	"Connect creation input"
+//	@Param			Body	body		model.ConnectCreateInput	true	"Connect creation input"
 //	@Success		201		{object}	SuccessResponse				"Connect created successfully"
 //	@Failure		400		{object}	FailureResponse				"Invalid request data"
 //	@Failure		500		{object}	FailureResponse				"Connect creation failed"
 //	@Router			/connects [post]
 func (rc *ConnectHandlers) Create(c echo.Context) error {
-	var input model.ConnectCreateRequest
+	var input model.ConnectCreateInput
 
 	if err := c.Bind(&input); err != nil {
 		return handleBindingErrors(c, err)
+	}
+
+	if err := c.Validate(&input); err != nil {
+		return handleValidatingErrors(c, err)
 	}
 
 	connect, err := rc.connectUC.Create(c.Request().Context(), input)
@@ -56,23 +60,27 @@ func (rc *ConnectHandlers) Create(c echo.Context) error {
 // Update godoc
 //
 //	@Summary		Update updates an existing connection
-//	@Description	This endpoint updates a connection by binding the incoming JSON request to the ConnectUpdateRequest model.
+//	@Description	This endpoint updates a connection by binding the incoming JSON request to the ConnectUpdateInput model.
 //	@Tags			connects
 //	@Accept			json
 //	@Produce		json
 //	@Security		ApiKeyAuth
 //	@Param			id		path		string						true	"Connection ID to update,approved:101, rejected:102"
-//	@Param			Body	body		model.ConnectUpdateRequest	true	"Connect update input"
+//	@Param			Body	body		model.ConnectUpdateInput	true	"Connect update input"
 //	@Success		200		{object}	SuccessResponse				"Connect updated successfully"
 //	@Failure		400		{object}	FailureResponse				"Invalid request data"
 //	@Failure		500		{object}	FailureResponse				"Connect update failed"
 //	@Router			/connects/{id} [patch]
 func (rc *ConnectHandlers) Update(c echo.Context) error {
 	id := c.Param("id")
-	var input model.ConnectUpdateRequest
+	var input model.ConnectUpdateInput
 
 	if err := c.Bind(&input); err != nil {
 		return handleBindingErrors(c, err)
+	}
+
+	if err := c.Validate(&input); err != nil {
+		return handleValidatingErrors(c, err)
 	}
 
 	err := rc.connectUC.Update(c.Request().Context(), id, input)

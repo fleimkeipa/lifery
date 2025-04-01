@@ -27,16 +27,20 @@ func NewUserHandlers(uc *uc.UserUC) *UserHandlers {
 //	@Accept			json
 //	@Produce		json
 //	@Security		ApiKeyAuth
-//	@Param			body	body		model.UserCreateRequest	true	"User creation input"
+//	@Param			body	body		model.UserCreateInput	true	"User creation input"
 //	@Success		201		{object}	SuccessResponse			"user username"
 //	@Failure		400		{object}	FailureResponse			"Error message including details on failure"
 //	@Failure		500		{object}	FailureResponse			"Interval error"
 //	@Router			/users [post]
 func (rc *UserHandlers) Create(c echo.Context) error {
-	var input model.UserCreateRequest
+	var input model.UserCreateInput
 
 	if err := c.Bind(&input); err != nil {
 		return handleBindingErrors(c, err)
+	}
+
+	if err := c.Validate(&input); err != nil {
+		return handleValidatingErrors(c, err)
 	}
 
 	user, err := rc.userUC.Create(c.Request().Context(), input)
@@ -50,25 +54,29 @@ func (rc *UserHandlers) Create(c echo.Context) error {
 	})
 }
 
-// UpdateUser godoc
+// Update godoc
 //
-//	@Summary		UpdateUser updates an existing user
+//	@Summary		Update updates an existing user
 //	@Description	This endpoint updates a user by providing username, email, password, and role ID.
 //	@Tags			users
 //	@Accept			json
 //	@Produce		json
 //	@Security		ApiKeyAuth
-//	@Param			body	body		model.UserCreateRequest	true	"User update input"
+//	@Param			body	body		model.UserCreateInput	true	"User update input"
 //	@Success		200		{object}	SuccessResponse			"user username"
 //	@Failure		400		{object}	FailureResponse			"Error message including details on failure"
 //	@Failure		500		{object}	FailureResponse			"Interval error"
 //	@Router			/users/{id} [patch]
-func (rc *UserHandlers) UpdateUser(c echo.Context) error {
+func (rc *UserHandlers) Update(c echo.Context) error {
 	id := c.Param("id")
-	var input model.UserCreateRequest
+	var input model.UserCreateInput
 
 	if err := c.Bind(&input); err != nil {
 		return handleBindingErrors(c, err)
+	}
+
+	if err := c.Validate(&input); err != nil {
+		return handleValidatingErrors(c, err)
 	}
 
 	user, err := rc.userUC.Update(c.Request().Context(), id, input)

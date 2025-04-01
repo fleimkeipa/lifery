@@ -40,7 +40,11 @@ func (rc *AuthHandlers) Register(c echo.Context) error {
 		return handleBindingErrors(c, err)
 	}
 
-	newUser := model.UserCreateRequest{
+	if err := c.Validate(&input); err != nil {
+		return handleValidatingErrors(c, err)
+	}
+
+	newUser := model.UserCreateInput{
 		Username:        input.Username,
 		Email:           input.Email,
 		Password:        input.Password,
@@ -85,6 +89,10 @@ func (rc *AuthHandlers) Login(c echo.Context) error {
 
 	if err := c.Bind(&input); err != nil {
 		return handleBindingErrors(c, err)
+	}
+
+	if err := c.Validate(&input); err != nil {
+		return handleValidatingErrors(c, err)
 	}
 
 	user, err := rc.userUC.GetByUsernameOrEmail(c.Request().Context(), input.Username)
