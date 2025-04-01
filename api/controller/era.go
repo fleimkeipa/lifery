@@ -135,7 +135,7 @@ func (rc *EraController) List(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
-		Data:  list,
+		Data:  list.Eras,
 		Total: list.Total,
 		Limit: list.Limit,
 		Skip:  list.Skip,

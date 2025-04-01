@@ -135,7 +135,7 @@ func (rc *EventController) List(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
-		Data:  list,
+		Data:  list.Events,
 		Total: list.Total,
 		Limit: list.Limit,
 		Skip:  list.Skip,

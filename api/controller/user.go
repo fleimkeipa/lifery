@@ -114,7 +114,7 @@ func (rc *UserHandlers) List(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
-		Data:  list,
+		Data:  list.Users,
 		Total: list.Total,
 		Limit: list.Limit,
 		Skip:  list.Skip,

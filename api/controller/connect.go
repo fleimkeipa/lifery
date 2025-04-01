@@ -115,7 +115,7 @@ func (rc *ConnectHandlers) ConnectsRequests(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
-		Data:  list,
+		Data:  list.Connects,
 		Total: list.Total,
 		Limit: list.Limit,
 		Skip:  list.Skip,
