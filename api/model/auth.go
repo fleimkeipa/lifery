@@ -7,15 +7,15 @@ import (
 )
 
 type Login struct {
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
+	Username string `json:"username" validate:"required"`
+	Password string `json:"password" validate:"required"`
 }
 
 type Register struct {
-	Username        string `json:"username" binding:"required"`
+	Username        string `json:"username" validate:"required"`
 	Email           string `json:"email"`
-	Password        string `json:"password" binding:"required"`
-	ConfirmPassword string `json:"confirm_password" binding:"required"`
+	Password        string `json:"password" validate:"required"`
+	ConfirmPassword string `json:"confirm_password" validate:"required"`
 }
 
 type TokenOwner struct {

@@ -14,18 +14,18 @@ type Era struct {
 	ID        string    `json:"id"`
 }
 
-type EraCreateRequest struct {
+type EraCreateInput struct {
 	TimeStart string `json:"time_start"`
 	TimeEnd   string `json:"time_end"`
-	Color     string `json:"color"`
+	Color     string `json:"color" validate:"required,iscolor"`
 	Name      string `json:"name"`
 }
 
-type EraUpdateRequest struct {
+type EraUpdateInput struct {
 	TimeStart string `json:"time_start"`
 	TimeEnd   string `json:"time_end"`
+	Color     string `json:"color" validate:"required,iscolor"`
 	Name      string `json:"name"`
-	Color     string `json:"color"`
 }
 
 type EraList struct {

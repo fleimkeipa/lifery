@@ -27,7 +27,7 @@ func TestEventDBUC_Create(t *testing.T) {
 	}
 	type args struct {
 		ctx   context.Context
-		event *model.EventCreateRequest
+		event *model.EventCreateInput
 	}
 	tests := []struct {
 		fields    fields
@@ -45,7 +45,7 @@ func TestEventDBUC_Create(t *testing.T) {
 			},
 			args: args{
 				ctx: context.TODO(),
-				event: &model.EventCreateRequest{
+				event: &model.EventCreateInput{
 					Name: "1234",
 				},
 			},
@@ -66,7 +66,7 @@ func TestEventDBUC_Create(t *testing.T) {
 			},
 			args: args{
 				ctx: context.TODO(),
-				event: &model.EventCreateRequest{
+				event: &model.EventCreateInput{
 					Name: "1234",
 				},
 			},

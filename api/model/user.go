@@ -26,11 +26,11 @@ type UserList struct {
 	PaginationOpts
 }
 
-type UserCreateRequest struct {
-	Username        string `json:"username" binding:"required"`
-	Email           string `json:"email" binding:"required"`
-	Password        string `json:"password" binding:"required"`
-	ConfirmPassword string `json:"confirm_password" binding:"required"`
+type UserCreateInput struct {
+	Username        string `json:"username" validate:"required"`
+	Email           string `json:"email" validate:"required"`
+	Password        string `json:"password" validate:"required"`
+	ConfirmPassword string `json:"confirm_password" validate:"required"`
 }
 
 type UserFindOpts struct {

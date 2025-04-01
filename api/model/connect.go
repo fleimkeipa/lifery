@@ -15,8 +15,8 @@ type ConnectList struct {
 	PaginationOpts
 }
 
-type ConnectCreateRequest struct {
-	FriendID string `json:"friend_id" binding:"required"`
+type ConnectCreateInput struct {
+	FriendID string `json:"friend_id" validate:"required"`
 }
 
 type RequestStatus int
@@ -27,12 +27,12 @@ const (
 	RequestStatusRejected
 )
 
-type ConnectUpdateRequest struct {
-	Status RequestStatus `json:"status" binding:"required"`
+type ConnectUpdateInput struct {
+	Status RequestStatus `json:"status" validate:"required"`
 }
 
 type DisconnectRequest struct {
-	FriendID string `json:"friend_id" binding:"required"`
+	FriendID string `json:"friend_id" validate:"required"`
 }
 
 type ConnectFindOpts struct {

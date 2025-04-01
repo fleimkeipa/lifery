@@ -39,24 +39,23 @@ type EventItem struct {
 	Type EventType `json:"type"`
 }
 
-type EventCreateRequest struct {
+type EventCreateInput struct {
 	Date        string      `json:"date"`
 	TimeStart   string      `json:"time_start"`
 	TimeEnd     string      `json:"time_end"`
-	Name        string      `json:"name"`
+	Name        string      `json:"name" validate:"required"`
 	Description string      `json:"description"`
 	Items       []EventItem `json:"items"`
 	Visibility  Visibility  `json:"visibility"`
 }
 
-type EventUpdateRequest struct {
+type EventUpdateInput struct {
 	Date        string      `json:"date"`
 	TimeStart   string      `json:"time_start"`
 	TimeEnd     string      `json:"time_end"`
-	Name        string      `json:"name"`
+	Name        string      `json:"name" validate:"required"`
 	Description string      `json:"description"`
 	Items       []EventItem `json:"items"`
-	ID          int64       `json:"id"`
 	Visibility  Visibility  `json:"visibility"`
 }
 
