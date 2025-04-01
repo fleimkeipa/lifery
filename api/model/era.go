@@ -15,15 +15,15 @@ type Era struct {
 }
 
 type EraCreateInput struct {
-	TimeStart string `json:"time_start"`
-	TimeEnd   string `json:"time_end"`
+	TimeStart string `json:"time_start" validate:"datetime"`
+	TimeEnd   string `json:"time_end" validate:"datetime"`
 	Color     string `json:"color" validate:"required,iscolor"`
 	Name      string `json:"name"`
 }
 
 type EraUpdateInput struct {
-	TimeStart string `json:"time_start"`
-	TimeEnd   string `json:"time_end"`
+	TimeStart string `json:"time_start" validate:"datetime"`
+	TimeEnd   string `json:"time_end" validate:"datetime"`
 	Color     string `json:"color" validate:"required,iscolor"`
 	Name      string `json:"name"`
 }

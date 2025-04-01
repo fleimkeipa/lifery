@@ -40,9 +40,9 @@ type EventItem struct {
 }
 
 type EventCreateInput struct {
-	Date        string      `json:"date"`
-	TimeStart   string      `json:"time_start"`
-	TimeEnd     string      `json:"time_end"`
+	Date        string      `json:"date" validate:"datetime"`
+	TimeStart   string      `json:"time_start" validate:"datetime"`
+	TimeEnd     string      `json:"time_end" validate:"datetime"`
 	Name        string      `json:"name" validate:"required"`
 	Description string      `json:"description"`
 	Items       []EventItem `json:"items"`
@@ -50,9 +50,9 @@ type EventCreateInput struct {
 }
 
 type EventUpdateInput struct {
-	Date        string      `json:"date"`
-	TimeStart   string      `json:"time_start"`
-	TimeEnd     string      `json:"time_end"`
+	Date        string      `json:"date" validate:"datetime"`
+	TimeStart   string      `json:"time_start" validate:"datetime"`
+	TimeEnd     string      `json:"time_end" validate:"datetime"`
 	Name        string      `json:"name" validate:"required"`
 	Description string      `json:"description"`
 	Items       []EventItem `json:"items"`
