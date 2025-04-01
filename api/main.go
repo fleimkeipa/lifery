@@ -116,7 +116,7 @@ func serveApplication() {
 	usersRoutes.GET("", userController.List)
 	usersRoutes.GET("/:id", userController.GetByID)
 	usersRoutes.POST("", userController.Create)
-	usersRoutes.PATCH("/:id", userController.UpdateUser)
+	usersRoutes.PATCH("/:id", userController.Update)
 	usersRoutes.DELETE("/:id", userController.DeleteUser)
 
 	e.Logger.Fatal(e.Start(":8080"))
@@ -132,6 +132,8 @@ func loadConfig() {
 func configureEcho(e *echo.Echo) {
 	e.HideBanner = true
 	e.HidePort = true
+
+	e.Validator = pkg.NewValidator()
 
 	// Add Swagger documentation route
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
