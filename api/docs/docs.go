@@ -114,7 +114,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "This endpoint creates a new connection by binding the incoming JSON request to the ConnectCreateRequest model.",
+                "description": "This endpoint creates a new connection by binding the incoming JSON request to the ConnectCreateInput model.",
                 "consumes": [
                     "application/json"
                 ],
@@ -132,7 +132,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.ConnectCreateRequest"
+                            "$ref": "#/definitions/model.ConnectCreateInput"
                         }
                     }
                 ],
@@ -165,7 +165,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "This endpoint updates a connection by binding the incoming JSON request to the ConnectUpdateRequest model.",
+                "description": "This endpoint updates a connection by binding the incoming JSON request to the ConnectUpdateInput model.",
                 "consumes": [
                     "application/json"
                 ],
@@ -190,7 +190,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.ConnectUpdateRequest"
+                            "$ref": "#/definitions/model.ConnectUpdateInput"
                         }
                     }
                 ],
@@ -298,7 +298,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "This endpoint creates a new era by binding the incoming JSON request to the EraCreateRequest model.",
+                "description": "This endpoint creates a new era by binding the incoming JSON request to the EraCreateInput model.",
                 "consumes": [
                     "application/json"
                 ],
@@ -316,7 +316,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.EraCreateRequest"
+                            "$ref": "#/definitions/model.EraCreateInput"
                         }
                     }
                 ],
@@ -443,7 +443,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "This endpoint updates an existing era by binding the incoming JSON request to the EraUpdateRequest model.",
+                "description": "This endpoint updates an existing era by binding the incoming JSON request to the EraUpdateInput model.",
                 "consumes": [
                     "application/json"
                 ],
@@ -461,7 +461,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.EraUpdateRequest"
+                            "$ref": "#/definitions/model.EraUpdateInput"
                         }
                     }
                 ],
@@ -571,7 +571,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "This endpoint creates a new event by binding the incoming JSON request to the EventCreateRequest model.",
+                "description": "This endpoint creates a new event by binding the incoming JSON request to the EventCreateInput model.",
                 "consumes": [
                     "application/json"
                 ],
@@ -589,7 +589,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.EventCreateRequest"
+                            "$ref": "#/definitions/model.EventCreateInput"
                         }
                     }
                 ],
@@ -716,7 +716,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "This endpoint updates an existing event by binding the incoming JSON request to the EventUpdateRequest model.",
+                "description": "This endpoint updates an existing event by binding the incoming JSON request to the EventUpdateInput model.",
                 "consumes": [
                     "application/json"
                 ],
@@ -734,7 +734,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.EventUpdateRequest"
+                            "$ref": "#/definitions/model.EventUpdateInput"
                         }
                     }
                 ],
@@ -861,7 +861,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.UserCreateRequest"
+                            "$ref": "#/definitions/model.UserCreateInput"
                         }
                     }
                 ],
@@ -977,7 +977,7 @@ const docTemplate = `{
                 "tags": [
                     "users"
                 ],
-                "summary": "UpdateUser updates an existing user",
+                "summary": "Update updates an existing user",
                 "parameters": [
                     {
                         "description": "User update input",
@@ -985,7 +985,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.UserCreateRequest"
+                            "$ref": "#/definitions/model.UserCreateInput"
                         }
                     }
                 ],
@@ -1051,7 +1051,7 @@ const docTemplate = `{
                 }
             }
         },
-        "model.ConnectCreateRequest": {
+        "model.ConnectCreateInput": {
             "type": "object",
             "required": [
                 "friend_id"
@@ -1062,7 +1062,7 @@ const docTemplate = `{
                 }
             }
         },
-        "model.ConnectUpdateRequest": {
+        "model.ConnectUpdateInput": {
             "type": "object",
             "required": [
                 "status"
@@ -1073,8 +1073,11 @@ const docTemplate = `{
                 }
             }
         },
-        "model.EraCreateRequest": {
+        "model.EraCreateInput": {
             "type": "object",
+            "required": [
+                "color"
+            ],
             "properties": {
                 "color": {
                     "type": "string"
@@ -1090,14 +1093,14 @@ const docTemplate = `{
                 }
             }
         },
-        "model.EraUpdateRequest": {
+        "model.EraUpdateInput": {
             "type": "object",
+            "required": [
+                "color"
+            ],
             "properties": {
                 "color": {
                     "type": "string"
-                },
-                "id": {
-                    "type": "integer"
                 },
                 "name": {
                     "type": "string"
@@ -1110,8 +1113,11 @@ const docTemplate = `{
                 }
             }
         },
-        "model.EventCreateRequest": {
+        "model.EventCreateInput": {
             "type": "object",
+            "required": [
+                "name"
+            ],
             "properties": {
                 "date": {
                     "type": "string"
@@ -1165,17 +1171,17 @@ const docTemplate = `{
                 "EventTypeVoiceRecord"
             ]
         },
-        "model.EventUpdateRequest": {
+        "model.EventUpdateInput": {
             "type": "object",
+            "required": [
+                "name"
+            ],
             "properties": {
                 "date": {
                     "type": "string"
                 },
                 "description": {
                     "type": "string"
-                },
-                "id": {
-                    "type": "integer"
                 },
                 "items": {
                     "type": "array",
@@ -1247,7 +1253,7 @@ const docTemplate = `{
                 "RequestStatusRejected"
             ]
         },
-        "model.UserCreateRequest": {
+        "model.UserCreateInput": {
             "type": "object",
             "required": [
                 "confirm_password",

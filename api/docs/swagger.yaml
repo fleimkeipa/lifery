@@ -24,21 +24,21 @@ definitions:
       message:
         type: string
     type: object
-  model.ConnectCreateRequest:
+  model.ConnectCreateInput:
     properties:
       friend_id:
         type: string
     required:
     - friend_id
     type: object
-  model.ConnectUpdateRequest:
+  model.ConnectUpdateInput:
     properties:
       status:
         $ref: '#/definitions/model.RequestStatus'
     required:
     - status
     type: object
-  model.EraCreateRequest:
+  model.EraCreateInput:
     properties:
       color:
         type: string
@@ -48,21 +48,23 @@ definitions:
         type: string
       time_start:
         type: string
+    required:
+    - color
     type: object
-  model.EraUpdateRequest:
+  model.EraUpdateInput:
     properties:
       color:
         type: string
-      id:
-        type: integer
       name:
         type: string
       time_end:
         type: string
       time_start:
         type: string
+    required:
+    - color
     type: object
-  model.EventCreateRequest:
+  model.EventCreateInput:
     properties:
       date:
         type: string
@@ -80,6 +82,8 @@ definitions:
         type: string
       visibility:
         $ref: '#/definitions/model.Visibility'
+    required:
+    - name
     type: object
   model.EventItem:
     properties:
@@ -100,14 +104,12 @@ definitions:
     - EventTypePhoto
     - EventTypeVideo
     - EventTypeVoiceRecord
-  model.EventUpdateRequest:
+  model.EventUpdateInput:
     properties:
       date:
         type: string
       description:
         type: string
-      id:
-        type: integer
       items:
         items:
           $ref: '#/definitions/model.EventItem'
@@ -120,6 +122,8 @@ definitions:
         type: string
       visibility:
         $ref: '#/definitions/model.Visibility'
+    required:
+    - name
     type: object
   model.Login:
     properties:
@@ -156,7 +160,7 @@ definitions:
     - RequestStatusPending
     - RequestStatusApproved
     - RequestStatusRejected
-  model.UserCreateRequest:
+  model.UserCreateInput:
     properties:
       confirm_password:
         type: string
@@ -252,14 +256,14 @@ paths:
       consumes:
       - application/json
       description: This endpoint creates a new connection by binding the incoming
-        JSON request to the ConnectCreateRequest model.
+        JSON request to the ConnectCreateInput model.
       parameters:
       - description: Connect creation input
         in: body
         name: Body
         required: true
         schema:
-          $ref: '#/definitions/model.ConnectCreateRequest'
+          $ref: '#/definitions/model.ConnectCreateInput'
       produces:
       - application/json
       responses:
@@ -285,7 +289,7 @@ paths:
       consumes:
       - application/json
       description: This endpoint updates a connection by binding the incoming JSON
-        request to the ConnectUpdateRequest model.
+        request to the ConnectUpdateInput model.
       parameters:
       - description: Connection ID to update,approved:101, rejected:102
         in: path
@@ -297,7 +301,7 @@ paths:
         name: Body
         required: true
         schema:
-          $ref: '#/definitions/model.ConnectUpdateRequest'
+          $ref: '#/definitions/model.ConnectUpdateInput'
       produces:
       - application/json
       responses:
@@ -374,14 +378,14 @@ paths:
       consumes:
       - application/json
       description: This endpoint creates a new era by binding the incoming JSON request
-        to the EraCreateRequest model.
+        to the EraCreateInput model.
       parameters:
       - description: Era creation input
         in: body
         name: Body
         required: true
         schema:
-          $ref: '#/definitions/model.EraCreateRequest'
+          $ref: '#/definitions/model.EraCreateInput'
       produces:
       - application/json
       responses:
@@ -468,14 +472,14 @@ paths:
       consumes:
       - application/json
       description: This endpoint updates an existing era by binding the incoming JSON
-        request to the EraUpdateRequest model.
+        request to the EraUpdateInput model.
       parameters:
       - description: Era update input
         in: body
         name: Body
         required: true
         schema:
-          $ref: '#/definitions/model.EraUpdateRequest'
+          $ref: '#/definitions/model.EraUpdateInput'
       produces:
       - application/json
       responses:
@@ -555,14 +559,14 @@ paths:
       consumes:
       - application/json
       description: This endpoint creates a new event by binding the incoming JSON
-        request to the EventCreateRequest model.
+        request to the EventCreateInput model.
       parameters:
       - description: Event creation input
         in: body
         name: Body
         required: true
         schema:
-          $ref: '#/definitions/model.EventCreateRequest'
+          $ref: '#/definitions/model.EventCreateInput'
       produces:
       - application/json
       responses:
@@ -649,14 +653,14 @@ paths:
       consumes:
       - application/json
       description: This endpoint updates an existing event by binding the incoming
-        JSON request to the EventUpdateRequest model.
+        JSON request to the EventUpdateInput model.
       parameters:
       - description: Event update input
         in: body
         name: Body
         required: true
         schema:
-          $ref: '#/definitions/model.EventUpdateRequest'
+          $ref: '#/definitions/model.EventUpdateInput'
       produces:
       - application/json
       responses:
@@ -741,7 +745,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/model.UserCreateRequest'
+          $ref: '#/definitions/model.UserCreateInput'
       produces:
       - application/json
       responses:
@@ -820,7 +824,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/model.UserCreateRequest'
+          $ref: '#/definitions/model.UserCreateInput'
       produces:
       - application/json
       responses:
@@ -838,7 +842,7 @@ paths:
             $ref: '#/definitions/controller.FailureResponse'
       security:
       - ApiKeyAuth: []
-      summary: UpdateUser updates an existing user
+      summary: Update updates an existing user
       tags:
       - users
 securityDefinitions:
