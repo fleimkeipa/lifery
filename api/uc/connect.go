@@ -22,7 +22,7 @@ func NewConnectsUC(userUC *UserUC, connectRepo interfaces.ConnectInterfaces) *Co
 	}
 }
 
-func (rc *ConnectsUC) Create(ctx context.Context, req model.ConnectCreateRequest) (*model.Connect, error) {
+func (rc *ConnectsUC) Create(ctx context.Context, req model.ConnectCreateInput) (*model.Connect, error) {
 	ownerID := util.GetOwnerIDFromCtx(ctx)
 	connect := model.Connect{
 		Status:   model.RequestStatusPending,
@@ -61,7 +61,7 @@ func (rc *ConnectsUC) Create(ctx context.Context, req model.ConnectCreateRequest
 	return rc.connectRepo.Create(ctx, &connect)
 }
 
-func (rc *ConnectsUC) Update(ctx context.Context, id string, req model.ConnectUpdateRequest) error {
+func (rc *ConnectsUC) Update(ctx context.Context, id string, req model.ConnectUpdateInput) error {
 	connect, err := rc.connectRepo.GetByID(ctx, id)
 	if err != nil {
 		return err

@@ -21,7 +21,7 @@ func NewUserUC(repo interfaces.UserInterfaces) *UserUC {
 	}
 }
 
-func (rc *UserUC) Create(ctx context.Context, req model.UserCreateRequest) (*model.User, error) {
+func (rc *UserUC) Create(ctx context.Context, req model.UserCreateInput) (*model.User, error) {
 	exists, err := rc.Exists(ctx, req.Username)
 	if err != nil {
 		return nil, err
@@ -61,7 +61,7 @@ func (rc *UserUC) Create(ctx context.Context, req model.UserCreateRequest) (*mod
 	return newUser, nil
 }
 
-func (rc *UserUC) Update(ctx context.Context, userID string, req model.UserCreateRequest) (*model.User, error) {
+func (rc *UserUC) Update(ctx context.Context, userID string, req model.UserCreateInput) (*model.User, error) {
 	// user exist control
 	_, err := rc.GetByID(ctx, userID)
 	if err != nil {

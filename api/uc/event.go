@@ -23,7 +23,7 @@ func NewEventUC(repo interfaces.EventRepository, userUC *UserUC) *EventUC {
 	}
 }
 
-func (rc *EventUC) Create(ctx context.Context, req *model.EventCreateRequest) (*model.Event, error) {
+func (rc *EventUC) Create(ctx context.Context, req *model.EventCreateInput) (*model.Event, error) {
 	ownerID := util.GetOwnerIDFromCtx(ctx)
 
 	if req.Date != "" {
@@ -63,7 +63,7 @@ func (rc *EventUC) Create(ctx context.Context, req *model.EventCreateRequest) (*
 	return newEvent, nil
 }
 
-func (rc *EventUC) Update(ctx context.Context, eventID string, req *model.EventUpdateRequest) (*model.Event, error) {
+func (rc *EventUC) Update(ctx context.Context, eventID string, req *model.EventUpdateInput) (*model.Event, error) {
 	// event exist control
 	exist, err := rc.GetByID(ctx, eventID)
 	if err != nil {

@@ -20,7 +20,7 @@ func NewEraUC(repo interfaces.EraRepository) *EraUC {
 	}
 }
 
-func (rc *EraUC) Create(ctx context.Context, req *model.EraCreateRequest) (*model.Era, error) {
+func (rc *EraUC) Create(ctx context.Context, req *model.EraCreateInput) (*model.Era, error) {
 	userID := util.GetOwnerIDFromCtx(ctx)
 
 	_, err := util.ParseTime(req.TimeStart)
@@ -49,7 +49,7 @@ func (rc *EraUC) Create(ctx context.Context, req *model.EraCreateRequest) (*mode
 	return newEra, nil
 }
 
-func (rc *EraUC) Update(ctx context.Context, eraID string, req *model.EraUpdateRequest) (*model.Era, error) {
+func (rc *EraUC) Update(ctx context.Context, eraID string, req *model.EraUpdateInput) (*model.Era, error) {
 	// era exist control
 	exist, err := rc.GetByID(ctx, eraID)
 	if err != nil {
