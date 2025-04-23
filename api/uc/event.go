@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/fleimkeipa/lifery/model"
 	"github.com/fleimkeipa/lifery/pkg"
@@ -26,18 +27,18 @@ func NewEventUC(repo interfaces.EventRepository, userUC *UserUC) *EventUC {
 func (rc *EventUC) Create(ctx context.Context, req *model.EventCreateInput) (*model.Event, error) {
 	ownerID := util.GetOwnerIDFromCtx(ctx)
 
-	if req.Date != "" {
-		_, err := util.ParseTime(req.Date)
+	if !req.Date.IsZero() {
+		_, err := time.Parse(time.RFC3339, req.Date.Format(time.RFC3339))
 		if err != nil {
 			return nil, pkg.NewError(err, "failed to parse timeStart", http.StatusBadRequest)
 		}
 	}
-	if req.TimeStart != "" && req.TimeEnd != "" {
-		_, err := util.ParseTime(req.TimeStart)
+	if !req.TimeStart.IsZero() && !req.TimeEnd.IsZero() {
+		_, err := time.Parse(time.RFC3339, req.TimeStart.Format(time.RFC3339))
 		if err != nil {
 			return nil, pkg.NewError(err, "failed to parse timeStart", http.StatusBadRequest)
 		}
-		_, err = util.ParseTime(req.TimeEnd)
+		_, err = time.Parse(time.RFC3339, req.TimeEnd.Format(time.RFC3339))
 		if err != nil {
 			return nil, pkg.NewError(err, "failed to parse timeEnd", http.StatusBadRequest)
 		}
@@ -70,18 +71,18 @@ func (rc *EventUC) Update(ctx context.Context, eventID string, req *model.EventU
 		return nil, err
 	}
 
-	if req.Date != "" {
-		_, err := util.ParseTime(req.Date)
+	if !req.Date.IsZero() {
+		_, err := time.Parse(time.RFC3339, req.Date.Format(time.RFC3339))
 		if err != nil {
 			return nil, pkg.NewError(err, "failed to parse timeStart", http.StatusBadRequest)
 		}
 	}
-	if req.TimeStart != "" && req.TimeEnd != "" {
-		_, err := util.ParseTime(req.TimeStart)
+	if !req.TimeStart.IsZero() && !req.TimeEnd.IsZero() {
+		_, err := time.Parse(time.RFC3339, req.TimeStart.Format(time.RFC3339))
 		if err != nil {
 			return nil, pkg.NewError(err, "failed to parse timeStart", http.StatusBadRequest)
 		}
-		_, err = util.ParseTime(req.TimeEnd)
+		_, err = time.Parse(time.RFC3339, req.TimeEnd.Format(time.RFC3339))
 		if err != nil {
 			return nil, pkg.NewError(err, "failed to parse timeEnd", http.StatusBadRequest)
 		}

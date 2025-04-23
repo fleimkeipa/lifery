@@ -12,8 +12,8 @@ type Login struct {
 }
 
 type Register struct {
-	Username        string `json:"username" validate:"required"`
-	Email           string `json:"email" validate:"email"`
+	Username string `json:"username" validate:"required"`
+	// Email           string `json:"email" validate:"email"`
 	Password        string `json:"password" validate:"required"`
 	ConfirmPassword string `json:"confirm_password" validate:"required"`
 }

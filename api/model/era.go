@@ -6,8 +6,8 @@ type Era struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 	User      *User     `json:"user"`
-	TimeStart string    `json:"time_start"`
-	TimeEnd   string    `json:"time_end"`
+	TimeStart time.Time `json:"time_start"`
+	TimeEnd   time.Time `json:"time_end"`
 	Name      string    `json:"name"`
 	Color     string    `json:"color"`
 	UserID    string    `json:"user_id"`
@@ -15,17 +15,17 @@ type Era struct {
 }
 
 type EraCreateInput struct {
-	TimeStart string `json:"time_start" validate:"datetime"`
-	TimeEnd   string `json:"time_end" validate:"datetime"`
-	Color     string `json:"color" validate:"required,iscolor"`
-	Name      string `json:"name"`
+	TimeStart time.Time `json:"time_start"`
+	TimeEnd   time.Time `json:"time_end"`
+	Color     string    `json:"color" validate:"required,iscolor"`
+	Name      string    `json:"name"`
 }
 
 type EraUpdateInput struct {
-	TimeStart string `json:"time_start" validate:"datetime"`
-	TimeEnd   string `json:"time_end" validate:"datetime"`
-	Color     string `json:"color" validate:"required,iscolor"`
-	Name      string `json:"name"`
+	TimeStart time.Time `json:"time_start"`
+	TimeEnd   time.Time `json:"time_end"`
+	Color     string    `json:"color" validate:"required,iscolor"`
+	Name      string    `json:"name"`
 }
 
 type EraList struct {

@@ -165,8 +165,8 @@ func (rc *EraRepository) internalToSQL(newEra *model.Era) *era {
 	eID, _ := strconv.Atoi(newEra.ID)
 	userID, _ := strconv.Atoi(newEra.UserID)
 	return &era{
-		TimeStart: util.Format(newEra.TimeStart),
-		TimeEnd:   util.Format(newEra.TimeEnd),
+		TimeStart: newEra.TimeStart,
+		TimeEnd:   newEra.TimeEnd,
 		Name:      newEra.Name,
 		Color:     newEra.Color,
 		UserID:    userID,
@@ -185,8 +185,8 @@ func (rc *EraRepository) sqlToInternal(newEra *era) *model.Era {
 	user.Username = newEra.User.Username
 	user.Email = newEra.User.Email
 	return &model.Era{
-		TimeStart: util.Format(newEra.TimeStart),
-		TimeEnd:   util.Format(newEra.TimeEnd),
+		TimeStart: newEra.TimeStart,
+		TimeEnd:   newEra.TimeEnd,
 		Name:      newEra.Name,
 		Color:     newEra.Color,
 		UserID:    userID,

@@ -3,6 +3,7 @@ package uc
 import (
 	"context"
 	"net/http"
+	"time"
 
 	"github.com/fleimkeipa/lifery/model"
 	"github.com/fleimkeipa/lifery/pkg"
@@ -23,11 +24,11 @@ func NewEraUC(repo interfaces.EraRepository) *EraUC {
 func (rc *EraUC) Create(ctx context.Context, req *model.EraCreateInput) (*model.Era, error) {
 	userID := util.GetOwnerIDFromCtx(ctx)
 
-	_, err := util.ParseTime(req.TimeStart)
+	_, err := time.Parse(time.RFC3339, req.TimeStart.Format(time.RFC3339))
 	if err != nil {
 		return nil, pkg.NewError(err, "failed to parse start time", http.StatusBadRequest)
 	}
-	_, err = util.ParseTime(req.TimeEnd)
+	_, err = time.Parse(time.RFC3339, req.TimeEnd.Format(time.RFC3339))
 	if err != nil {
 		return nil, pkg.NewError(err, "failed to parse end time", http.StatusBadRequest)
 	}
@@ -56,11 +57,11 @@ func (rc *EraUC) Update(ctx context.Context, eraID string, req *model.EraUpdateI
 		return nil, err
 	}
 
-	_, err = util.ParseTime(req.TimeStart)
+	_, err = time.Parse(time.RFC3339, req.TimeStart.Format(time.RFC3339))
 	if err != nil {
 		return nil, pkg.NewError(err, "failed to parse start time", http.StatusBadRequest)
 	}
-	_, err = util.ParseTime(req.TimeEnd)
+	_, err = time.Parse(time.RFC3339, req.TimeEnd.Format(time.RFC3339))
 	if err != nil {
 		return nil, pkg.NewError(err, "failed to parse end time", http.StatusBadRequest)
 	}

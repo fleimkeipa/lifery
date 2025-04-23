@@ -37,7 +37,7 @@ func (rc *UserUC) Create(ctx context.Context, req model.UserCreateInput) (*model
 
 	user := model.User{
 		Username: req.Username,
-		Email:    req.Email,
+		// Email:    req.Email,
 		Password: req.Password,
 	}
 
@@ -133,7 +133,7 @@ func (rc *UserUC) IsConnected(ctx context.Context, userID, friendID string) (boo
 	}
 
 	connects := receiver.Connects
-	if connects == nil || len(connects) == 0 {
+	if len(connects) == 0 {
 		return false, nil
 	}
 

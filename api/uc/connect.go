@@ -154,9 +154,6 @@ func (rc *ConnectsUC) DeleteConnectOnUser(ctx context.Context, userID, friendID 
 
 func (rc *ConnectsUC) isOwner(ctx context.Context, id string) bool {
 	ownerID := util.GetOwnerIDFromCtx(ctx)
-	if id != ownerID {
-		return false
-	}
 
-	return true
+	return id == ownerID
 }

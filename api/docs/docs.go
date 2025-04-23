@@ -1235,10 +1235,8 @@ const docTemplate = `{
                 "confirm_password": {
                     "type": "string"
                 },
-                "email": {
-                    "type": "string"
-                },
                 "password": {
+                    "description": "Email           string ` + "`" + `json:\"email\" validate:\"email\"` + "`" + `",
                     "type": "string"
                 },
                 "username": {

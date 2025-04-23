@@ -45,8 +45,8 @@ func (rc *AuthHandlers) Register(c echo.Context) error {
 	}
 
 	newUser := model.UserCreateInput{
-		Username:        input.Username,
-		Email:           input.Email,
+		Username: input.Username,
+		// Email:           input.Email,
 		Password:        input.Password,
 		ConfirmPassword: input.ConfirmPassword,
 	}

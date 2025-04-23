@@ -6,9 +6,9 @@ type Event struct {
 	CreatedAt   time.Time   `json:"created_at"`
 	UpdatedAt   time.Time   `json:"updated_at"`
 	DeletedAt   time.Time   `json:"deleted_at"`
-	Date        string      `json:"date"`
-	TimeStart   string      `json:"time_start"`
-	TimeEnd     string      `json:"time_end"`
+	Date        time.Time   `json:"date"`
+	TimeStart   time.Time   `json:"time_start"`
+	TimeEnd     time.Time   `json:"time_end"`
 	Name        string      `json:"name"`
 	Description string      `json:"description"`
 	ID          string      `json:"id"`
@@ -40,9 +40,9 @@ type EventItem struct {
 }
 
 type EventCreateInput struct {
-	Date        string      `json:"date" validate:"datetime"`
-	TimeStart   string      `json:"time_start" validate:"datetime"`
-	TimeEnd     string      `json:"time_end" validate:"datetime"`
+	Date        time.Time   `json:"date"`
+	TimeStart   time.Time   `json:"time_start"`
+	TimeEnd     time.Time   `json:"time_end"`
 	Name        string      `json:"name" validate:"required"`
 	Description string      `json:"description"`
 	Items       []EventItem `json:"items"`
@@ -50,9 +50,9 @@ type EventCreateInput struct {
 }
 
 type EventUpdateInput struct {
-	Date        string      `json:"date" validate:"datetime"`
-	TimeStart   string      `json:"time_start" validate:"datetime"`
-	TimeEnd     string      `json:"time_end" validate:"datetime"`
+	Date        time.Time   `json:"date"`
+	TimeStart   time.Time   `json:"time_start"`
+	TimeEnd     time.Time   `json:"time_end"`
 	Name        string      `json:"name" validate:"required"`
 	Description string      `json:"description"`
 	Items       []EventItem `json:"items"`
