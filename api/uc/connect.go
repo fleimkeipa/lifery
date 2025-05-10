@@ -34,27 +34,37 @@ func (rc *ConnectsUC) Create(ctx context.Context, req model.ConnectCreateInput) 
 		return nil, pkg.NewError(nil, "cannot connect to self", http.StatusBadRequest)
 	}
 
-	// owner control
-	if !rc.isOwner(ctx, ownerID) {
-		return nil, pkg.NewError(nil, "you can't connect to other users", http.StatusBadRequest)
-	}
-
-	// receiver exist control
-	receiver, err := rc.userUC.GetByID(ctx, ownerID)
+	// sender exist control
+	_, err := rc.userUC.GetByID(ctx, ownerID)
 	if err != nil {
 		return nil, err
 	}
 
-	// sender exist control
+	// receiver exist control
 	_, err = rc.userUC.GetByID(ctx, req.FriendID)
 	if err != nil {
 		return nil, err
 	}
 
-	connects := receiver.Connects
-	for _, v := range connects {
-		if v.ID == req.FriendID {
-			return nil, pkg.NewError(nil, "already connected", http.StatusBadRequest)
+	connectsFindOpts := model.ConnectFindOpts{
+		UserID: model.Filter{
+			Value:    ownerID,
+			IsSended: true,
+		},
+	}
+	connectsList, err := rc.connectRepo.ConnectsRequests(ctx, &connectsFindOpts)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, v := range connectsList.Connects {
+		if v.FriendID == req.FriendID {
+			switch v.Status {
+			case model.RequestStatusApproved:
+				return nil, pkg.NewError(nil, "already connected", http.StatusBadRequest)
+			case model.RequestStatusPending:
+				return nil, pkg.NewError(nil, "already sended request", http.StatusBadRequest)
+			}
 		}
 	}
 
