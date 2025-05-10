@@ -72,12 +72,12 @@ func (rc *ConnectsUC) Create(ctx context.Context, req model.ConnectCreateInput) 
 }
 
 func (rc *ConnectsUC) Update(ctx context.Context, id string, req model.ConnectUpdateInput) error {
-	connect, err := rc.connectRepo.GetByID(ctx, id)
+	existConnect, err := rc.connectRepo.GetByID(ctx, id)
 	if err != nil {
 		return err
 	}
 
-	connect.Status = req.Status
+	existConnect.Status = req.Status
 
 	if req.Status == 0 {
 		return pkg.NewError(nil, "status is required", http.StatusBadRequest)
@@ -92,7 +92,7 @@ func (rc *ConnectsUC) Update(ctx context.Context, id string, req model.ConnectUp
 	}
 
 	// users can only update their own connects
-	if !rc.isOwner(ctx, connect.FriendID) {
+	if !rc.isOwner(ctx, existConnect.FriendID) {
 		return pkg.NewError(nil, "you can update only your connects", http.StatusBadRequest)
 	}
 
@@ -100,32 +100,9 @@ func (rc *ConnectsUC) Update(ctx context.Context, id string, req model.ConnectUp
 		return rc.Delete(ctx, id)
 	}
 
-	_, err = rc.connectRepo.Update(ctx, id, connect)
+	_, err = rc.connectRepo.Update(ctx, id, existConnect)
 	if err != nil {
 		return err
-	}
-
-	return nil
-}
-
-func (rc *ConnectsUC) checkOwner(ctx context.Context, opts *model.ConnectFindOpts) error {
-	ownerID := util.GetOwnerIDFromCtx(ctx)
-	if !opts.UserID.IsSended {
-		opts.UserID = model.Filter{
-			Value:    ownerID,
-			IsSended: true,
-		}
-
-		return nil
-	}
-
-	if opts.UserID.Value == ownerID {
-		return nil
-	}
-
-	owner := util.GetOwnerFromCtx(ctx)
-	if owner.RoleID != model.AdminRole {
-		return pkg.NewError(nil, "you cannot get another users connects", http.StatusForbidden)
 	}
 
 	return nil
@@ -193,4 +170,27 @@ func (rc *ConnectsUC) isOwner(ctx context.Context, id string) bool {
 	ownerID := util.GetOwnerIDFromCtx(ctx)
 
 	return id == ownerID
+}
+
+func (rc *ConnectsUC) checkOwner(ctx context.Context, opts *model.ConnectFindOpts) error {
+	ownerID := util.GetOwnerIDFromCtx(ctx)
+	if !opts.UserID.IsSended {
+		opts.UserID = model.Filter{
+			Value:    ownerID,
+			IsSended: true,
+		}
+
+		return nil
+	}
+
+	if opts.UserID.Value == ownerID {
+		return nil
+	}
+
+	owner := util.GetOwnerFromCtx(ctx)
+	if owner.RoleID != model.AdminRole {
+		return pkg.NewError(nil, "you cannot get another users connects", http.StatusForbidden)
+	}
+
+	return nil
 }
