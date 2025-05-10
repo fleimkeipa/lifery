@@ -1,7 +1,9 @@
 package model
 
+type UserRole uint
+
 const (
-	AdminRole  = 7
-	EditorRole = 5
-	ViewerRole = 1
+	AdminRole  UserRole = 7
+	EditorRole UserRole = 5
+	ViewerRole UserRole = 1
 )

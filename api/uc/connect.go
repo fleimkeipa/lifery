@@ -98,7 +98,34 @@ func (rc *ConnectsUC) Update(ctx context.Context, id string, req model.ConnectUp
 	return nil
 }
 
+func (rc *ConnectsUC) checkOwner(ctx context.Context, opts *model.ConnectFindOpts) error {
+	ownerID := util.GetOwnerIDFromCtx(ctx)
+	if !opts.UserID.IsSended {
+		opts.UserID = model.Filter{
+			Value:    ownerID,
+			IsSended: true,
+		}
+
+		return nil
+	}
+
+	if opts.UserID.Value == ownerID {
+		return nil
+	}
+
+	owner := util.GetOwnerFromCtx(ctx)
+	if owner.RoleID != model.AdminRole {
+		return pkg.NewError(nil, "you cannot get another users connects", http.StatusForbidden)
+	}
+
+	return nil
+}
+
 func (rc *ConnectsUC) ConnectsRequests(ctx context.Context, opts *model.ConnectFindOpts) (*model.ConnectList, error) {
+	if err := rc.checkOwner(ctx, opts); err != nil {
+		return nil, err
+	}
+
 	return rc.connectRepo.ConnectsRequests(ctx, opts)
 }
 

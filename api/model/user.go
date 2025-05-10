@@ -11,7 +11,7 @@ type User struct {
 	Password  string     `json:"password"`
 	ID        string     `json:"id"`
 	Connects  []*Connect `json:"connects"`
-	RoleID    uint       `json:"role_id"`
+	RoleID    UserRole   `json:"role_id"`
 }
 
 type UserConnects struct {

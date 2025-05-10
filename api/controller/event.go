@@ -41,13 +41,13 @@ func (rc *EventController) Create(c echo.Context) error {
 		return handleValidatingErrors(c, err)
 	}
 
-	event, err := rc.EventDBUC.Create(c.Request().Context(), &input)
+	_, err := rc.EventDBUC.Create(c.Request().Context(), &input)
 	if err != nil {
 		return handleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusCreated, SuccessResponse{
-		Data: event.Name,
+		Message: "Event created successfully",
 	})
 }
 
@@ -76,13 +76,13 @@ func (rc *EventController) Update(c echo.Context) error {
 		return handleValidatingErrors(c, err)
 	}
 
-	event, err := rc.EventDBUC.Update(c.Request().Context(), eventID, &input)
+	_, err := rc.EventDBUC.Update(c.Request().Context(), eventID, &input)
 	if err != nil {
 		return handleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
-		Data: event.Name,
+		Message: "Event updated successfully",
 	})
 }
 
@@ -106,7 +106,9 @@ func (rc *EventController) Delete(c echo.Context) error {
 		return handleEchoError(c, err)
 	}
 
-	return c.JSON(http.StatusOK, SuccessResponse{})
+	return c.JSON(http.StatusOK, SuccessResponse{
+		Message: "Event deleted successfully",
+	})
 }
 
 // List handles the retrieval of a list of events.
@@ -122,7 +124,7 @@ func (rc *EventController) Delete(c echo.Context) error {
 //	@Param			limit			query		string			false	"Limit the number of events returned"									example(10)
 //	@Param			skip			query		string			false	"Number of events to skip for pagination"								example(0)
 //	@Param			order			query		string			false	"Order by column (prefix with asc: or desc:)"							example(desc:created_at)
-//	@Success		200				{object}	SuccessResponse	"Events retrieved successfully"
+//	@Success		200				{object}	SuccessListResponse	"Events retrieved successfully"
 //	@Failure		400				{object}	FailureResponse	"Invalid request data"
 //	@Failure		500				{object}	FailureResponse	"Event retrieval failed"
 //	@Router			/events [get]
@@ -134,7 +136,7 @@ func (rc *EventController) List(c echo.Context) error {
 		return handleEchoError(c, err)
 	}
 
-	return c.JSON(http.StatusOK, SuccessResponse{
+	return c.JSON(http.StatusOK, SuccessListResponse{
 		Data:  list.Events,
 		Total: list.Total,
 		Limit: list.Limit,
@@ -151,7 +153,7 @@ func (rc *EventController) List(c echo.Context) error {
 //	@Produce		json
 //	@Security		ApiKeyAuth
 //	@Param			id	path		string			true	"Event name or UID"
-//	@Success		200	{object}	SuccessResponse	"Event retrieved successfully"
+//	@Success		200	{object}	SuccessListResponse	"Event retrieved successfully"
 //	@Failure		400	{object}	FailureResponse	"Invalid request data"
 //	@Failure		500	{object}	FailureResponse	"Event retrieval failed"
 //	@Router			/events/{id} [get]
@@ -163,15 +165,15 @@ func (rc *EventController) GetByID(c echo.Context) error {
 		return handleEchoError(c, err)
 	}
 
-	return c.JSON(http.StatusOK, SuccessResponse{
+	return c.JSON(http.StatusOK, SuccessListResponse{
 		Data: event,
 	})
 }
 
 func (rc *EventController) getEventsFindOpts(c echo.Context) model.EventFindOpts {
 	return model.EventFindOpts{
-		PaginationOpts: getPagination(c),
 		OrderByOpts:    getOrder(c),
+		PaginationOpts: getPagination(c),
 		UserID:         getFilter(c, "user_id"),
 		Visibility:     getFilter(c, "visibility"),
 	}

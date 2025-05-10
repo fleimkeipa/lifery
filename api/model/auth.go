@@ -19,10 +19,10 @@ type Register struct {
 }
 
 type TokenOwner struct {
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	ID       string `json:"id"`
-	RoleID   uint   `json:"role_id"`
+	Username string   `json:"username"`
+	Email    string   `json:"email"`
+	ID       string   `json:"id"`
+	RoleID   UserRole `json:"role_id"`
 }
 
 // VerifyPassword verifies if the given password matches the stored hash.

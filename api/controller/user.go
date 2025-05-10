@@ -48,7 +48,7 @@ func (rc *UserHandlers) Create(c echo.Context) error {
 		return handleEchoError(c, err)
 	}
 
-	return c.JSON(http.StatusCreated, SuccessResponse{
+	return c.JSON(http.StatusCreated, SuccessListResponse{
 		Data: user.Username,
 	})
 }
@@ -83,7 +83,7 @@ func (rc *UserHandlers) Update(c echo.Context) error {
 		return handleEchoError(c, err)
 	}
 
-	return c.JSON(http.StatusOK, SuccessResponse{
+	return c.JSON(http.StatusOK, SuccessListResponse{
 		Data: user.Username,
 	})
 }
@@ -113,7 +113,7 @@ func (rc *UserHandlers) List(c echo.Context) error {
 		return handleEchoError(c, err)
 	}
 
-	return c.JSON(http.StatusOK, SuccessResponse{
+	return c.JSON(http.StatusOK, SuccessListResponse{
 		Data:  list.Users,
 		Total: list.Total,
 		Limit: list.Limit,
@@ -144,7 +144,7 @@ func (rc *UserHandlers) GetByID(c echo.Context) error {
 	// Remove the password from the user object before returning it
 	user.Password = ""
 
-	return c.JSON(http.StatusOK, SuccessResponse{
+	return c.JSON(http.StatusOK, SuccessListResponse{
 		Data: user,
 	})
 }
@@ -167,7 +167,7 @@ func (rc *UserHandlers) DeleteUser(c echo.Context) error {
 		return handleEchoError(c, err)
 	}
 
-	return c.JSON(http.StatusOK, SuccessResponse{})
+	return c.JSON(http.StatusOK, SuccessListResponse{})
 }
 
 func (rc *UserHandlers) getUsersFindOpts(c echo.Context, fields ...string) model.UserFindOpts {

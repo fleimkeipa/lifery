@@ -46,13 +46,13 @@ func (rc *ConnectHandlers) Create(c echo.Context) error {
 		return handleValidatingErrors(c, err)
 	}
 
-	connect, err := rc.connectUC.Create(c.Request().Context(), input)
+	_, err := rc.connectUC.Create(c.Request().Context(), input)
 	if err != nil {
 		return handleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusCreated, SuccessResponse{
-		Data: connect.Status,
+		Message: "Connect created successfully",
 	})
 }
 
@@ -88,7 +88,7 @@ func (rc *ConnectHandlers) Update(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
-		Data: input.Status,
+		Message: "Connect updated successfully",
 	})
 }
 
@@ -114,7 +114,7 @@ func (rc *ConnectHandlers) ConnectsRequests(c echo.Context) error {
 		return handleEchoError(c, err)
 	}
 
-	return c.JSON(http.StatusOK, SuccessResponse{
+	return c.JSON(http.StatusOK, SuccessListResponse{
 		Data:  list.Connects,
 		Total: list.Total,
 		Limit: list.Limit,
@@ -124,8 +124,8 @@ func (rc *ConnectHandlers) ConnectsRequests(c echo.Context) error {
 
 func (rc *ConnectHandlers) getConnectsFindOpts(c echo.Context, fields ...string) model.ConnectFindOpts {
 	defaultFilter := model.ConnectFindOpts{
-		PaginationOpts: getPagination(c),
 		OrderByOpts:    getOrder(c),
+		PaginationOpts: getPagination(c),
 		FieldsOpts: model.FieldsOpts{
 			Fields: fields,
 		},

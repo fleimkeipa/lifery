@@ -222,7 +222,7 @@ func (rc *UserRepository) internalToSQL(newUser *model.User) *user {
 		Email:     newUser.Email,
 		Password:  newUser.Password,
 		ID:        uID,
-		RoleID:    newUser.RoleID,
+		RoleID:    UserRole(newUser.RoleID),
 	}
 }
 
@@ -246,7 +246,7 @@ func (rc *UserRepository) sqlToInternal(newUser *user) *model.User {
 		Email:     newUser.Email,
 		Password:  newUser.Password,
 		ID:        uID,
-		RoleID:    newUser.RoleID,
+		RoleID:    model.UserRole(newUser.RoleID),
 	}
 }
 

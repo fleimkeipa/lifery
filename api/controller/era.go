@@ -41,13 +41,13 @@ func (rc *EraController) Create(c echo.Context) error {
 		return handleValidatingErrors(c, err)
 	}
 
-	era, err := rc.EraDBUC.Create(c.Request().Context(), &input)
+	_, err := rc.EraDBUC.Create(c.Request().Context(), &input)
 	if err != nil {
 		return handleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusCreated, SuccessResponse{
-		Data: era.Name,
+		Message: "Era created successfully",
 	})
 }
 
@@ -76,13 +76,13 @@ func (rc *EraController) Update(c echo.Context) error {
 		return handleValidatingErrors(c, err)
 	}
 
-	era, err := rc.EraDBUC.Update(c.Request().Context(), eraID, &input)
+	_, err := rc.EraDBUC.Update(c.Request().Context(), eraID, &input)
 	if err != nil {
 		return handleEchoError(c, err)
 	}
 
 	return c.JSON(http.StatusOK, SuccessResponse{
-		Data: era.Name,
+		Message: "Era updated successfully",
 	})
 }
 
@@ -106,7 +106,9 @@ func (rc *EraController) Delete(c echo.Context) error {
 		return handleEchoError(c, err)
 	}
 
-	return c.JSON(http.StatusOK, SuccessResponse{})
+	return c.JSON(http.StatusOK, SuccessResponse{
+		Message: "Era deleted successfully",
+	})
 }
 
 // List handles the retrieval of a list of eras.
@@ -122,7 +124,7 @@ func (rc *EraController) Delete(c echo.Context) error {
 //	@Param			limit			query		string			false	"Limit the number of connects returned"
 //	@Param			skip			query		string			false	"Number of connects to skip for pagination"
 //	@Param			order			query		string			false	"Order by column (prefix with asc: or desc:)"	example(desc:created_at)
-//	@Success		200				{object}	SuccessResponse	"Eras retrieved successfully"
+//	@Success		200				{object}	SuccessListResponse	"Eras retrieved successfully"
 //	@Failure		400				{object}	FailureResponse	"Invalid request data"
 //	@Failure		500				{object}	FailureResponse	"Era retrieval failed"
 //	@Router			/eras [get]
@@ -134,7 +136,7 @@ func (rc *EraController) List(c echo.Context) error {
 		return handleEchoError(c, err)
 	}
 
-	return c.JSON(http.StatusOK, SuccessResponse{
+	return c.JSON(http.StatusOK, SuccessListResponse{
 		Data:  list.Eras,
 		Total: list.Total,
 		Limit: list.Limit,
@@ -163,16 +165,16 @@ func (rc *EraController) GetByID(c echo.Context) error {
 		return handleEchoError(c, err)
 	}
 
-	return c.JSON(http.StatusOK, SuccessResponse{
+	return c.JSON(http.StatusOK, SuccessListResponse{
 		Data: era,
 	})
 }
 
 func (rc *EraController) getErasFindOpts(c echo.Context) model.EraFindOpts {
 	return model.EraFindOpts{
-		Name:           getFilter(c, "name"),
-		UserID:         getFilter(c, "user_id"),
 		OrderByOpts:    getOrder(c),
 		PaginationOpts: getPagination(c),
+		Name:           getFilter(c, "name"),
+		UserID:         getFilter(c, "user_id"),
 	}
 }

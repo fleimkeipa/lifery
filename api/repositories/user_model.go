@@ -10,7 +10,7 @@ type user struct {
 	Connects  []*connect `json:"connects" pg:"rel:has_many,on_delete:CASCADE"`
 	Eras      []*era     `json:"eras" pg:"rel:has_many,on_delete:CASCADE"`
 	ID        int        `json:"id" pg:",pk"`
-	RoleID    uint       `json:"role_id"`
+	RoleID    UserRole   `json:"role_id"`
 }
 
 type userConnects struct {

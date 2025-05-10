@@ -74,7 +74,7 @@ func ValidateAdminRoleJWT(c echo.Context) error {
 		return errors.New("invalid token claims")
 	}
 
-	userRole := uint(claims["role"].(float64))
+	userRole := model.UserRole(claims["role"].(float64))
 	if userRole == model.AdminRole {
 		return nil
 	}
@@ -98,7 +98,7 @@ func ValidateEditorRoleJWT(c echo.Context) error {
 		return errors.New("invalid token claims")
 	}
 
-	userRole := uint(claims["role"].(float64))
+	userRole := model.UserRole(claims["role"].(float64))
 	if userRole == model.EditorRole || userRole == model.AdminRole {
 		return nil
 	}
@@ -122,7 +122,7 @@ func ValidateViewerRoleJWT(c echo.Context) error {
 		return errors.New("invalid token claims")
 	}
 
-	userRole := uint(claims["role"].(float64))
+	userRole := model.UserRole(claims["role"].(float64))
 	if userRole == model.EditorRole || userRole == model.ViewerRole || userRole == model.AdminRole {
 		return nil
 	}
@@ -194,18 +194,18 @@ func GetOwnerFromToken(c echo.Context) (model.TokenOwner, error) {
 		ID:       id,
 		Username: username,
 		Email:    email,
-		RoleID:   uint(role),
+		RoleID:   model.UserRole(role),
 	}, nil
 }
 
 // GetOwnerFromCtx returns the owner details from the context
-func GetOwnerFromCtx(ctx context.Context) *model.TokenOwner {
+func GetOwnerFromCtx(ctx context.Context) model.TokenOwner {
 	owner, ok := ctx.Value("user").(model.TokenOwner)
 	if ok {
-		return &owner
+		return owner
 	}
 
-	return nil
+	return model.TokenOwner{}
 }
 
 // GetOwnerIDFromCtx returns the owner id from the context string type
@@ -257,7 +257,7 @@ func IsUserPublic(c echo.Context) bool {
 		return true
 	}
 
-	userRole := uint(claims["role"].(float64))
+	userRole := model.UserRole(claims["role"].(float64))
 	if userRole == model.EditorRole || userRole == model.ViewerRole || userRole == model.AdminRole {
 		return false
 	}
