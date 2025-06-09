@@ -101,7 +101,7 @@ const handleAccept = async (uid: number) => {
       <template #friend.username-data="{ row }">
         <UButton
           variant="link"
-          @click="router.push(`/user/${row.friend_id}`)"
+          @click="router.push(`/user/${row.friend.id}`)"
         >
           {{ row.friend.username }}
         </UButton>
