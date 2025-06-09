@@ -29,6 +29,18 @@ interface TimelineItem {
       type: number;
     }[];
   }[];
+  type: 'EVENT'
+}
+
+interface TimelineEra {
+  id: string;
+  color: string;
+  name: string;
+  time_end: string;
+  time_start: string;
+  created_at: string;
+  updated_at: string;
+  type: 'ERA'
 }
 
 const formatDate = (dateStr: string) => {
@@ -47,21 +59,46 @@ const { data: eventsData, error, isFetching, execute: fetchEvents } = useApi<{
   skip: number;
 }>("/events?order=desc:date").json();
 
-const timelineData = computed<TimelineItem[]>(() => {
+const { data: erasData, error: errorEras, isFetching: isFetchingEras, execute: fetchEras } = useApi<{
+  data: Row[];
+  total: number;
+  limit: number;
+  skip: number;
+}>("/eras?order=desc:time_start").json();
+
+const timelineData = computed<(TimelineItem | TimelineEra)[]>(() => {
   if (!eventsData.value?.data) return [];
 
-  return eventsData.value.data.map((event: Row) => ({
-    id: event.id.toString(),
-    date: formatDate(event.date.toString()),
-    cards: [
-      {
-        title: event.name,
-        description: event.description,
-        color: event.visibility === 3 ? 'bg-pink-300' : event.visibility === 2 ? 'bg-yellow-200' : 'bg-blue-200',
-        items: event.items
-      }
-    ]
-  }));
+  return [
+    ...eventsData.value.data.map((event: Row) => ({
+      id: event.id.toString(),
+      date: event.date,
+      cards: [
+        {
+          title: event.name,
+          description: event.description,
+          color: event.visibility === 3 ? 'bg-pink-300' : event.visibility === 2 ? 'bg-yellow-200' : 'bg-blue-200',
+          items: event.items
+        }
+      ],
+      type: 'EVENT'
+    })),
+    ...erasData.value.data.map((event: TimelineEra) => ({
+      id: event.id,
+      color: event.color,
+      name: event.name,
+      time_end: event.time_end,
+      time_start: event.time_start,
+      created_at: event.created_at,
+      updated_at: event.updated_at,
+      type: 'ERA'
+    }))
+  ].sort((a: TimelineItem | TimelineEra, b: TimelineItem | TimelineEra ) => {
+    const dateA = a.type === 'EVENT' ? new Date(a.date) : new Date(a.time_start)
+    const dateB = b.type === 'EVENT' ? new Date(b.date) : new Date(b.time_start)
+
+    return dateB.getTime() - dateA.getTime()
+  })
 });
 
 </script>
@@ -96,24 +133,27 @@ const timelineData = computed<TimelineItem[]>(() => {
         <div class="space-y-24">
           <div v-for="item in timelineData" :key="item.id" class="relative">
             <!-- Date Marker -->
-            <div class="absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-gray-200 z-10"></div>
+            <div v-if="item.type === 'EVENT'" class="absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-gray-200 z-10"></div>
 
             <!-- Date Text -->
             <div class="absolute left-[52%] top-[-1.5rem] text-sm text-gray-600">
-              {{ item.date }}
+              {{ item?.type=== 'EVENT' ? formatDate(item.date) : formatDate(item.time_start.toString()) }}
             </div>
 
             <!-- Cards Container -->
-            <div class="grid grid-cols-2 gap-8">
+            <div v-if="item.type === 'EVENT'" class="grid grid-cols-2 gap-8">
                 <div v-if="timelineData.indexOf(item) % 2 === 1"></div>
-                <div class="flex justify-end">
+                <div  class="flex justify-end">
                   <div class="transform hover:rotate-0 transition-transform duration-200 -rotate-2" :class="timelineData.indexOf(item) % 2 === 0 ? '-rotate-2' : 'rotate-2'">
-                    <EventItem :id="item.id" :date="item.date" :cards="item.cards" :is-left="timelineData.indexOf(item) % 2 === 0" />
+                    <EventItem  :id="item.id" :date="item.date" :cards="item.cards" :is-left="timelineData.indexOf(item) % 2 === 0" />
                   </div>
                 </div>
                 <div v-if="timelineData.indexOf(item) % 2 === 0"></div>
-              </div>
-          </div>
+            </div>
+            <div v-else class="shadow-lg w-full mb-4 px-4 py-2 z-20" :style="{ background: item.color }">
+                <h3 class="font-medium text-gray-800">{{ item.name }}</h3>
+            </div>
+            </div>
         </div>
       </div>
     </div>
