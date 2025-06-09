@@ -12,7 +12,7 @@ const { t, locale } = useI18n();
 const state = reactive({
   name: null,
   description: null,
-  visibility: null,
+  visibility: 1,
   date: null,
   time_start: null,
   time_end: null,
@@ -109,8 +109,12 @@ const onSubmit = (event) => {
         <UInput type="text" :placeholder="t(`common.write_desc`)" v-model="state.description" />
       </UFormGroup>
       <UFormGroup :label="t('event.visibility')" name="visibility">
-        <USelect v-model="state.visibility" :placeholder="t(`event.select_visibility`)" :options="visibilityOptions"
-          @update:modelValue="(val) => state.visibility = Number(val)" />
+        <USelect 
+          v-model="state.visibility"
+          :placeholder="t(`event.select_visibility`)"
+          :options="visibilityOptions"
+          @update:modelValue="(val) => state.visibility = Number(val)" 
+        />
       </UFormGroup>
       <UFormGroup :label="t('common.date')" name="date">
         <UInput type="datetime-local" :placeholder="t(`common.date`)" v-model="state.date" />
@@ -140,8 +144,9 @@ const onSubmit = (event) => {
             </UFormGroup>
 
             <UFormGroup :label="t('event.data')" :name="`items[${idx}].data`">
-              <UInput v-if="item.type !== 11" type="text" :placeholder="t('event.data_of_item')" v-model="item.data" />
-              <ImageUploader v-else @upload-complete="(url) => item.data = url" />
+              <ImageUploader v-if="item.type === 11" @upload-complete="(url) => item.data = url" />
+              <VideoUploader v-else-if="item.type === 12" @upload-complete="(url) => item.data = url" />
+              <UInput v-else type="text" :placeholder="t('event.data_of_item')" v-model="item.data" />
             </UFormGroup>
 
             <UButton @click="remove(idx)" size="sm" :ui="{ rounded: 'rounded-full' }" color="red"

@@ -17,7 +17,7 @@ interface Row {
   }[];
 }
 
-interface TimelineItem {
+export interface TimelineItem {
   id: string;
   date: string;
   cards: {
@@ -201,32 +201,14 @@ const handleDelete = async (uid: number) => {
 
             <!-- Cards Container -->
             <div class="grid grid-cols-2 gap-8">
-              <!-- Left Side -->
-              <div class="flex justify-end">
-                <div v-if="timelineData.indexOf(item) % 2 === 0"
-                  class="transform -rotate-2 hover:rotate-0 transition-transform duration-200">
-                  <div v-for="card in item.cards" :key="card.title"
-                    :class="[card.color, 'p-4 rounded shadow-lg max-w-[300px] aspect-[4/3] flex flex-col mb-4']">
-                    <h3 class="font-medium text-gray-800 mb-2">{{ card.title }}</h3>
-                    <p class="text-sm text-gray-600 overflow-auto">{{ card.description || 'No description available' }}
-                    </p>
+                <div v-if="timelineData.indexOf(item) % 2 === 1"></div>
+                <div class="flex justify-end">
+                  <div class="transform hover:rotate-0 transition-transform duration-200 -rotate-2" :class="timelineData.indexOf(item) % 2 === 0 ? '-rotate-2' : 'rotate-2'">
+                    <EventItem :id="item.id" :date="item.date" :cards="item.cards" :is-left="timelineData.indexOf(item) % 2 === 0" />
                   </div>
                 </div>
+                <div v-if="timelineData.indexOf(item) % 2 === 0"></div>
               </div>
-
-              <!-- Right Side -->
-              <div class="flex">
-                <div v-if="timelineData.indexOf(item) % 2 === 1"
-                  class="transform rotate-2 hover:rotate-0 transition-transform duration-200">
-                  <div v-for="card in item.cards" :key="card.title"
-                    :class="[card.color, 'p-4 rounded shadow-lg max-w-[300px] aspect-[4/3] flex flex-col mb-4']">
-                    <h3 class="font-medium text-gray-800 mb-2">{{ card.title }}</h3>
-                    <p class="text-sm text-gray-600 overflow-auto">{{ card.description || 'No description available' }}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
