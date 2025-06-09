@@ -98,7 +98,7 @@ const timelineData = computed<(TimelineItem | TimelineEra)[]>(() => {
       date: event.time_end,
       type: 'ERA'
     }))
-  ].sort((a: TimelineItem | TimelineEra, b: TimelineItem | TimelineEra ) => {
+  ].sort((a: TimelineItem | TimelineEra, b: TimelineItem | TimelineEra) => {
 
     return new Date(b.date).getTime() - new Date(a.date).getTime()
   })
@@ -136,28 +136,32 @@ const timelineData = computed<(TimelineItem | TimelineEra)[]>(() => {
         <div class="space-y-24">
           <div v-for="item in timelineData" :key="item.id" class="relative">
             <!-- Date Marker -->
-            <div v-if="item.type === 'EVENT'" class="absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-gray-200 z-10"></div>
+            <div v-if="item.type === 'EVENT'"
+              class="absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-gray-200 z-10"></div>
 
             <!-- Date Text -->
             <div v-if="item.type === 'EVENT'" class="absolute left-[52%] top-[-1.5rem] text-sm text-gray-600">
-              {{ formatDate(item.date)}}
+              {{ formatDate(item.date) }}
             </div>
 
             <!-- Cards Container -->
             <div v-if="item.type === 'EVENT'" class="grid grid-cols-2 gap-8">
-                <div v-if="timelineData.indexOf(item) % 2 === 1"></div>
-                <div  class="flex justify-end">
-                  <div class="transform hover:rotate-0 transition-transform duration-200 -rotate-2" :class="timelineData.indexOf(item) % 2 === 0 ? '-rotate-2' : 'rotate-2'">
-                    <EventItem  :id="item.id" :date="item.date" :cards="item.cards" :is-left="timelineData.indexOf(item) % 2 === 0" />
-                  </div>
+              <div v-if="timelineData.indexOf(item) % 2 === 1"></div>
+              <div class="flex justify-end">
+                <div class="transform hover:rotate-0 transition-transform duration-200 -rotate-2"
+                  :class="timelineData.indexOf(item) % 2 === 0 ? '-rotate-2' : 'rotate-2'">
+                  <EventItem :id="item.id" :date="item.date" :cards="item.cards"
+                    :is-left="timelineData.indexOf(item) % 2 === 0" />
                 </div>
-                <div v-if="timelineData.indexOf(item) % 2 === 0"></div>
+              </div>
+              <div v-if="timelineData.indexOf(item) % 2 === 0"></div>
             </div>
-            <div v-else class="shadow-lg w-full mb-4 px-4 z-20 text-center flex justify-between items-center" :style="{ background: item.color }">
-                <div class="font-medium text-xs">{{ formatDate(item.date) }}</div>
-                <h3 class="font-bold text-md text-gray-800">{{ item.name }}</h3>
+            <div v-else class="shadow-lg w-full mb-4 px-4 z-20 text-center flex justify-between items-center"
+              :style="{ background: item.color }">
+              <div class="font-medium text-xs">{{ formatDate(item.date) }}</div>
+              <h3 class="font-bold text-md text-gray-800">{{ item.name }}</h3>
             </div>
-            </div>
+          </div>
         </div>
       </div>
     </div>
