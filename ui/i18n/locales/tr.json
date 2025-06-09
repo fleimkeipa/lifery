@@ -57,7 +57,8 @@
         "events": "Olaylar",
         "eras": "Dönemler",
         "connects": "Bağlantılar",
-        "accept": "Kabul Et"
+        "accept": "Kabul Et",
+        "logout": "Çıkış Yap"
     },
     "event": {
         "visibility": "Görünürlük",

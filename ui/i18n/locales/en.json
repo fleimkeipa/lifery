@@ -57,7 +57,8 @@
         "events": "Events",
         "eras": "Eras",
         "connects": "Connects",
-        "accept": "Accept"
+        "accept": "Accept",
+        "logout": "Logout"
     },
     "event": {
         "visibility": "Visibility",
