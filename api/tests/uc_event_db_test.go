@@ -18,12 +18,11 @@ func TestEventDBUC_Create(t *testing.T) {
 	defer terminateContainer()
 
 	type fields struct {
-		repo   interfaces.EventRepository
-		userUC *uc.UserUC
+		repo       interfaces.EventRepository
+		connectsUC *uc.ConnectsUC
 	}
 	type tempData struct {
 		barcode string
-		brandID int
 	}
 	type args struct {
 		ctx   context.Context
@@ -40,8 +39,8 @@ func TestEventDBUC_Create(t *testing.T) {
 		{
 			name: "correct - not exist",
 			fields: fields{
-				repo:   repositories.NewEventRepository(testDB),
-				userUC: uc.NewUserUC(repositories.NewUserRepository(testDB)),
+				repo:       repositories.NewEventRepository(testDB),
+				connectsUC: uc.NewConnectsUC(uc.NewUserUC(repositories.NewUserRepository(testDB)), repositories.NewConnectRepository(testDB)),
 			},
 			args: args{
 				ctx: context.TODO(),
@@ -57,7 +56,8 @@ func TestEventDBUC_Create(t *testing.T) {
 		{
 			name: "correct - exist",
 			fields: fields{
-				repo: repositories.NewEventRepository(testDB),
+				repo:       repositories.NewEventRepository(testDB),
+				connectsUC: uc.NewConnectsUC(uc.NewUserUC(repositories.NewUserRepository(testDB)), repositories.NewConnectRepository(testDB)),
 			},
 			tempDatas: []tempData{
 				{
@@ -78,7 +78,7 @@ func TestEventDBUC_Create(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			rc := uc.NewEventUC(tt.fields.repo, tt.fields.userUC)
+			rc := uc.NewEventUC(tt.fields.repo, tt.fields.connectsUC)
 			got, err := rc.Create(tt.args.ctx, tt.args.event)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("EventDBUC.Create() error = %v, wantErr %v", err, tt.wantErr)
