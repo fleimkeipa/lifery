@@ -13,7 +13,12 @@ type Row = {
   date: Date;
   time_start: Date;
   time_end: Date;
-  items: [];
+  items: Item[];
+};
+
+type Item = {
+  type: number;
+  data: string;
 };
 
 const visibilityOptions = [
@@ -60,6 +65,8 @@ const columns = [
   },
 ];
 
+const selectedRows = ref<Row[]>([]);
+
 const {
   data: items,
   error,
@@ -103,14 +110,25 @@ const handleDelete = async (uid: number) => {
     <UTable :columns="columns" :rows="items.data" :loading="isFetching" :loading-state="{
       icon: 'i-heroicons-arrow-path-20-solid',
       label: t('common.loading'),
-    }">
+    }" row-selectable v-model:selected="selectedRows" :row-expandable="() => true" show-detail-on-click>
       <template #visibility-data="{ row }">
         {{visibilityOptions.find(option => option.value === row.visibility)?.label || '-'}}
       </template>
-      <template #expand="{ row }">
+
+      <template #row-details="{ row }">
         <div class="p-4">
           <b>{{ t('event.items') }}:</b>
-          <pre>{{ row.items }}</pre>
+          <div v-if="row.items && row.items.length > 0" class="mt-4">
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              <div v-for="(item, index) in row.items.filter((item: Item) => item.type === 11)" :key="index"
+                class="relative aspect-square">
+                <img :src="item.data" :alt="`Photo ${index + 1}`" class="w-full h-full object-cover rounded-lg" />
+              </div>
+            </div>
+          </div>
+          <div v-else class="mt-4 text-gray-500">
+            {{ t('common.no_items') }}
+          </div>
         </div>
       </template>
 
