@@ -14,6 +14,21 @@ const state = reactive({
   time_end: null,
 });
 
+const formatDateTime = (dateTime) => {
+  if (!dateTime) return null;
+  const date = new Date(dateTime);
+  return date.toISOString().slice(0, 16); // yyyy-MM-ddTHH:mm
+};
+
+const formatDateTimeForApi = (dateTime) => {
+  if (!dateTime) return null;
+  const date = new Date(dateTime);
+  return date.toISOString();
+};
+
+const formattedTimeStart = computed(() => formatDateTimeForApi(state.time_start));
+const formattedTimeEnd = computed(() => formatDateTimeForApi(state.time_end));
+
 const schema = yup.object({
   name: yup.string().nonNullable(t('common.name')),
   color: yup
@@ -29,8 +44,8 @@ const { isFetching } = useApi(`/eras/${route.params.id}`, {
     const era = ctx.data.data;
     state.name = era.name;
     state.color = era.color;
-    state.time_start = era.time_start;
-    state.time_end = era.time_end;
+    state.time_start = formatDateTime(era.time_start);
+    state.time_end = formatDateTime(era.time_end);
   },
 }).json();
 
@@ -39,6 +54,13 @@ const loading = ref(false);
 const error = ref(null);
 const onSubmit = (era) => {
   loading.value = true;
+
+  const formData = {
+    ...era.data,
+    time_start: formattedTimeStart.value,
+    time_end: formattedTimeEnd.value
+  };
+
   useApi(`/eras/${route.params.id}`, {
     afterFetch: () => {
       loading.value = false;
@@ -48,7 +70,7 @@ const onSubmit = (era) => {
       loading.value = false;
       error.value = fetchErr;
     },
-  }).patch(era.data);
+  }).patch(formData);
 };
 </script>
 
@@ -67,13 +89,13 @@ const onSubmit = (era) => {
       </UFormGroup>
 
       <UFormGroup :label="t('common.time_start')" name="time_start">
-        <UInput type="date" pattern="\d{4}-\d{2}-\d{2}" placeholder="Time Start" v-model="state.time_start" />
+        <UInput type="datetime-local" :placeholder="t(`common.time_start`)" v-model="state.time_start" />
       </UFormGroup>
       <UFormGroup :label="t('common.time_end')" name="time_end">
-        <UInput type="date" pattern="\d{4}-\d{2}-\d{2}" placeholder="Time End" v-model="state.time_end" />
+        <UInput type="datetime-local" :placeholder="t(`common.time_end`)" v-model="state.time_end" />
       </UFormGroup>
 
-      <UButton :loading="loading" type="submit">{{t('common.submit')}}</UButton>
+      <UButton :loading="loading" type="submit">{{ t('common.submit') }}</UButton>
       <div v-if="error" class="flex items-center gap-x-2 rounded-lg border px-2 py-1">
         <span @click="error = null" class="cursor-pointer">X</span>
         <span class="text-sm text-red-500">{{ error }}</span>

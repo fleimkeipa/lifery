@@ -1,6 +1,8 @@
 <script setup>
 import * as yup from "yup";
 
+import ImageUploader from '@/components/ImageUploader.vue';
+
 definePageMeta({
   middleware: "auth",
 });
@@ -16,6 +18,16 @@ const state = reactive({
   time_end: null,
   items: [],
 });
+
+const formatDateTime = (dateTime) => {
+  if (!dateTime) return null;
+  const date = new Date(dateTime);
+  return date.toISOString();
+};
+
+const formattedDate = computed(() => formatDateTime(state.date));
+const formattedTimeStart = computed(() => formatDateTime(state.time_start));
+const formattedTimeEnd = computed(() => formatDateTime(state.time_end));
 
 const schema = yup.object({
   name: yup.string().nonNullable(t('common.name')),
@@ -63,6 +75,14 @@ const loading = ref(false);
 const error = ref(null);
 const onSubmit = (event) => {
   loading.value = true;
+
+  const formData = {
+    ...event.data,
+    date: formattedDate.value,
+    time_start: formattedTimeStart.value,
+    time_end: formattedTimeEnd.value
+  };
+
   useApi("/events", {
     afterFetch: () => {
       loading.value = false;
@@ -72,7 +92,7 @@ const onSubmit = (event) => {
       loading.value = false;
       error.value = fetchErr;
     },
-  }).post(event.data);
+  }).post(formData);
 };
 </script>
 
@@ -93,14 +113,15 @@ const onSubmit = (event) => {
           @update:modelValue="(val) => state.visibility = Number(val)" />
       </UFormGroup>
       <UFormGroup :label="t('common.date')" name="date">
-        <UInput type="date" pattern="\d{4}-\d{2}-\d{2}" :placeholder="t(`common.date`)" v-model="state.date" />
+        <UInput type="datetime-local" :placeholder="t(`common.date`)" v-model="state.date" />
       </UFormGroup>
       <UFormGroup :label="t('common.time_start')" name="time_start">
-        <UInput type="date" pattern="\d{4}-\d{2}-\d{2}" placeholder="Time Start" v-model="state.time_start" />
+        <UInput type="datetime-local" :placeholder="t(`common.time_start`)" v-model="state.time_start" />
       </UFormGroup>
       <UFormGroup :label="t('common.time_end')" name="time_end">
-        <UInput type="date" pattern="\d{4}-\d{2}-\d{2}" placeholder="Time End" v-model="state.time_end" />
+        <UInput type="datetime-local" :placeholder="t(`common.time_end`)" v-model="state.time_end" />
       </UFormGroup>
+
 
       <div>
         <div class="mb-4 flex flex-row items-center gap-x-4">
@@ -119,7 +140,8 @@ const onSubmit = (event) => {
             </UFormGroup>
 
             <UFormGroup :label="t('event.data')" :name="`items[${idx}].data`">
-              <UInput type="text" :placeholder="t('event.data_of_item')" v-model="item.data" />
+              <UInput v-if="item.type !== 11" type="text" :placeholder="t('event.data_of_item')" v-model="item.data" />
+              <ImageUploader v-else @upload-complete="(url) => item.data = url" />
             </UFormGroup>
 
             <UButton @click="remove(idx)" size="sm" :ui="{ rounded: 'rounded-full' }" color="red"
@@ -132,7 +154,7 @@ const onSubmit = (event) => {
         </div>
       </div>
 
-      <UButton :loading="loading" type="submit">{{ t(`event.add_item`) }}</UButton>
+      <UButton :loading="loading" type="submit">{{ t(`common.create_new`) }}</UButton>
       <div v-if="error" class="flex items-center gap-x-2 rounded-lg border px-2 py-1">
         <span @click="error = null" class="cursor-pointer">X</span>
         <span class="text-sm text-red-500">{{ error }}</span>

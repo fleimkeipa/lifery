@@ -17,6 +17,22 @@ const state = reactive({
   items: [],
 });
 
+const formatDateTime = (dateTime) => {
+  if (!dateTime) return null;
+  const date = new Date(dateTime);
+  return date.toISOString().slice(0, 16); // yyyy-MM-ddTHH:mm
+};
+
+const formatDateTimeForApi = (dateTime) => {
+  if (!dateTime) return null;
+  const date = new Date(dateTime);
+  return date.toISOString();
+};
+
+const formattedDate = computed(() => formatDateTimeForApi(state.date));
+const formattedTimeStart = computed(() => formatDateTimeForApi(state.time_start));
+const formattedTimeEnd = computed(() => formatDateTimeForApi(state.time_end));
+
 const schema = yup.object({
   name: yup.string().nonNullable(t('common.name')),
   description: yup.string(),
@@ -45,9 +61,9 @@ const { isFetching } = useApi(`/events/${route.params.id}`, {
     state.name = event.name;
     state.description = event.description;
     state.visibility = event.visibility;
-    state.date = event.date;
-    state.time_start = event.time_start;
-    state.time_end = event.time_end;
+    state.date = formatDateTime(event.date);
+    state.time_start = formatDateTime(event.time_start);
+    state.time_end = formatDateTime(event.time_end);
     state.items = event.items;
   },
 }).json();
@@ -57,6 +73,24 @@ const loading = ref(false);
 const error = ref(null);
 const onSubmit = (event) => {
   loading.value = true;
+
+  const formData = {
+    name: event.data.name,
+    description: event.data.description,
+    visibility: event.data.visibility,
+    items: event.data.items
+  };
+
+  if (event.data.date && event.data.date !== '0001-01-01T00:00') {
+    formData.date = formattedDate.value;
+  }
+  if (event.data.time_start && event.data.time_start !== '0001-01-01T00:00') {
+    formData.time_start = formattedTimeStart.value;
+  }
+  if (event.data.time_end && event.data.time_end !== '0001-01-01T00:00') {
+    formData.time_end = formattedTimeEnd.value;
+  }
+
   useApi(`/events/${route.params.id}`, {
     afterFetch: () => {
       loading.value = false;
@@ -66,7 +100,7 @@ const onSubmit = (event) => {
       loading.value = false;
       error.value = fetchErr;
     },
-  }).patch(event.data);
+  }).patch(formData);
 };
 
 const push = () => {
@@ -108,13 +142,13 @@ const typeOptions = [
           @update:modelValue="(val) => state.visibility = Number(val)" />
       </UFormGroup>
       <UFormGroup :label="t('common.date')" name="date">
-        <UInput type="date" pattern="\d{4}-\d{2}-\d{2}" :placeholder="t(`common.date`)" v-model="state.date" />
+        <UInput type="datetime-local" :placeholder="t(`common.date`)" v-model="state.date" />
       </UFormGroup>
       <UFormGroup :label="t('common.time_start')" name="time_start">
-        <UInput type="date" pattern="\d{4}-\d{2}-\d{2}" placeholder="Time Start" v-model="state.time_start" />
+        <UInput type="datetime-local" :placeholder="t(`common.time_start`)" v-model="state.time_start" />
       </UFormGroup>
       <UFormGroup :label="t('common.time_end')" name="time_end">
-        <UInput type="date" pattern="\d{4}-\d{2}-\d{2}" placeholder="Time End" v-model="state.time_end" />
+        <UInput type="datetime-local" :placeholder="t(`common.time_end`)" v-model="state.time_end" />
       </UFormGroup>
 
       <div>
