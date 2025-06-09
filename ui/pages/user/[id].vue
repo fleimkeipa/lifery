@@ -1,7 +1,11 @@
 <script setup lang="ts">
+import { ref } from 'vue';
+
 definePageMeta({
   middleware: "auth",
 });
+
+const { t, locale } = useI18n();
 
 const route = useRoute();
 const id = route.params.id
@@ -107,16 +111,28 @@ const timelineData = computed<(TimelineItem | TimelineEra)[]>(() => {
   })
 });
 
+const toast = ref<{ show: boolean; message: string; type: 'success' | 'error' }>({
+  show: false,
+  message: '',
+  type: 'success'
+});
+
+function showToast(message: string, type: 'success' | 'error' = 'success') {
+  toast.value = { show: true, message, type };
+  setTimeout(() => {
+    toast.value.show = false;
+  }, 3000);
+}
+
 const addConnection = async () => {
   try {
     await useApi('/connects').post({
       friend_id: id
     });
-    // Başarılı olduğunda kullanıcıya bilgi ver
-    alert('Bağlantı başarıyla eklendi');
+    showToast(t('connect.connection_added'), 'success');
   } catch (error) {
-    console.error('Bağlantı eklenirken hata oluştu:', error);
-    alert('Bağlantı eklenirken bir hata oluştu');
+    console.error(t('connect.connection_error'), error);
+    showToast(t('connect.connection_error'), 'error');
   }
 };
 </script>
@@ -128,7 +144,7 @@ const addConnection = async () => {
       <div class="mb-8 flex justify-end">
         <button @click="addConnection"
           class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors">
-          Bağlantı Ekle
+          {{ t(`connect.add_connection`) }}
         </button>
       </div>
 
@@ -186,6 +202,16 @@ const addConnection = async () => {
             </div>
           </div>
         </div>
+      </div>
+
+      <div
+        v-if="toast.show"
+        :class="[
+          'fixed top-6 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg z-50 transition-all',
+          toast.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+        ]"
+      >
+        {{ toast.message }}
       </div>
     </div>
   </div>
