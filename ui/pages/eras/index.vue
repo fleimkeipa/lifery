@@ -37,7 +37,7 @@ const columns = [
 
 const { data: items, error, isFetching, execute: fetchEras } = useApi<{
   data: { eras: Row[] };
-}>("/eras").json();
+}>("/eras?order=desc:time_start").json();
 
 const router = useRouter();
 
