@@ -105,6 +105,7 @@ func serveApplication() {
 	connectsRoutes := userRoutes.Group("/connects")
 	connectsRoutes.POST("", connectController.Create)
 	connectsRoutes.PATCH("/:id", connectController.Update)
+	connectsRoutes.DELETE("/:id", connectController.Delete)
 	connectsRoutes.GET("", connectController.ConnectsRequests)
 
 	// Define user routes
