@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { useAuth } from '../../composables/useAuth';
 
 definePageMeta({
   middleware: "auth",
 });
 
 const { t, locale } = useI18n();
+const { user } = useAuth();
 
 type Row = {
   id: number;
@@ -55,6 +57,11 @@ const router = useRouter();
 
 const actions = (row: Row) => [
   [
+    ...(row.status === 100 && row.user_id != user.value?.id ? [{
+      label: t('common.accept'),
+      icon: "i-heroicons-check-circle-20-solid",
+      click: () => handleAccept(row.id),
+    }] : []),
     {
       label: t('common.delete'),
       icon: "i-heroicons-trash-20-solid",
@@ -68,6 +75,13 @@ const handleDelete = async (uid: number) => {
     afterFetch: () => fetchConnects(),
   }).delete();
 };
+
+const handleAccept = async (uid: number) => {
+  useApi(`/connects/${uid}`, {
+    afterFetch: () => fetchConnects(),
+  }).patch({ status: 101});
+};
+
 </script>
 
 <template>
@@ -82,6 +96,15 @@ const handleDelete = async (uid: number) => {
     }">
       <template #status-data="{ row }">
         {{ statusOptions.find(option => option.value === row.status)?.label || '-' }}
+      </template>
+
+      <template #friend.username-data="{ row }">
+        <UButton
+          variant="link"
+          @click="router.push(`/user/${row.friend_id}`)"
+        >
+          {{ row.friend.username }}
+        </UButton>
       </template>
 
       <template #actions-data="{ row }">

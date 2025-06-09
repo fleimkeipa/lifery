@@ -56,7 +56,8 @@
         "home": "Anasayfa",
         "events": "Olaylar",
         "eras": "Dönemler",
-        "connects": "Bağlantılar"
+        "connects": "Bağlantılar",
+        "accept": "Kabul Et"
     },
     "event": {
         "visibility": "Görünürlük",

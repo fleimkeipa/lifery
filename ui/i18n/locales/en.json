@@ -56,7 +56,8 @@
         "home": "Home",
         "events": "Events",
         "eras": "Eras",
-        "connects": "Connects"
+        "connects": "Connects",
+        "accept": "Accept"
     },
     "event": {
         "visibility": "Visibility",
