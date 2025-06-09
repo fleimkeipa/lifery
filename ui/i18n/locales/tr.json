@@ -105,6 +105,9 @@
     "connect": {
         "status": "Durum",
         "friend_username": "Arkadaş Kullanıcı Adı",
+        "add_connection": "Bağlantı Ekle",
+        "connection_added": "Bağlantı başarıyla eklendi",
+        "connection_error": "Bağlantı eklenirken bir hata oluştu",
         "statusOpts": {
             "pending": "Beklemede",
             "accepted": "Kabul Edildi",

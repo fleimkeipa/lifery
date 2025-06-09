@@ -105,6 +105,9 @@
     "connect": {
         "status": "Status",
         "friend_username": "Friend Username",
+        "add_connection": "Add Connection",
+        "connection_added": "Connection added",
+        "connection_error": "Connection error",
         "statusOpts": {
             "pending": "Pending",
             "accepted": "Accepted",
