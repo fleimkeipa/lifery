@@ -92,6 +92,32 @@ func (rc *ConnectHandlers) Update(c echo.Context) error {
 	})
 }
 
+// Delete godoc
+//
+//	@Summary		Delete deletes an existing connection
+//	@Description	This endpoint deletes a connection by binding the incoming JSON request to the ConnectUpdateInput model.
+//	@Tags			connects
+//	@Accept			json
+//	@Produce		json
+//	@Security		ApiKeyAuth
+//	@Param			id		path		string						true	"Connection ID to delete"
+//	@Success		200		{object}	SuccessResponse				"Connect deleted successfully"
+//	@Failure		400		{object}	FailureResponse				"Invalid request data"
+//	@Failure		500		{object}	FailureResponse				"Connect update failed"
+//	@Router			/connects/{id} [delete]
+func (rc *ConnectHandlers) Delete(c echo.Context) error {
+	id := c.Param("id")
+
+	err := rc.connectUC.Delete(c.Request().Context(), id)
+	if err != nil {
+		return handleEchoError(c, err)
+	}
+
+	return c.JSON(http.StatusOK, SuccessResponse{
+		Message: "Connect deleted successfully",
+	})
+}
+
 // ConnectsRequests godoc
 //
 //	@Summary		ConnectsRequests list all connects requests
@@ -114,12 +140,27 @@ func (rc *ConnectHandlers) ConnectsRequests(c echo.Context) error {
 		return handleEchoError(c, err)
 	}
 
+	rc.relocateFriend(c, list)
+
 	return c.JSON(http.StatusOK, SuccessListResponse{
 		Data:  list.Connects,
 		Total: list.Total,
 		Limit: list.Limit,
 		Skip:  list.Skip,
 	})
+}
+
+func (rc *ConnectHandlers) relocateFriend(c echo.Context, list *model.ConnectList) {
+	ownerID := util.GetOwnerIDFromCtx(c.Request().Context())
+
+	for i, connect := range list.Connects {
+		if connect.FriendID == ownerID {
+			friend := connect.Friend
+			connect.Friend = connect.User
+			connect.User = friend
+			list.Connects[i] = connect
+		}
+	}
 }
 
 func (rc *ConnectHandlers) getConnectsFindOpts(c echo.Context, fields ...string) model.ConnectFindOpts {

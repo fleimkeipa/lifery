@@ -122,6 +122,15 @@ func (rc *ConnectsUC) GetByID(ctx context.Context, id string) (*model.Connect, e
 }
 
 func (rc *ConnectsUC) Delete(ctx context.Context, id string) error {
+	connect, err := rc.connectRepo.GetByID(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	if !rc.isOwner(ctx, connect.UserID) && !rc.isOwner(ctx, connect.FriendID) {
+		return pkg.NewError(nil, "you can delete only your connects", http.StatusForbidden)
+	}
+
 	return rc.connectRepo.Delete(ctx, id)
 }
 
