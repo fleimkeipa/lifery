@@ -96,7 +96,13 @@
             }
         }
     },
-    "connect":{
-        "status":"Status"
+    "connect": {
+        "status": "Status",
+        "friend_username": "Friend Username",
+        "statusOpts": {
+            "pending": "Pending",
+            "accepted": "Accepted",
+            "rejected": "Rejected"
+        }
     }
 }
