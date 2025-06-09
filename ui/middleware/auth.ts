@@ -2,7 +2,7 @@ import jwtDecode from "jwt-decode";
 
 export default defineNuxtRouteMiddleware((to, from) => {
   const isAuthenticated = () => {
-    if (!process.client) {
+    if (process.server) {
       return null;
     }
 
@@ -21,6 +21,10 @@ export default defineNuxtRouteMiddleware((to, from) => {
       return null;
     }
   };
+
+  if (process.server) {
+    return;
+  }
 
   if (!isAuthenticated()) {
     return navigateTo("/login");

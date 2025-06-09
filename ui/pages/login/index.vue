@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { object, string, type InferType } from "yup";
-import type { FormSubmitEvent } from "#ui/types";
+import type { FormSubmitEvent } from "@nuxt/ui";
 import { useI18n } from "vue-i18n";
 definePageMeta({
   layout: "not-authenticated",

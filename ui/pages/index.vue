@@ -17,7 +17,7 @@ interface Row {
   }[];
 }
 
-export interface TimelineItem {
+interface TimelineItem {
   id: string;
   date: string;
   cards: {
