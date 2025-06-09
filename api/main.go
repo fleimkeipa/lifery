@@ -48,20 +48,16 @@ func serveApplication() {
 	dbClient := initDB()
 	defer dbClient.Close() // Clean up db connections at the end
 
-	userDBRepo := repositories.NewUserRepository(dbClient)
-	userUC := uc.NewUserUC(userDBRepo)
+	userUC := initUserUC(dbClient)
 	userController := controller.NewUserHandlers(userUC)
 
-	eraDBRepo := repositories.NewEraRepository(dbClient)
-	eraDBUC := uc.NewEraUC(eraDBRepo)
-	eraController := controller.NewEraController(eraDBUC)
+	eraUC := initEraUC(dbClient)
+	eraController := controller.NewEraController(eraUC)
 
-	eventDBRepo := repositories.NewEventRepository(dbClient)
-	eventDBUC := uc.NewEventUC(eventDBRepo, userUC)
-	eventController := controller.NewEventController(eventDBUC)
+	eventUC := initEventUC(dbClient)
+	eventController := controller.NewEventController(eventUC)
 
-	connectDBRepo := repositories.NewConnectRepository(dbClient)
-	connectUC := uc.NewConnectsUC(userUC, connectDBRepo)
+	connectUC := initConnectUC(dbClient)
 	connectController := controller.NewConnectHandlers(connectUC, userUC)
 
 	authHandlers := controller.NewAuthHandlers(userUC)
@@ -180,4 +176,33 @@ func initDB() *pg.DB {
 
 	log.Println("PostgreSQL client initialized successfully")
 	return db
+}
+
+func initEraUC(db *pg.DB) *uc.EraUC {
+	eraDBRepo := repositories.NewEraRepository(db)
+	return uc.NewEraUC(eraDBRepo)
+}
+
+func initUserUC(db *pg.DB) *uc.UserUC {
+	userDBRepo := repositories.NewUserRepository(db)
+	return uc.NewUserUC(userDBRepo)
+}
+
+func initConnectUC(db *pg.DB) *uc.ConnectsUC {
+	userDBRepo := repositories.NewUserRepository(db)
+	connectDBRepo := repositories.NewConnectRepository(db)
+
+	userUC := uc.NewUserUC(userDBRepo)
+	return uc.NewConnectsUC(userUC, connectDBRepo)
+}
+
+func initEventUC(db *pg.DB) *uc.EventUC {
+	userDBRepo := repositories.NewUserRepository(db)
+	connectDBRepo := repositories.NewConnectRepository(db)
+	eventDBRepo := repositories.NewEventRepository(db)
+
+	userUC := uc.NewUserUC(userDBRepo)
+	connectsUC := uc.NewConnectsUC(userUC, connectDBRepo)
+
+	return uc.NewEventUC(eventDBRepo, connectsUC)
 }
