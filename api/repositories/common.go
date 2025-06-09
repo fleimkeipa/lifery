@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/fleimkeipa/lifery/model"
 
@@ -28,6 +29,19 @@ func applyStandardQueries(tx *orm.Query, pagination model.PaginationOpts) *orm.Q
 }
 
 func applyFilterWithOperand(tx *orm.Query, key string, filter model.Filter) *orm.Query {
+	if strings.Contains(filter.Value, ",") {
+		values := strings.Split(filter.Value, ",")
+
+		switch filter.Operand {
+		case model.OperandIn, model.OperandEqual:
+			return tx.WhereIn(fmt.Sprintf("%s in (?)", key), values)
+		case model.OperandNotIn, model.OperandNot:
+			return tx.WhereIn(fmt.Sprintf("%s not in (?)", key), values)
+		default:
+			return tx.WhereIn(fmt.Sprintf("%s in (?)", key), values)
+		}
+	}
+
 	switch filter.Operand {
 	case model.OperandEqual:
 		return tx.Where(fmt.Sprintf("%s=?", key), filter.Value)
@@ -43,6 +57,10 @@ func applyFilterWithOperand(tx *orm.Query, key string, filter model.Filter) *orm
 		return tx.Where(fmt.Sprintf("%s<=?", key), filter.Value)
 	case model.OperandLike:
 		return tx.Where(fmt.Sprintf("%s ILIKE ?", key), "%"+filter.Value+"%")
+	case model.OperandIn:
+		return tx.Where(fmt.Sprintf("%s in (?)", key), strings.Split(filter.Value, ","))
+	case model.OperandNotIn:
+		return tx.Where(fmt.Sprintf("%s not in (?)", key), strings.Split(filter.Value, ","))
 	default:
 		return tx.Where(fmt.Sprintf("%s=?", key), filter.Value)
 	}

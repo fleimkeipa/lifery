@@ -25,6 +25,8 @@ const (
 	OperandLess         Operand = "lt"
 	OperandLessEqual    Operand = "lte"
 	OperandLike         Operand = "like"
+	OperandIn           Operand = "in"
+	OperandNotIn        Operand = "nin"
 )
 
 type Filter struct {
