@@ -73,7 +73,7 @@
         "no_item": "İtem yok",
         "visibilityOpts": {
             "public": "Herkese açık",
-            "private": "Gizli",
+            "private": "Arkadaşlar",
             "just_me": "Sadece ben"
         },
         "typeOpts": {

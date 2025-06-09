@@ -73,7 +73,7 @@
         "no_item": "No item",
         "visibilityOpts": {
             "public": "Public",
-            "private": "Private",
+            "private": "Friends",
             "just_me": "Just Me"
         },
         "typeOpts": {
