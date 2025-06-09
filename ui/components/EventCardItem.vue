@@ -44,12 +44,12 @@ defineProps<{
         <div v-for="item in items" class="w-full flex">
             <div v-if="item.type===EventType.PHOTO">
                 <img :src="item.data" 
-                     class="h-24 min-w-fit cursor-pointer hover:opacity-90" 
+                     class="max-h-12 max-w-xs object-contain rounded cursor-pointer hover:opacity-90" 
                      @click="openPopup(item.data, item.type)" />
             </div>
             <div v-if="item.type===EventType.STRING" 
                  :class="color" 
-                 class="w-72 h-24 rounded shadow-lg text-center text-gray-800 cursor-pointer hover:opacity-90 truncate text-wrap"
+                 class="w-36 h-12 rounded shadow-lg text-center text-gray-800 cursor-pointer hover:opacity-90 truncate text-wrap"
                  @click="openPopup(item.data, item.type)">
                 {{ item.data }}
             </div>

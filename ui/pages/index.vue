@@ -31,80 +31,6 @@ export interface TimelineItem {
   }[];
 }
 
-const columns = [
-  {
-    key: "id",
-    label: "ID",
-  },
-  {
-    key: "name",
-    label: "Name",
-  },
-  {
-    key: "description",
-    label: "Description",
-  },
-  {
-    key: "visibility",
-    label: "Status",
-    formatter: (value: number) => {
-      switch (value) {
-        case 0:
-          return "Private";
-        case 1:
-          return "Public";
-        case 3:
-          return "Featured";
-        default:
-          return "Unknown";
-      }
-    }
-  },
-  {
-    key: "date",
-    label: "Date",
-    formatter: (value: Date) => {
-      return new Date(value).toLocaleDateString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
-    }
-  },
-  {
-    key: "time_start",
-    label: "Start Time",
-    formatter: (value: Date) => {
-      return new Date(value).toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-    }
-  },
-  {
-    key: "time_end",
-    label: "End Time",
-    formatter: (value: Date) => {
-      return new Date(value).toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-    }
-  },
-  {
-    key: "items",
-    label: "Media",
-    formatter: (items: any[]) => {
-      if (!items?.length) return 'No media';
-      return `${items.length} items`;
-    }
-  },
-  {
-    key: "actions",
-  },
-];
-
 const formatDate = (dateStr: string) => {
   const date = new Date(dateStr);
   return date.toLocaleDateString('tr-TR', {
@@ -138,28 +64,6 @@ const timelineData = computed<TimelineItem[]>(() => {
   }));
 });
 
-const router = useRouter();
-
-const actions = (row: Row) => [
-  [
-    {
-      label: "Edit",
-      icon: "i-heroicons-pencil-square-20-solid",
-      click: () => router.push(`/events/${row.id}`),
-    },
-    {
-      label: "Delete",
-      icon: "i-heroicons-trash-20-solid",
-      click: () => handleDelete(row.id),
-    },
-  ],
-];
-
-const handleDelete = async (uid: number) => {
-  useApi(`/events/${uid}`, {
-    afterFetch: () => fetchEvents(),
-  }).delete();
-};
 </script>
 
 <template>

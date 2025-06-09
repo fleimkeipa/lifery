@@ -1,6 +1,9 @@
 <script setup>
 import * as yup from "yup";
 
+import ImageUploader from '@/components/ImageUploader.vue';
+import VideoUploader from '@/components/VideoUploader.vue';
+
 definePageMeta({
   middleware: "auth",
 });
@@ -167,7 +170,9 @@ const typeOptions = [
             </UFormGroup>
 
             <UFormGroup :label="t('event.data')" :name="`items[${idx}].data`">
-              <UInput type="text" :placeholder="t('event.data_of_item')" v-model="item.data" />
+              <ImageUploader v-if="item.type === 11" @upload-complete="(url) => item.data = url" />
+              <VideoUploader v-else-if="item.type === 12" @upload-complete="(url) => item.data = url" />
+              <UInput v-else type="text" :placeholder="t('event.data_of_item')" v-model="item.data" />
             </UFormGroup>
 
             <UButton @click="remove(idx)" size="sm" :ui="{ rounded: 'rounded-full' }" color="red"

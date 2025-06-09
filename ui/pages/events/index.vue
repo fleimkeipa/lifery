@@ -29,10 +29,6 @@ const visibilityOptions = [
 
 const columns = [
   {
-    key: "id",
-    label: "ID",
-  },
-  {
     key: "name",
     label: t('common.name'),
   },
@@ -55,10 +51,6 @@ const columns = [
   {
     key: "time_end",
     label: t('common.time_end'),
-  },
-  {
-    key: "items",
-    label: t('event.items'),
   },
   {
     key: "actions",
