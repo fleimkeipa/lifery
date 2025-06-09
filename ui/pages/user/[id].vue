@@ -66,11 +66,34 @@ const timelineData = computed<TimelineItem[]>(() => {
     ]
   }));
 });
+
+const addConnection = async () => {
+  try {
+    await useApi('/connects').post({
+      friend_id: id
+    });
+    // Başarılı olduğunda kullanıcıya bilgi ver
+    alert('Bağlantı başarıyla eklendi');
+  } catch (error) {
+    console.error('Bağlantı eklenirken hata oluştu:', error);
+    alert('Bağlantı eklenirken bir hata oluştu');
+  }
+};
 </script>
 
 <template>
     <div class="min-h-screen bg-white p-8">
       <div class="max-w-6xl mx-auto">
+        <!-- Bağlantı Ekle Butonu -->
+        <div class="mb-8 flex justify-end">
+          <button 
+            @click="addConnection"
+            class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+          >
+            Bağlantı Ekle
+          </button>
+        </div>
+
         <!-- Loading State -->
         <div v-if="isFetching" class="flex justify-center items-center h-64">
           <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
