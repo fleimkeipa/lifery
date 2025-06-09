@@ -13,14 +13,14 @@ import (
 )
 
 type EventUC struct {
-	repo   interfaces.EventRepository
-	userUC *UserUC
+	repo       interfaces.EventRepository
+	connectsUC *ConnectsUC
 }
 
-func NewEventUC(repo interfaces.EventRepository, userUC *UserUC) *EventUC {
+func NewEventUC(repo interfaces.EventRepository, connectsUC *ConnectsUC) *EventUC {
 	return &EventUC{
-		repo:   repo,
-		userUC: userUC,
+		repo:       repo,
+		connectsUC: connectsUC,
 	}
 }
 
@@ -142,7 +142,7 @@ func (rc *EventUC) List(ctx context.Context, opts *model.EventFindOpts) (*model.
 		return rc.list(ctx, opts)
 	}
 
-	isConnected, err := rc.userUC.IsConnected(ctx, ownerID, opts.UserID.Value)
+	isConnected, err := rc.connectsUC.IsConnected(ctx, ownerID, opts.UserID.Value)
 	if err != nil {
 		return nil, err
 	}
