@@ -40,6 +40,7 @@ interface TimelineEra {
   time_start: string;
   created_at: string;
   updated_at: string;
+  date: string;
   type: 'ERA'
 }
 
@@ -87,17 +88,19 @@ const timelineData = computed<(TimelineItem | TimelineEra)[]>(() => {
       id: event.id,
       color: event.color,
       name: event.name,
-      time_end: event.time_end,
-      time_start: event.time_start,
-      created_at: event.created_at,
-      updated_at: event.updated_at,
+      date: event.time_start,
+      type: 'ERA'
+    })),
+    ...erasData.value.data.map((event: TimelineEra) => ({
+      id: event.id,
+      color: event.color,
+      name: event.name,
+      date: event.time_end,
       type: 'ERA'
     }))
   ].sort((a: TimelineItem | TimelineEra, b: TimelineItem | TimelineEra ) => {
-    const dateA = a.type === 'EVENT' ? new Date(a.date) : new Date(a.time_start)
-    const dateB = b.type === 'EVENT' ? new Date(b.date) : new Date(b.time_start)
 
-    return dateB.getTime() - dateA.getTime()
+    return new Date(b.date).getTime() - new Date(a.date).getTime()
   })
 });
 
@@ -136,8 +139,8 @@ const timelineData = computed<(TimelineItem | TimelineEra)[]>(() => {
             <div v-if="item.type === 'EVENT'" class="absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-gray-200 z-10"></div>
 
             <!-- Date Text -->
-            <div class="absolute left-[52%] top-[-1.5rem] text-sm text-gray-600">
-              {{ item?.type=== 'EVENT' ? formatDate(item.date) : formatDate(item.time_start.toString()) }}
+            <div v-if="item.type === 'EVENT'" class="absolute left-[52%] top-[-1.5rem] text-sm text-gray-600">
+              {{ formatDate(item.date)}}
             </div>
 
             <!-- Cards Container -->
@@ -150,8 +153,9 @@ const timelineData = computed<(TimelineItem | TimelineEra)[]>(() => {
                 </div>
                 <div v-if="timelineData.indexOf(item) % 2 === 0"></div>
             </div>
-            <div v-else class="shadow-lg w-full mb-4 px-4 py-2 z-20" :style="{ background: item.color }">
-                <h3 class="font-medium text-gray-800">{{ item.name }}</h3>
+            <div v-else class="shadow-lg w-full mb-4 px-4 z-20 text-center flex justify-between items-center" :style="{ background: item.color }">
+                <div class="font-medium text-xs">{{ formatDate(item.date) }}</div>
+                <h3 class="font-bold text-md text-gray-800">{{ item.name }}</h3>
             </div>
             </div>
         </div>
