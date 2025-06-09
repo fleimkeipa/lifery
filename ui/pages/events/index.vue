@@ -45,14 +45,6 @@ const columns = [
     label: t('common.date'),
   },
   {
-    key: "time_start",
-    label: t('common.time_start'),
-  },
-  {
-    key: "time_end",
-    label: t('common.time_end'),
-  },
-  {
     key: "actions",
   },
 ];
