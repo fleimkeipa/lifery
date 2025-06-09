@@ -55,7 +55,7 @@ defineProps<{
             </div>
             <div v-if="item.type===EventType.VIDEO" 
                  :class="color" 
-                 class="w-24 h-24 rounded shadow-lg text-center text-gray-800 cursor-pointer hover:opacity-90 truncate text-wrap relative flex items-center justify-center"
+                 class="w-24 h-12 rounded shadow-lg text-center text-gray-800 cursor-pointer hover:opacity-90 truncate text-wrap relative flex items-center justify-center"
                  @click="openPopup(item.data, item.type)">
                 <div class="flex flex-col items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 24 24" fill="currentColor">
