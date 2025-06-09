@@ -115,25 +115,23 @@ const formatDate = (dateStr: string) => {
 };
 
 const { data: eventsData, error, isFetching, execute: fetchEvents } = useApi<{
-  data: {
-    events: Row[];
-    total: number;
-    limit: number;
-    skip: number;
-  };
+  data: Row[];
+  total: number;
+  limit: number;
+  skip: number;
 }>("/events?order=desc:date").json();
 
 const timelineData = computed<TimelineItem[]>(() => {
-  if (!eventsData.value?.data?.events) return [];
+  if (!eventsData.value?.data) return [];
 
-  return eventsData.value.data.events.map((event: Row) => ({
+  return eventsData.value.data.map((event: Row) => ({
     id: event.id.toString(),
     date: formatDate(event.date.toString()),
     cards: [
       {
         title: event.name,
         description: event.description,
-        color: event.visibility === 3 ? 'bg-pink-300' : 'bg-blue-200',
+        color: event.visibility === 3 ? 'bg-pink-300' : event.visibility === 2 ? 'bg-yellow-200' : 'bg-blue-200',
         items: event.items
       }
     ]
@@ -167,8 +165,26 @@ const handleDelete = async (uid: number) => {
 <template>
   <div class="min-h-screen bg-white p-8">
     <div class="max-w-6xl mx-auto">
+      <!-- Loading State -->
+      <div v-if="isFetching" class="flex justify-center items-center h-64">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+      </div>
+
+      <!-- Error State -->
+      <div v-else-if="error" class="text-center text-red-600 p-4">
+        <p>Error loading events: {{ error }}</p>
+        <button @click="() => fetchEvents()" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+          Retry
+        </button>
+      </div>
+
+      <!-- Empty State -->
+      <div v-else-if="!timelineData.length" class="text-center text-gray-600 p-4">
+        <p>No events found</p>
+      </div>
+
       <!-- Timeline Container -->
-      <div class="relative">
+      <div v-else class="relative">
         <!-- Vertical Line -->
         <div class="absolute left-1/2 h-full w-0.5 bg-gray-200"></div>
 
