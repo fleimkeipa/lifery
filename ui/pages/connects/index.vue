@@ -95,6 +95,20 @@ const handleAccept = async (uid: number) => {
       label: t('common.loading'),
     }">
       <template #status-data="{ row }">
+        <span
+          :style="{
+            display: 'inline-block',
+            width: '10px',
+            height: '10px',
+            'border-radius': '50%',
+            'margin-right': '8px',
+            'background':
+              row.status === 100 ? '#fef08a' : // yellow
+              row.status === 101 ? '#86efac' : // green
+              row.status === 102 ? '#fca5a5' : // red
+              '#d1d5db'
+          }"
+        ></span>
         {{ statusOptions.find(option => option.value === row.status)?.label || '-' }}
       </template>
 

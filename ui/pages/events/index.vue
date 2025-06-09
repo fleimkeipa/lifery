@@ -104,6 +104,20 @@ const handleDelete = async (uid: number) => {
       label: t('common.loading'),
     }" row-selectable v-model:selected="selectedRows" :row-expandable="() => true" show-detail-on-click>
       <template #visibility-data="{ row }">
+        <span
+          :style="{
+            display: 'inline-block',
+            width: '10px',
+            height: '10px',
+            'border-radius': '50%',
+            'margin-right': '8px',
+            'background':
+              row.visibility === 1 ? '#bfdbfe' : // bg-blue-200
+              row.visibility === 2 ? '#fef08a' : // bg-yellow-200
+              row.visibility === 3 ? '#f9a8d4' : // bg-pink-300
+              '#d1d5db' // gri (default)
+          }"
+        ></span>
         {{visibilityOptions.find(option => option.value === row.visibility)?.label || '-'}}
       </template>
 
