@@ -52,7 +52,11 @@
         "time_end": "End time",
         "create_new": "Create New",
         "update": "Update",
-        "loading": "Loading..."
+        "loading": "Loading...",
+        "home": "Home",
+        "events": "Events",
+        "eras": "Eras",
+        "connects": "Connects"
     },
     "event": {
         "visibility": "Visibility",

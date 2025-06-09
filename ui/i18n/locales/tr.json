@@ -52,7 +52,11 @@
         "time_end": "Bitiş",
         "create_new": "Oluştur",
         "update": "Güncelle",
-        "loading": "Yükleniyor..."
+        "loading": "Yükleniyor...",
+        "home": "Anasayfa",
+        "events": "Olaylar",
+        "eras": "Dönemler",
+        "connects": "Bağlantılar"
     },
     "event": {
         "visibility": "Görünürlük",
