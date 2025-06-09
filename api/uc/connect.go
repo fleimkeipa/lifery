@@ -47,26 +47,12 @@ func (rc *ConnectsUC) Create(ctx context.Context, req model.ConnectCreateInput) 
 		return nil, err
 	}
 
-	connectsFindOpts := model.ConnectFindOpts{
-		UserID: model.Filter{
-			Value:    ownerID,
-			IsSended: true,
-		},
-	}
-	connectsList, err := rc.connectRepo.ConnectsRequests(ctx, &connectsFindOpts)
+	connected, err := rc.IsConnected(ctx, ownerID, req.FriendID)
 	if err != nil {
 		return nil, err
 	}
-
-	for _, v := range connectsList.Connects {
-		if v.FriendID == req.FriendID {
-			switch v.Status {
-			case model.RequestStatusApproved:
-				return nil, pkg.NewError(nil, "already connected", http.StatusBadRequest)
-			case model.RequestStatusPending:
-				return nil, pkg.NewError(nil, "already sended request", http.StatusBadRequest)
-			}
-		}
+	if connected {
+		return nil, pkg.NewError(nil, "already connected", http.StatusBadRequest)
 	}
 
 	return rc.connectRepo.Create(ctx, &connect)
