@@ -2,6 +2,7 @@ package uc
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/fleimkeipa/lifery/model"
@@ -124,46 +125,36 @@ func (rc *ConnectsUC) Delete(ctx context.Context, id string) error {
 	return rc.connectRepo.Delete(ctx, id)
 }
 
-func (rc *ConnectsUC) AddConnectOnUser(ctx context.Context, connectID string, userID, friendID string) error {
-	// receiver exist control
-	receiver, err := rc.userUC.GetByID(ctx, userID)
+func (rc *ConnectsUC) IsConnected(ctx context.Context, userID, friendID string) (bool, error) {
+	connectsRequests, err := rc.ConnectsRequests(ctx, &model.ConnectFindOpts{
+		UserID: model.Filter{
+			Value:    userID,
+			IsSended: true,
+		},
+		Status: model.Filter{
+			Value:    fmt.Sprintf("%d", model.RequestStatusApproved),
+			IsSended: true,
+		},
+	})
 	if err != nil {
-		return err
+		return false, err
 	}
 
-	// sender exist control
-	sender, err := rc.userUC.GetByID(ctx, friendID)
-	if err != nil {
-		return err
+	if len(connectsRequests.Connects) == 0 {
+		return false, nil
 	}
 
-	err = rc.userUC.UpdateConnects(ctx, receiver, sender.ID, receiver.ID)
-	if err != nil {
-		return err
+	for _, v := range connectsRequests.Connects {
+		if v.UserID == friendID && v.FriendID == userID {
+			return true, nil
+		}
+
+		if v.UserID == userID && v.FriendID == friendID {
+			return true, nil
+		}
 	}
 
-	return rc.userUC.UpdateConnects(ctx, sender, receiver.ID, sender.ID)
-}
-
-func (rc *ConnectsUC) DeleteConnectOnUser(ctx context.Context, userID, friendID string) error {
-	// receiver exist control
-	receiver, err := rc.userUC.GetByID(ctx, userID)
-	if err != nil {
-		return err
-	}
-
-	// sender exist control
-	sender, err := rc.userUC.GetByID(ctx, friendID)
-	if err != nil {
-		return err
-	}
-
-	err = rc.userUC.DeleteUserConnect(ctx, receiver, sender.ID)
-	if err != nil {
-		return err
-	}
-
-	return rc.userUC.DeleteUserConnect(ctx, sender, receiver.ID)
+	return false, nil
 }
 
 func (rc *ConnectsUC) isOwner(ctx context.Context, id string) bool {
