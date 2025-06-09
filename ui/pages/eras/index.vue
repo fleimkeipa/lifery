@@ -15,10 +15,6 @@ type Row = {
 
 const columns = [
   {
-    key: "id",
-    label: "ID",
-  },
-  {
     key: "name",
     label: t('common.name'),
   },
