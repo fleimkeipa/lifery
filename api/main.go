@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/fleimkeipa/lifery/controller"
 	_ "github.com/fleimkeipa/lifery/docs" // which is the generated folder after swag init
@@ -124,6 +125,10 @@ func serveApplication() {
 }
 
 func loadConfig() {
+	if os.Getenv("STAGE") == "prod" {
+		return
+	}
+
 	if err := godotenv.Load(); err != nil {
 		log.Fatalf("Error loading .env file: %v", err)
 	}
