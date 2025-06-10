@@ -1,7 +1,9 @@
 import { createFetch } from "@vueuse/core";
 
+const config = useRuntimeConfig()
+
 export default createFetch({
-  baseUrl: useRuntimeConfig().public.apiBase,
+  baseUrl: config.public.apiBase,
   options: {
     beforeFetch({ options }) {
       const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
