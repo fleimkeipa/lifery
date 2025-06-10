@@ -16,7 +16,7 @@ func NewPSQLClient() *pg.DB {
 	// Determine if we are on local or cluster
 	addr := "localhost:5432"
 	if stage := os.Getenv("STAGE"); stage == "prod" {
-		addr = "postgres:5432"
+		addr = os.Getenv("DATABASE_URL")
 	}
 
 	opts := pg.Options{
