@@ -121,6 +121,37 @@ func (rc *UserHandlers) List(c echo.Context) error {
 	})
 }
 
+// List godoc
+//
+//	@Summary		Search all users
+//	@Description	Retrieves a filtered and paginated list of users from the database based on query parameters.
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Security		ApiKeyAuth
+//	@Param			q		query		string			false	"Filter users by username"						example(eq:test)
+//	@Param			limit		query		string			false	"Limit the number of users returned"			example(10)
+//	@Param			skip		query		string			false	"Number of users to skip for pagination"		example(0)
+//	@Param			order		query		string			false	"Order by column (prefix with asc: or desc:)"	example(desc:created_at)
+//	@Success		200			{object}	SuccessResponse	"Successful response containing the list of users"
+//	@Failure		500			{object}	FailureResponse	"Interval error"
+//	@Router			/users/search [get]
+func (rc *UserHandlers) Search(c echo.Context) error {
+	opts := rc.getUsersSearchOpts(c, model.ZeroCreds)
+
+	list, err := rc.userUC.List(c.Request().Context(), &opts)
+	if err != nil {
+		return handleEchoError(c, err)
+	}
+
+	return c.JSON(http.StatusOK, SuccessListResponse{
+		Data:  list.Users,
+		Total: list.Total,
+		Limit: list.Limit,
+		Skip:  list.Skip,
+	})
+}
+
 // GetByID godoc
 //
 //	@Summary		Retrieve user by ID
@@ -180,5 +211,20 @@ func (rc *UserHandlers) getUsersFindOpts(c echo.Context, fields ...string) model
 		Username: getFilter(c, "username"),
 		Email:    getFilter(c, "email"),
 		RoleID:   getFilter(c, "role_id"),
+	}
+}
+
+func (rc *UserHandlers) getUsersSearchOpts(c echo.Context, fields ...string) model.UserFindOpts {
+	return model.UserFindOpts{
+		OrderByOpts:    getOrder(c),
+		PaginationOpts: getPagination(c),
+		FieldsOpts: model.FieldsOpts{
+			Fields: fields,
+		},
+		Username: model.Filter{
+			Value:    c.QueryParam("username"),
+			Operand:  model.OperandLike,
+			IsSended: true,
+		},
 	}
 }

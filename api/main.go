@@ -108,6 +108,10 @@ func serveApplication() {
 	connectsRoutes.DELETE("/:id", connectController.Delete)
 	connectsRoutes.GET("", connectController.ConnectsRequests)
 
+	// Define public user search routes
+	publicUsersSearchRoutes := viewerRoutes.Group("/users")
+	publicUsersSearchRoutes.GET("/search", userController.Search)
+
 	// Define user routes
 	usersRoutes := adminRoutes.Group("/users")
 	usersRoutes.GET("", userController.List)
