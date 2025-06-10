@@ -194,7 +194,6 @@ func (rc *UserRepository) fillFields(tx *orm.Query, opts *model.UserFindOpts) *o
 			"username",
 			"email",
 			"role_id",
-			"deleted_at",
 		)
 	}
 

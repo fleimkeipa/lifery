@@ -14,12 +14,6 @@ type User struct {
 	RoleID    UserRole   `json:"role_id"`
 }
 
-type UserConnects struct {
-	Connects []Connect `json:"connects"`
-	Total    int       `json:"total"`
-	PaginationOpts
-}
-
 type UserList struct {
 	Users []User `json:"users"`
 	Total int    `json:"total"`
