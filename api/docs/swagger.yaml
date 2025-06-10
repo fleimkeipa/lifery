@@ -18,7 +18,7 @@ definitions:
       message:
         type: string
     type: object
-  controller.SuccessResponse:
+  controller.SuccessListResponse:
     properties:
       data: {}
       limit:
@@ -27,6 +27,11 @@ definitions:
         type: integer
       total:
         type: integer
+    type: object
+  controller.SuccessResponse:
+    properties:
+      message:
+        type: string
     type: object
   model.ConnectCreateInput:
     properties:
@@ -288,6 +293,37 @@ paths:
       tags:
       - connects
   /connects/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: This endpoint deletes a connection by binding the incoming JSON
+        request to the ConnectUpdateInput model.
+      parameters:
+      - description: Connection ID to delete
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Connect deleted successfully
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "400":
+          description: Invalid request data
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+        "500":
+          description: Connect update failed
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete deletes an existing connection
+      tags:
+      - connects
     patch:
       consumes:
       - application/json
@@ -365,7 +401,7 @@ paths:
         "200":
           description: Eras retrieved successfully
           schema:
-            $ref: '#/definitions/controller.SuccessResponse'
+            $ref: '#/definitions/controller.SuccessListResponse'
         "400":
           description: Invalid request data
           schema:
@@ -546,7 +582,7 @@ paths:
         "200":
           description: Events retrieved successfully
           schema:
-            $ref: '#/definitions/controller.SuccessResponse'
+            $ref: '#/definitions/controller.SuccessListResponse'
         "400":
           description: Invalid request data
           schema:
@@ -638,7 +674,7 @@ paths:
         "200":
           description: Event retrieved successfully
           schema:
-            $ref: '#/definitions/controller.SuccessResponse'
+            $ref: '#/definitions/controller.SuccessListResponse'
         "400":
           description: Invalid request data
           schema:
@@ -846,6 +882,49 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Update updates an existing user
+      tags:
+      - users
+  /users/search:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a filtered and paginated list of users from the database
+        based on query parameters.
+      parameters:
+      - description: Filter users by username
+        example: eq:test
+        in: query
+        name: q
+        type: string
+      - description: Limit the number of users returned
+        example: "10"
+        in: query
+        name: limit
+        type: string
+      - description: Number of users to skip for pagination
+        example: "0"
+        in: query
+        name: skip
+        type: string
+      - description: 'Order by column (prefix with asc: or desc:)'
+        example: desc:created_at
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response containing the list of users
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "500":
+          description: Interval error
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Search all users
       tags:
       - users
 securityDefinitions:

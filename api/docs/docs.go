@@ -159,6 +159,53 @@ const docTemplate = `{
             }
         },
         "/connects/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "This endpoint deletes a connection by binding the incoming JSON request to the ConnectUpdateInput model.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "connects"
+                ],
+                "summary": "Delete deletes an existing connection",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Connection ID to delete",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Connect deleted successfully",
+                        "schema": {
+                            "$ref": "#/definitions/controller.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request data",
+                        "schema": {
+                            "$ref": "#/definitions/controller.FailureResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Connect update failed",
+                        "schema": {
+                            "$ref": "#/definitions/controller.FailureResponse"
+                        }
+                    }
+                }
+            },
             "patch": {
                 "security": [
                     {
@@ -275,7 +322,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Eras retrieved successfully",
                         "schema": {
-                            "$ref": "#/definitions/controller.SuccessResponse"
+                            "$ref": "#/definitions/controller.SuccessListResponse"
                         }
                     },
                     "400": {
@@ -548,7 +595,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Events retrieved successfully",
                         "schema": {
-                            "$ref": "#/definitions/controller.SuccessResponse"
+                            "$ref": "#/definitions/controller.SuccessListResponse"
                         }
                     },
                     "400": {
@@ -646,7 +693,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Event retrieved successfully",
                         "schema": {
-                            "$ref": "#/definitions/controller.SuccessResponse"
+                            "$ref": "#/definitions/controller.SuccessListResponse"
                         }
                     },
                     "400": {
@@ -887,6 +934,70 @@ const docTemplate = `{
                 }
             }
         },
+        "/users/search": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieves a filtered and paginated list of users from the database based on query parameters.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Search all users",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "eq:test",
+                        "description": "Filter users by username",
+                        "name": "q",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "10",
+                        "description": "Limit the number of users returned",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "0",
+                        "description": "Number of users to skip for pagination",
+                        "name": "skip",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "desc:created_at",
+                        "description": "Order by column (prefix with asc: or desc:)",
+                        "name": "order",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response containing the list of users",
+                        "schema": {
+                            "$ref": "#/definitions/controller.SuccessResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Interval error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.FailureResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/users/{id}": {
             "get": {
                 "security": [
@@ -1042,7 +1153,7 @@ const docTemplate = `{
                 }
             }
         },
-        "controller.SuccessResponse": {
+        "controller.SuccessListResponse": {
             "type": "object",
             "properties": {
                 "data": {},
@@ -1054,6 +1165,14 @@ const docTemplate = `{
                 },
                 "total": {
                     "type": "integer"
+                }
+            }
+        },
+        "controller.SuccessResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
                 }
             }
         },
