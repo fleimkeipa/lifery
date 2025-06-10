@@ -57,8 +57,11 @@
         "events": "Events",
         "eras": "Eras",
         "connects": "Connects",
+        "explore": "Explore",
+        "search_users": "Search users...",
         "accept": "Accept",
-        "logout": "Logout"
+        "logout": "Logout",
+        "username": "Username"
     },
     "event": {
         "visibility": "Visibility",

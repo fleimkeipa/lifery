@@ -57,8 +57,11 @@
         "events": "Olaylar",
         "eras": "Dönemler",
         "connects": "Bağlantılar",
+        "explore": "Keşfet",
+        "search_users": "Kullanıcı ara...",
         "accept": "Kabul Et",
-        "logout": "Çıkış Yap"
+        "logout": "Çıkış Yap",
+        "username": "Kullanıcı Adı"
     },
     "event": {
         "visibility": "Görünürlük",

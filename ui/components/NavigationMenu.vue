@@ -22,6 +22,11 @@ const links = [
     icon: "i-heroicons-folder-open",
     to: "/connects",
   },
+  {
+    label: t('common.explore'),
+    icon: "i-heroicons-magnifying-glass",
+    to: "/explore",
+  },
 ];
 </script>
 

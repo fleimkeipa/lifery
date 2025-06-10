@@ -5,7 +5,7 @@ definePageMeta({
   middleware: "auth",
 });
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 
 const route = useRoute();
 const id = route.params.id
@@ -204,13 +204,10 @@ const addConnection = async () => {
         </div>
       </div>
 
-      <div
-        v-if="toast.show"
-        :class="[
-          'fixed top-6 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg z-50 transition-all',
-          toast.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
-        ]"
-      >
+      <div v-if="toast.show" :class="[
+        'fixed top-6 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg z-50 transition-all',
+        toast.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+      ]">
         {{ toast.message }}
       </div>
     </div>
