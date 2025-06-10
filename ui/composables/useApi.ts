@@ -1,9 +1,8 @@
 import { createFetch } from "@vueuse/core";
 
-const config = useRuntimeConfig()
 
 export default createFetch({
-  baseUrl: config.public.apiBase,
+  baseUrl: process.env.NUXT_API_BASE_URL || "http://localhost:8080",
   options: {
     beforeFetch({ options }) {
       const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
