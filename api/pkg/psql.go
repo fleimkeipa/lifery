@@ -14,14 +14,16 @@ import (
 
 func NewPSQLClient() *pg.DB {
 	// Determine if we are on local or cluster
-	opts := pg.Options{}
+	addr := "localhost:5432"
 	if stage := os.Getenv("STAGE"); stage == "prod" {
-		opts.Addr = os.Getenv("DATABASE_URL")
-	} else {
-		opts.Database = os.Getenv("DB_NAME")
-		opts.User = os.Getenv("DB_USER")
-		opts.Password = os.Getenv("DB_PASSWORD")
-		opts.Addr = "localhost:5432"
+		addr = os.Getenv("DATABASE_URL")
+	}
+
+	opts := pg.Options{
+		Database: os.Getenv("DB_NAME"),
+		User:     os.Getenv("DB_USER"),
+		Password: os.Getenv("DB_PASSWORD"),
+		Addr:     addr,
 	}
 
 	db := pg.Connect(&opts)
