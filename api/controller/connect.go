@@ -100,10 +100,10 @@ func (rc *ConnectHandlers) Update(c echo.Context) error {
 //	@Accept			json
 //	@Produce		json
 //	@Security		ApiKeyAuth
-//	@Param			id		path		string						true	"Connection ID to delete"
-//	@Success		200		{object}	SuccessResponse				"Connect deleted successfully"
-//	@Failure		400		{object}	FailureResponse				"Invalid request data"
-//	@Failure		500		{object}	FailureResponse				"Connect update failed"
+//	@Param			id	path		string			true	"Connection ID to delete"
+//	@Success		200	{object}	SuccessResponse	"Connect deleted successfully"
+//	@Failure		400	{object}	FailureResponse	"Invalid request data"
+//	@Failure		500	{object}	FailureResponse	"Connect update failed"
 //	@Router			/connects/{id} [delete]
 func (rc *ConnectHandlers) Delete(c echo.Context) error {
 	id := c.Param("id")

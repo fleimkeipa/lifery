@@ -26,9 +26,9 @@ func NewEventController(eventUC *uc.EventUC) *EventController {
 //	@Produce		json
 //	@Security		ApiKeyAuth
 //	@Param			Body	body		model.EventCreateInput	true	"Event creation input"
-//	@Success		201		{object}	SuccessResponse				"Event created successfully"
-//	@Failure		400		{object}	FailureResponse				"Invalid request data"
-//	@Failure		500		{object}	FailureResponse				"Event creation failed"
+//	@Success		201		{object}	SuccessResponse			"Event created successfully"
+//	@Failure		400		{object}	FailureResponse			"Invalid request data"
+//	@Failure		500		{object}	FailureResponse			"Event creation failed"
 //	@Router			/events [post]
 func (rc *EventController) Create(c echo.Context) error {
 	var input model.EventCreateInput
@@ -60,9 +60,9 @@ func (rc *EventController) Create(c echo.Context) error {
 //	@Produce		json
 //	@Security		ApiKeyAuth
 //	@Param			Body	body		model.EventUpdateInput	true	"Event update input"
-//	@Success		200		{object}	SuccessResponse				"Event updated successfully"
-//	@Failure		400		{object}	FailureResponse				"Invalid request data"
-//	@Failure		500		{object}	FailureResponse				"Event update failed"
+//	@Success		200		{object}	SuccessResponse			"Event updated successfully"
+//	@Failure		400		{object}	FailureResponse			"Invalid request data"
+//	@Failure		500		{object}	FailureResponse			"Event update failed"
 //	@Router			/events/{id} [patch]
 func (rc *EventController) Update(c echo.Context) error {
 	eventID := c.Param("id")
@@ -118,15 +118,15 @@ func (rc *EventController) Delete(c echo.Context) error {
 //	@Tags			events
 //	@Accept			json
 //	@Produce		json
-//	@Param			Authorization	header		string			false	"Insert your access token"												default(Bearer <Add access token here>)
-//	@Param			user_id			query		string			false	"Filter events by user id, returns owners events if not provided"		example(eq:1)
-//	@Param			visibility		query		string			false	"Filter events by visibility status (public:1, private:2, just me:3)"	example(eq:1)
-//	@Param			limit			query		string			false	"Limit the number of events returned"									example(10)
-//	@Param			skip			query		string			false	"Number of events to skip for pagination"								example(0)
-//	@Param			order			query		string			false	"Order by column (prefix with asc: or desc:)"							example(desc:created_at)
+//	@Param			Authorization	header		string				false	"Insert your access token"												default(Bearer <Add access token here>)
+//	@Param			user_id			query		string				false	"Filter events by user id, returns owners events if not provided"		example(eq:1)
+//	@Param			visibility		query		string				false	"Filter events by visibility status (public:1, private:2, just me:3)"	example(eq:1)
+//	@Param			limit			query		string				false	"Limit the number of events returned"									example(10)
+//	@Param			skip			query		string				false	"Number of events to skip for pagination"								example(0)
+//	@Param			order			query		string				false	"Order by column (prefix with asc: or desc:)"							example(desc:created_at)
 //	@Success		200				{object}	SuccessListResponse	"Events retrieved successfully"
-//	@Failure		400				{object}	FailureResponse	"Invalid request data"
-//	@Failure		500				{object}	FailureResponse	"Event retrieval failed"
+//	@Failure		400				{object}	FailureResponse		"Invalid request data"
+//	@Failure		500				{object}	FailureResponse		"Event retrieval failed"
 //	@Router			/events [get]
 func (rc *EventController) List(c echo.Context) error {
 	opts := rc.getEventsFindOpts(c)
@@ -152,10 +152,10 @@ func (rc *EventController) List(c echo.Context) error {
 //	@Accept			json
 //	@Produce		json
 //	@Security		ApiKeyAuth
-//	@Param			id	path		string			true	"Event name or UID"
+//	@Param			id	path		string				true	"Event name or UID"
 //	@Success		200	{object}	SuccessListResponse	"Event retrieved successfully"
-//	@Failure		400	{object}	FailureResponse	"Invalid request data"
-//	@Failure		500	{object}	FailureResponse	"Event retrieval failed"
+//	@Failure		400	{object}	FailureResponse		"Invalid request data"
+//	@Failure		500	{object}	FailureResponse		"Event retrieval failed"
 //	@Router			/events/{id} [get]
 func (rc *EventController) GetByID(c echo.Context) error {
 	eventID := c.Param("id")

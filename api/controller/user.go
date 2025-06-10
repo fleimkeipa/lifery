@@ -130,11 +130,11 @@ func (rc *UserHandlers) List(c echo.Context) error {
 //	@Produce		json
 //	@Security		ApiKeyAuth
 //	@Param			q		query		string			false	"Filter users by username"						example(eq:test)
-//	@Param			limit		query		string			false	"Limit the number of users returned"			example(10)
-//	@Param			skip		query		string			false	"Number of users to skip for pagination"		example(0)
-//	@Param			order		query		string			false	"Order by column (prefix with asc: or desc:)"	example(desc:created_at)
-//	@Success		200			{object}	SuccessResponse	"Successful response containing the list of users"
-//	@Failure		500			{object}	FailureResponse	"Interval error"
+//	@Param			limit	query		string			false	"Limit the number of users returned"			example(10)
+//	@Param			skip	query		string			false	"Number of users to skip for pagination"		example(0)
+//	@Param			order	query		string			false	"Order by column (prefix with asc: or desc:)"	example(desc:created_at)
+//	@Success		200		{object}	SuccessResponse	"Successful response containing the list of users"
+//	@Failure		500		{object}	FailureResponse	"Interval error"
 //	@Router			/users/search [get]
 func (rc *UserHandlers) Search(c echo.Context) error {
 	opts := rc.getUsersSearchOpts(c, model.ZeroCreds)
