@@ -15,8 +15,6 @@ const state = reactive({
   description: null,
   visibility: null,
   date: null,
-  time_start: null,
-  time_end: null,
   items: [],
 });
 
@@ -33,8 +31,6 @@ const formatDateTimeForApi = (dateTime) => {
 };
 
 const formattedDate = computed(() => formatDateTimeForApi(state.date));
-const formattedTimeStart = computed(() => formatDateTimeForApi(state.time_start));
-const formattedTimeEnd = computed(() => formatDateTimeForApi(state.time_end));
 
 const schema = yup.object({
   name: yup.string().nonNullable(t('common.name')),
@@ -44,8 +40,6 @@ const schema = yup.object({
     .oneOf([1, 2, 3], t('event.validation.one_of.visibility'))
     .required(t('event.validation.required.visibility')),
   date: yup.date().nullable(),
-  time_start: yup.date().nullable(),
-  time_end: yup.date().nullable(),
   items: yup.array().of(
     yup.object({
       type: yup
@@ -65,8 +59,6 @@ const { isFetching } = useApi(`/events/${route.params.id}`, {
     state.description = event.description;
     state.visibility = event.visibility;
     state.date = formatDateTime(event.date);
-    state.time_start = formatDateTime(event.time_start);
-    state.time_end = formatDateTime(event.time_end);
     state.items = event.items;
   },
 }).json();
@@ -86,12 +78,6 @@ const onSubmit = (event) => {
 
   if (event.data.date && event.data.date !== '0001-01-01T00:00') {
     formData.date = formattedDate.value;
-  }
-  if (event.data.time_start && event.data.time_start !== '0001-01-01T00:00') {
-    formData.time_start = formattedTimeStart.value;
-  }
-  if (event.data.time_end && event.data.time_end !== '0001-01-01T00:00') {
-    formData.time_end = formattedTimeEnd.value;
   }
 
   useApi(`/events/${route.params.id}`, {
@@ -146,12 +132,6 @@ const typeOptions = [
       </UFormGroup>
       <UFormGroup :label="t('common.date')" name="date">
         <UInput type="datetime-local" :placeholder="t(`common.date`)" v-model="state.date" />
-      </UFormGroup>
-      <UFormGroup :label="t('common.time_start')" name="time_start">
-        <UInput type="datetime-local" :placeholder="t(`common.time_start`)" v-model="state.time_start" />
-      </UFormGroup>
-      <UFormGroup :label="t('common.time_end')" name="time_end">
-        <UInput type="datetime-local" :placeholder="t(`common.time_end`)" v-model="state.time_end" />
       </UFormGroup>
 
       <div>

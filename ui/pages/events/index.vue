@@ -11,8 +11,6 @@ type Row = {
   description: string;
   visibility: number;
   date: Date;
-  time_start: Date;
-  time_end: Date;
   items: Item[];
 };
 

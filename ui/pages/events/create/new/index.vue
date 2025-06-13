@@ -14,8 +14,6 @@ const state = reactive({
   description: null,
   visibility: 1,
   date: null,
-  time_start: null,
-  time_end: null,
   items: [],
 });
 
@@ -26,8 +24,6 @@ const formatDateTime = (dateTime) => {
 };
 
 const formattedDate = computed(() => formatDateTime(state.date));
-const formattedTimeStart = computed(() => formatDateTime(state.time_start));
-const formattedTimeEnd = computed(() => formatDateTime(state.time_end));
 
 const schema = yup.object({
   name: yup.string().nonNullable(t('common.name')),
@@ -37,8 +33,6 @@ const schema = yup.object({
     .oneOf([1, 2, 3], t('event.validation.one_of.visibility'))
     .required(t('event.validation.required.visibility')),
   date: yup.date().nullable(),
-  time_start: yup.date().nullable(),
-  time_end: yup.date().nullable(),
   items: yup.array().of(
     yup.object({
       type: yup
@@ -79,8 +73,6 @@ const onSubmit = (event) => {
   const formData = {
     ...event.data,
     date: formattedDate.value,
-    time_start: formattedTimeStart.value,
-    time_end: formattedTimeEnd.value
   };
 
   useApi("/events", {
@@ -119,13 +111,6 @@ const onSubmit = (event) => {
       <UFormGroup :label="t('common.date')" name="date">
         <UInput type="datetime-local" :placeholder="t(`common.date`)" v-model="state.date" />
       </UFormGroup>
-      <UFormGroup :label="t('common.time_start')" name="time_start">
-        <UInput type="datetime-local" :placeholder="t(`common.time_start`)" v-model="state.time_start" />
-      </UFormGroup>
-      <UFormGroup :label="t('common.time_end')" name="time_end">
-        <UInput type="datetime-local" :placeholder="t(`common.time_end`)" v-model="state.time_end" />
-      </UFormGroup>
-
 
       <div>
         <div class="mb-4 flex flex-row items-center gap-x-4">
