@@ -124,7 +124,7 @@ const timelineData = computed<(TimelineItem | TimelineEra)[]>(() => {
 
       <!-- Empty State -->
       <div v-else-if="!timelineData.length" class="text-center text-gray-600 p-4">
-        <p>No events found</p>
+        <p>{{ $t('event.no_events') }}</p>
       </div>
 
       <!-- Timeline Container -->

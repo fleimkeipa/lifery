@@ -135,7 +135,7 @@ const handleDelete = async (uid: number) => {
             </div>
           </div>
           <div v-else class="mt-4 text-gray-500">
-            {{ t('common.no_items') }}
+            {{ t('event.no_events') }}
           </div>
         </div>
       </template>
