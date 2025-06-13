@@ -10,17 +10,15 @@ import (
 )
 
 func applyStandardQueries(tx *orm.Query, pagination model.PaginationOpts) *orm.Query {
-	page := 1
 	limit := 50
-	offset := (page - 1) * limit
+	offset := 0
 
 	if pagination.Limit > 0 {
 		limit = min(pagination.Limit, 200)
 	}
 
 	if pagination.Skip > 0 {
-		page = max(pagination.Skip, 1)
-		offset = (page - 1) * limit
+		offset = pagination.Skip
 	}
 
 	tx = tx.Limit(limit).Offset(offset)
