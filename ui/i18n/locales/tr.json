@@ -69,6 +69,7 @@
         "items": "İtemler",
         "item": "İtem",
         "data": "Veri",
+        "no_events": "Olay yok",
         "add_item": "İtem ekle",
         "select_item": "İtem seç",
         "remove_item": "İtem sil",
