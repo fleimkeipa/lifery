@@ -95,7 +95,7 @@ const handleAccept = async (uid: number) => {
 <template>
   <div v-if="!!error || !items">{{ error }}</div>
   <div v-else>
-    <div class="flex flex-row items-center justify-between">
+    <div class="flex flex-row items-center justify-end">
       <UButton icon="i-heroicons-arrow-path" :loading="isFetching" @click="fetchConnects"></UButton>
     </div>
     <UTable :columns="columns" :rows="items.data" :loading="isFetching" :loading-state="{
