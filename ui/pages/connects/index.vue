@@ -49,9 +49,17 @@ const columns = [
   },
 ];
 
-const { data: items, error, isFetching, execute: fetchConnects } = useApi<{
-  data: { items: Row[] };
-}>("/connects").json();
+const currentPage = ref(1);
+const itemsPerPage = 30;
+
+watch(currentPage, () => {
+  fetchConnects();
+});
+
+const { data: items, error, isFetching, execute: fetchConnects } = useApi(() => `/connects?limit=${itemsPerPage}&skip=${(currentPage.value - 1) * itemsPerPage}`).json<{
+  data: Row[];
+  total: number;
+}>();
 
 const router = useRouter();
 
@@ -127,5 +135,19 @@ const handleAccept = async (uid: number) => {
         </UDropdown>
       </template>
     </UTable>
+
+    <div class="flex justify-end mt-4">
+      <UPagination v-model="currentPage" :total="items?.total || 0" :page-count="itemsPerPage" :ui="{
+        wrapper: 'flex items-center justify-end',
+        base: 'flex items-center gap-1',
+        rounded: 'rounded-md',
+        default: {
+          size: 'sm',
+          activeButton: {
+            color: 'primary'
+          }
+        }
+      }" />
+    </div>
   </div>
 </template>

@@ -35,9 +35,17 @@ const columns = [
   },
 ];
 
-const { data: items, error, isFetching, execute: fetchEras } = useApi<{
-  data: { eras: Row[] };
-}>("/eras?order=desc:time_start").json();
+const currentPage = ref(1);
+const itemsPerPage = 30;
+
+watch(currentPage, () => {
+  fetchEras();
+});
+
+const { data: items, error, isFetching, execute: fetchEras } = useApi(() => `/eras?order=desc:time_start&limit=${itemsPerPage}&skip=${(currentPage.value - 1) * itemsPerPage}`).json<{
+  data: Row[];
+  total: number;
+}>();
 
 const router = useRouter();
 
@@ -76,6 +84,11 @@ const handleDelete = async (id: number) => {
       icon: 'i-heroicons-arrow-path-20-solid',
       label: t('common.loading'),
     }">
+      <template #name-data="{ row }">
+        <UButton variant="link" @click="router.push(`/eras/${row.id}`)">
+          {{ row.name }}
+        </UButton>
+      </template>
       <template #color-data="{ row }">
         <div class="flex items-center gap-2">
           <div class="w-6 h-6 rounded-full" :style="{ backgroundColor: row.color }"></div>
@@ -89,5 +102,19 @@ const handleDelete = async (id: number) => {
         </UDropdown>
       </template>
     </UTable>
+
+    <div class="flex justify-end mt-4">
+      <UPagination v-model="currentPage" :total="items?.total || 0" :page-count="itemsPerPage" :ui="{
+        wrapper: 'flex items-center justify-end',
+        base: 'flex items-center gap-1',
+        rounded: 'rounded-md',
+        default: {
+          size: 'sm',
+          activeButton: {
+            color: 'primary'
+          }
+        }
+      }" />
+    </div>
   </div>
 </template>

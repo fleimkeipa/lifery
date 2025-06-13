@@ -37,9 +37,11 @@ const columns = [
 ];
 
 const searchQuery = ref('');
+const currentPage = ref(1);
+const itemsPerPage = 10;
 
 const { data: items, error, isFetching, execute: fetchUsers } =
-  useApi<ApiResponse>(() => `/users/search?username=${searchQuery.value}`).
+  useApi(() => `/users/search?username=${searchQuery.value}&limit=${itemsPerPage}&skip=${(currentPage.value - 1) * itemsPerPage}`).
     json();
 
 // Watch for errors
@@ -76,7 +78,7 @@ const handleAddConnection = async (id: string) => {
 };
 
 // Watch for search query changes
-watch(searchQuery, async () => {
+watch([searchQuery, currentPage], async () => {
   try {
     await fetchUsers();
   } catch (err: any) {
@@ -96,7 +98,7 @@ watch(searchQuery, async () => {
       <UInput v-model="searchQuery" :placeholder="$t('common.search_users')" icon="i-heroicons-magnifying-glass"
         class="w-full" />
 
-      <UTable :columns="columns" :rows="items.data" :loading="isFetching" :loading-state="{
+      <UTable :columns="columns" :rows="items?.data || []" :loading="isFetching" :loading-state="{
         icon: 'i-heroicons-arrow-path-20-solid',
         label: t('common.loading'),
       }">
@@ -113,6 +115,20 @@ watch(searchQuery, async () => {
           </div>
         </template>
       </UTable>
+
+      <div class="flex justify-end mt-4">
+        <UPagination v-model="currentPage" :total="items?.total || 0" :page-count="itemsPerPage" :ui="{
+          wrapper: 'flex items-center justify-end',
+          base: 'flex items-center gap-1',
+          rounded: 'rounded-md',
+          default: {
+            size: 'sm',
+            activeButton: {
+              color: 'primary'
+            }
+          }
+        }" />
+      </div>
     </div>
 
     <div v-if="toast.show" :class="[
