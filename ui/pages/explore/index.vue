@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import jwtDecode from 'jwt-decode';
 
 definePageMeta({
   middleware: "auth",
@@ -8,6 +9,20 @@ definePageMeta({
 const { t } = useI18n();
 
 const router = useRouter();
+
+// Get current user from JWT token
+const currentUser = ref<{ id: string } | null>(null);
+if (process.client) {
+  const token = localStorage.getItem('auth_token');
+  if (token) {
+    try {
+      const decoded = jwtDecode(token) as { id: string };
+      currentUser.value = decoded;
+    } catch (error) {
+      console.error('Failed to decode token:', error);
+    }
+  }
+}
 
 type User = {
   id: string;
@@ -43,6 +58,15 @@ const itemsPerPage = 10;
 const { data: items, error, isFetching, execute: fetchUsers } =
   useApi(() => `/users/search?username=${searchQuery.value}&limit=${itemsPerPage}&skip=${(currentPage.value - 1) * itemsPerPage}`).
     json();
+
+// Filter out current user from the response
+const filteredItems = computed(() => {
+  if (!items.value || !currentUser.value) return items.value;
+  return {
+    ...items.value,
+    data: items.value.data.filter((user: User) => user.id !== currentUser.value?.id)
+  };
+});
 
 // Watch for errors
 watch(error, (newError) => {
@@ -98,7 +122,7 @@ watch([searchQuery, currentPage], async () => {
       <UInput v-model="searchQuery" :placeholder="$t('common.search_users')" icon="i-heroicons-magnifying-glass"
         class="w-full" />
 
-      <UTable :columns="columns" :rows="items?.data || []" :loading="isFetching" :loading-state="{
+      <UTable :columns="columns" :rows="filteredItems?.data || []" :loading="isFetching" :loading-state="{
         icon: 'i-heroicons-arrow-path-20-solid',
         label: t('common.loading'),
       }">
