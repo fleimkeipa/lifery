@@ -185,7 +185,7 @@ const typeOptions = [
         </div>
       </div>
 
-      <UButton :loading="loading" type="submit">{{ t(`event.add_item`) }}</UButton>
+      <UButton :loading="loading" type="submit">{{ t(`common.update`) }}</UButton>
       <div v-if="error" class="flex items-center gap-x-2 rounded-lg border px-2 py-1">
         <span @click="error = null" class="cursor-pointer">X</span>
         <span class="text-sm text-red-500">{{ error }}</span>
