@@ -2,6 +2,11 @@
 export default defineNuxtConfig({
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true },
+  app: {
+    head: {
+      title: 'Lifery'
+    }
+  },
   modules: ["@vueuse/nuxt", "@vee-validate/nuxt", "@nuxt/ui", '@nuxtjs/i18n'],
   runtimeConfig: {
     public: {
