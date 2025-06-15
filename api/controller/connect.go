@@ -170,7 +170,8 @@ func (rc *ConnectHandlers) getConnectsFindOpts(c echo.Context, fields ...string)
 		FieldsOpts: model.FieldsOpts{
 			Fields: fields,
 		},
-		Status: getFilter(c, "status"),
+		Status:   getFilter(c, "status"),
+		Username: getFilter(c, "username"),
 	}
 
 	owner, err := util.GetOwnerFromToken(c)

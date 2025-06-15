@@ -37,8 +37,9 @@ type DisconnectRequest struct {
 
 type ConnectFindOpts struct {
 	OrderByOpts
-	Status Filter
-	UserID Filter
+	Status   Filter
+	UserID   Filter
+	Username Filter
 	FieldsOpts
 	PaginationOpts
 }

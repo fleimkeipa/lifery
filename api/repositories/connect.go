@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/fleimkeipa/lifery/model"
 	"github.com/fleimkeipa/lifery/pkg"
@@ -111,7 +112,14 @@ func (rc *ConnectRepository) ConnectsRequests(ctx context.Context, opts *model.C
 
 	internalConnects := make([]model.Connect, 0)
 	for _, v := range connects {
-		internalConnects = append(internalConnects, *rc.sqlToInternal(&v))
+		if !opts.Username.IsSended {
+			internalConnects = append(internalConnects, *rc.sqlToInternal(&v))
+			continue
+		}
+
+		if strings.Contains(v.User.Username, opts.Username.Value) || strings.Contains(v.Friend.Username, opts.Username.Value) {
+			internalConnects = append(internalConnects, *rc.sqlToInternal(&v))
+		}
 	}
 
 	return &model.ConnectList{
