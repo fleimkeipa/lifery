@@ -144,6 +144,19 @@ definitions:
     - password
     - username
     type: object
+  model.NotificationStatus:
+    enum:
+    - 100
+    - 101
+    type: integer
+    x-enum-varnames:
+    - NotificationStatusUnread
+    - NotificationStatusRead
+  model.NotificationUpdateInput:
+    properties:
+      read:
+        $ref: '#/definitions/model.NotificationStatus'
+    type: object
   model.Register:
     properties:
       confirm_password:
@@ -720,6 +733,83 @@ paths:
       summary: Update an existing event
       tags:
       - events
+  /notifications:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a filtered and paginated list of notifications based
+        on query parameters.
+      parameters:
+      - description: Filter notifications by user id if you are admin
+        in: query
+        name: user_id
+        type: string
+      - description: Filter notifications by read status
+        in: query
+        name: read
+        type: string
+      - description: Limit the number of notifications returned
+        in: query
+        name: limit
+        type: string
+      - description: Number of notifications to skip for pagination
+        in: query
+        name: skip
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response containing the list of notifications
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: List lists all notifications
+      tags:
+      - notifications
+  /notifications/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: This endpoint updates a notification by binding the incoming JSON
+        request to the NotificationUpdateInput model.
+      parameters:
+      - description: Notification ID to update
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Notification update input
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/model.NotificationUpdateInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Notification updated successfully
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "400":
+          description: Invalid request data
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+        "500":
+          description: Notification update failed
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update updates an existing notification
+      tags:
+      - notifications
   /users:
     get:
       consumes:
