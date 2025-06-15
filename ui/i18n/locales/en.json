@@ -119,5 +119,10 @@
             "accepted": "Accepted",
             "rejected": "Rejected"
         }
+    },
+    "notifications": {
+        "title": "Notifications",
+        "no_notifications": "No notifications",
+        "mark_as_read": "Mark as read"
     }
 }

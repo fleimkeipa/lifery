@@ -4,6 +4,7 @@
       <div class="flex justify-between items-center py-4">
         <navigation-menu />
         <div class="flex items-center gap-2">
+          <NotificationBell />
           <LanguageSwitcher />
           <UButton color="red" variant="ghost" @click="logout">{{ $t('common.logout') }}</UButton>
         </div>

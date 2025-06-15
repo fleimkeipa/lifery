@@ -119,5 +119,10 @@
             "accepted": "Kabul Edildi",
             "rejected": "Reddedildi"
         }
+    },
+    "notifications": {
+        "title": "Bildirimler",
+        "no_notifications": "Bildirim yok",
+        "mark_as_read": "Okundu olarak işaretle"
     }
 }
