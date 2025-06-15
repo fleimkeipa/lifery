@@ -61,6 +61,9 @@ func serveApplication() {
 	connectUC := initConnectUC(dbClient)
 	connectController := controller.NewConnectHandlers(connectUC, userUC)
 
+	notificationUC := initNotificationUC(dbClient)
+	notificationController := controller.NewNotificationHandlers(notificationUC)
+
 	authHandlers := controller.NewAuthHandlers(userUC)
 
 	// Define authentication routes and handlers
@@ -108,6 +111,11 @@ func serveApplication() {
 	connectsRoutes.PATCH("/:id", connectController.Update)
 	connectsRoutes.DELETE("/:id", connectController.Delete)
 	connectsRoutes.GET("", connectController.ConnectsRequests)
+
+	// Define notifications routes
+	notificationsRoutes := userRoutes.Group("/notifications")
+	notificationsRoutes.GET("", notificationController.List)
+	notificationsRoutes.PATCH("/:id", notificationController.Update)
 
 	// Define public user search routes
 	publicUsersSearchRoutes := viewerRoutes.Group("/users")
@@ -201,18 +209,27 @@ func initUserUC(db *pg.DB) *uc.UserUC {
 func initConnectUC(db *pg.DB) *uc.ConnectsUC {
 	userDBRepo := repositories.NewUserRepository(db)
 	connectDBRepo := repositories.NewConnectRepository(db)
+	notificationDBRepo := repositories.NewNotificationRepository(db)
 
 	userUC := uc.NewUserUC(userDBRepo)
-	return uc.NewConnectsUC(userUC, connectDBRepo)
+	notificationUC := uc.NewNotificationUC(notificationDBRepo)
+	return uc.NewConnectsUC(userUC, connectDBRepo, notificationUC)
 }
 
 func initEventUC(db *pg.DB) *uc.EventUC {
 	userDBRepo := repositories.NewUserRepository(db)
 	connectDBRepo := repositories.NewConnectRepository(db)
 	eventDBRepo := repositories.NewEventRepository(db)
+	notificationDBRepo := repositories.NewNotificationRepository(db)
 
 	userUC := uc.NewUserUC(userDBRepo)
-	connectsUC := uc.NewConnectsUC(userUC, connectDBRepo)
+	notificationUC := uc.NewNotificationUC(notificationDBRepo)
+	connectsUC := uc.NewConnectsUC(userUC, connectDBRepo, notificationUC)
 
 	return uc.NewEventUC(eventDBRepo, connectsUC)
+}
+
+func initNotificationUC(db *pg.DB) *uc.NotificationUC {
+	notificationDBRepo := repositories.NewNotificationRepository(db)
+	return uc.NewNotificationUC(notificationDBRepo)
 }

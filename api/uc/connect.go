@@ -12,14 +12,16 @@ import (
 )
 
 type ConnectsUC struct {
-	userUC      *UserUC
-	connectRepo interfaces.ConnectInterfaces
+	userUC         *UserUC
+	connectRepo    interfaces.ConnectInterfaces
+	notificationUC *NotificationUC
 }
 
-func NewConnectsUC(userUC *UserUC, connectRepo interfaces.ConnectInterfaces) *ConnectsUC {
+func NewConnectsUC(userUC *UserUC, connectRepo interfaces.ConnectInterfaces, notificationUC *NotificationUC) *ConnectsUC {
 	return &ConnectsUC{
-		userUC:      userUC,
-		connectRepo: connectRepo,
+		userUC:         userUC,
+		connectRepo:    connectRepo,
+		notificationUC: notificationUC,
 	}
 }
 
@@ -36,7 +38,7 @@ func (rc *ConnectsUC) Create(ctx context.Context, req model.ConnectCreateInput) 
 	}
 
 	// sender exist control
-	_, err := rc.userUC.GetByID(ctx, ownerID)
+	sender, err := rc.userUC.GetByID(ctx, ownerID)
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +73,23 @@ func (rc *ConnectsUC) Create(ctx context.Context, req model.ConnectCreateInput) 
 		}
 	}
 
-	return rc.connectRepo.Create(ctx, &connect)
+	createdConnect, err := rc.connectRepo.Create(ctx, &connect)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create notification for the receiver
+	_, err = rc.notificationUC.Create(ctx, model.NotificationCreateInput{
+		UserID:  req.FriendID,
+		Type:    "connect_request",
+		Message: fmt.Sprintf("%s sent you a connection request", sender.Username),
+	})
+	if err != nil {
+		// Log the error but don't fail the request
+		fmt.Printf("Failed to create notification: %v\n", err)
+	}
+
+	return createdConnect, nil
 }
 
 func (rc *ConnectsUC) Update(ctx context.Context, id string, req model.ConnectUpdateInput) error {
@@ -103,9 +121,28 @@ func (rc *ConnectsUC) Update(ctx context.Context, id string, req model.ConnectUp
 		return rc.Delete(ctx, id)
 	}
 
-	_, err = rc.connectRepo.Update(ctx, id, existConnect)
+	updatedConnect, err := rc.connectRepo.Update(ctx, id, existConnect)
 	if err != nil {
 		return err
+	}
+
+	// Get the sender's username
+	sender, err := rc.userUC.GetByID(ctx, updatedConnect.UserID)
+	if err != nil {
+		// Log the error but don't fail the request
+		fmt.Printf("Failed to get sender: %v\n", err)
+		return nil
+	}
+
+	// Create notification for the sender
+	_, err = rc.notificationUC.Create(ctx, model.NotificationCreateInput{
+		UserID:  updatedConnect.UserID,
+		Type:    "connect_response",
+		Message: fmt.Sprintf("Your connection request to %s was accepted", sender.Username),
+	})
+	if err != nil {
+		// Log the error but don't fail the request
+		fmt.Printf("Failed to create notification: %v\n", err)
 	}
 
 	return nil
@@ -170,7 +207,6 @@ func (rc *ConnectsUC) IsConnected(ctx context.Context, userID, friendID string) 
 
 func (rc *ConnectsUC) isOwner(ctx context.Context, id string) bool {
 	ownerID := util.GetOwnerIDFromCtx(ctx)
-
 	return id == ownerID
 }
 
