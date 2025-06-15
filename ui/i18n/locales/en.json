@@ -61,7 +61,9 @@
         "search_users": "Search users...",
         "accept": "Accept",
         "logout": "Logout",
-        "username": "Username"
+        "username": "Username",
+        "search": "Search...",
+        "no_description": "No description available"
     },
     "event": {
         "visibility": "Visibility",
