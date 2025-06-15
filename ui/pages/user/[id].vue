@@ -60,6 +60,22 @@ const formatDate = (dateStr: string) => {
   }).replace(/\//g, '.');
 };
 
+const getTextColor = (hexColor: string) => {
+  // Remove # if it exists
+  const hex = hexColor.replace('#', '');
+  
+  // Convert hex to RGB
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+  
+  // Calculate relative luminance
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  
+  // Return dark text for light backgrounds, light text for dark backgrounds
+  return luminance > 0.5 ? 'text-gray-900' : 'text-white';
+};
+
 const { data: eventsData, error, isFetching, execute: fetchEvents } = useApi<{
   data: Row[];
   total: number;
@@ -138,7 +154,7 @@ const addConnection = async () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-white p-8">
+  <div class="min-h-screen bg-background p-8">
     <div class="max-w-6xl mx-auto">
       <!-- Bağlantı Ekle Butonu -->
       <div class="mb-8 flex justify-end">
@@ -179,7 +195,7 @@ const addConnection = async () => {
               class="absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-gray-200 z-10"></div>
 
             <!-- Date Text -->
-            <div v-if="item.type === 'EVENT'" class="absolute left-[52%] top-[-1.5rem] text-sm text-gray-600">
+            <div v-if="item.type === 'EVENT'" class="absolute left-[52%] top-[-1.5rem] text-sm text-foreground">
               {{ formatDate(item.date) }}
             </div>
 
@@ -197,8 +213,8 @@ const addConnection = async () => {
             </div>
             <div v-else class="shadow-lg w-full mb-4 px-4 z-20 text-center flex justify-between items-center"
               :style="{ background: item.color }">
-              <div class="font-medium text-xs">{{ formatDate(item.date) }}</div>
-              <h3 class="font-bold text-md text-gray-800">{{ item.name }}</h3>
+              <div class="font-medium text-xs" :class="getTextColor(item.color)">{{ formatDate(item.date) }}</div>
+              <h3 class="font-bold text-sm" :class="getTextColor(item.color)">{{ item.name }}</h3>
             </div>
           </div>
         </div>
