@@ -154,6 +154,10 @@ func (rc *EventRepository) fillFilter(tx *orm.Query, opts *model.EventFindOpts) 
 		tx = applyFilterWithOperand(tx, "visibility", opts.Visibility)
 	}
 
+	if opts.Name.IsSended {
+		tx = applyFilterWithOperand(tx, "name", opts.Name)
+	}
+
 	return tx
 }
 

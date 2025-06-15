@@ -176,5 +176,6 @@ func (rc *EventController) getEventsFindOpts(c echo.Context) model.EventFindOpts
 		PaginationOpts: getPagination(c),
 		UserID:         getFilter(c, "user_id"),
 		Visibility:     getFilter(c, "visibility"),
+		Name:           getFilter(c, "name"),
 	}
 }
