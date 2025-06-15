@@ -10,17 +10,17 @@ const links = computed(() => [
   },
   {
     label: t('common.events'),
-    icon: "i-heroicons-circle-stack",
+    icon: "i-heroicons-photo",
     to: locale.value === 'tr' ? "/events" : "/en/events",
   },
   {
     label: t('common.eras'),
-    icon: "i-heroicons-cube",
+    icon: "i-heroicons-clock",
     to: locale.value === 'tr' ? "/eras" : "/en/eras",
   },
   {
     label: t('common.connects'),
-    icon: "i-heroicons-folder-open",
+    icon: "i-heroicons-user-group",
     to: locale.value === 'tr' ? "/connects" : "/en/connects",
   },
   {
