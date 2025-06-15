@@ -53,6 +53,21 @@ const currentPage = ref(1);
 const itemsPerPage = 30;
 const sortOrder = ref('asc');
 const sortBy = ref('status');
+const searchQuery = ref('');
+
+const getQueryParams = () => {
+  const params = new URLSearchParams({
+    limit: itemsPerPage.toString(),
+    skip: ((currentPage.value - 1) * itemsPerPage).toString(),
+    order: `${sortOrder.value}:${sortBy.value}`
+  });
+
+  if (searchQuery.value) {
+    params.append('username', `${searchQuery.value}`);
+  }
+
+  return params.toString();
+};
 
 const toggleSort = (column: string) => {
   if (sortBy.value === column) {
@@ -63,11 +78,11 @@ const toggleSort = (column: string) => {
   }
 };
 
-watch([currentPage, sortOrder, sortBy], () => {
+watch([currentPage, sortOrder, sortBy, searchQuery], () => {
   fetchConnects();
 });
 
-const { data: items, error, isFetching, execute: fetchConnects } = useApi(() => `/connects?order=${sortOrder.value}:${sortBy.value}&limit=${itemsPerPage}&skip=${(currentPage.value - 1) * itemsPerPage}`).json<{
+const { data: items, error, isFetching, execute: fetchConnects } = useApi(() => `/connects?${getQueryParams()}`).json<{
   data: Row[];
   total: number;
 }>();
@@ -106,8 +121,16 @@ const handleAccept = async (uid: number) => {
 <template>
   <div v-if="!!error || !items">{{ error }}</div>
   <div v-else>
-    <div class="flex flex-row items-center justify-end">
-      <UButton icon="i-heroicons-arrow-path" :loading="isFetching" @click="fetchConnects"></UButton>
+    <div class="flex flex-row items-center justify-end mb-4">
+      <div class="flex items-center gap-4">
+        <UInput
+          v-model="searchQuery"
+          :placeholder="t('common.search')"
+          icon="i-heroicons-magnifying-glass"
+          class="w-64"
+        />
+        <UButton icon="i-heroicons-arrow-path" :loading="isFetching" @click="fetchConnects"></UButton>
+      </div>
     </div>
     <UTable :columns="columns" :rows="items.data" :loading="isFetching" :loading-state="{
       icon: 'i-heroicons-arrow-path-20-solid',

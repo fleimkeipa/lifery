@@ -52,6 +52,7 @@ const currentPage = ref(1);
 const itemsPerPage = 30;
 const sortOrder = ref('desc');
 const sortBy = ref('date');
+const searchQuery = ref('');
 
 const toggleSort = (column: string) => {
   if (sortBy.value === column) {
@@ -62,16 +63,30 @@ const toggleSort = (column: string) => {
   }
 };
 
-watch([currentPage, sortOrder, sortBy], () => {
+watch([currentPage, sortOrder, sortBy, searchQuery], () => {
   fetchEvents();
 });
+
+const getQueryParams = () => {
+  const params = new URLSearchParams({
+    limit: itemsPerPage.toString(),
+    skip: ((currentPage.value - 1) * itemsPerPage).toString(),
+    order: `${sortOrder.value}:${sortBy.value}`
+  });
+
+  if (searchQuery.value) {
+    params.append('name', `like:${searchQuery.value}`);
+  }
+
+  return params.toString();
+};
 
 const {
   data: items,
   error,
   isFetching,
   execute: fetchEvents,
-} = useApi(() => `/events?limit=${itemsPerPage}&skip=${(currentPage.value - 1) * itemsPerPage}&order=${sortOrder.value}:${sortBy.value}`).json();
+} = useApi(() => `/events?${getQueryParams()}`).json();
 
 const router = useRouter();
 
@@ -104,7 +119,15 @@ const handleDelete = async (uid: number) => {
       <UButton icon="i-heroicons-plus">
         <NuxtLink to="/events/create/new">{{ t('common.create_new') }}</NuxtLink>
       </UButton>
-      <UButton icon="i-heroicons-arrow-path" :loading="isFetching" @click="fetchEvents"></UButton>
+      <div class="flex items-center gap-4">
+        <UInput
+          v-model="searchQuery"
+          :placeholder="t('common.search')"
+          icon="i-heroicons-magnifying-glass"
+          class="w-64"
+        />
+        <UButton icon="i-heroicons-arrow-path" :loading="isFetching" @click="fetchEvents"></UButton>
+      </div>
     </div>
     <UTable :columns="columns" :rows="items.data" :loading="isFetching" :loading-state="{
       icon: 'i-heroicons-arrow-path-20-solid',

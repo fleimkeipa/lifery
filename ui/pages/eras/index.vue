@@ -39,6 +39,21 @@ const currentPage = ref(1);
 const itemsPerPage = 30;
 const sortOrder = ref('desc');
 const sortBy = ref('time_start');
+const searchQuery = ref('');
+
+const getQueryParams = () => {
+  const params = new URLSearchParams({
+    limit: itemsPerPage.toString(),
+    skip: ((currentPage.value - 1) * itemsPerPage).toString(),
+    order: `${sortOrder.value}:${sortBy.value}`
+  });
+
+  if (searchQuery.value) {
+    params.append('name', `like:${searchQuery.value}`);
+  }
+
+  return params.toString();
+};
 
 const toggleSort = (column: string) => {
   if (sortBy.value === column) {
@@ -49,11 +64,11 @@ const toggleSort = (column: string) => {
   }
 };
 
-watch([currentPage, sortOrder, sortBy], () => {
+watch([currentPage, sortOrder, sortBy, searchQuery], () => {
   fetchEras();
 });
 
-const { data: items, error, isFetching, execute: fetchEras } = useApi(() => `/eras?order=${sortOrder.value}:${sortBy.value}&limit=${itemsPerPage}&skip=${(currentPage.value - 1) * itemsPerPage}`).json<{
+const { data: items, error, isFetching, execute: fetchEras } = useApi(() => `/eras?${getQueryParams()}`).json<{
   data: Row[];
   total: number;
 }>();
@@ -89,7 +104,15 @@ const handleDelete = async (id: number) => {
       <UButton icon="i-heroicons-plus">
         <NuxtLink to="/eras/create/new">{{ t('common.create_new') }}</NuxtLink>
       </UButton>
-      <UButton icon="i-heroicons-arrow-path" :loading="isFetching" @click="fetchEras"></UButton>
+      <div class="flex items-center gap-4">
+        <UInput
+          v-model="searchQuery"
+          :placeholder="t('common.search')"
+          icon="i-heroicons-magnifying-glass"
+          class="w-64"
+        />
+        <UButton icon="i-heroicons-arrow-path" :loading="isFetching" @click="fetchEras"></UButton>
+      </div>
     </div>
     <UTable :columns="columns" :rows="items.data" :loading="isFetching" :loading-state="{
       icon: 'i-heroicons-arrow-path-20-solid',
