@@ -37,12 +37,23 @@ const columns = [
 
 const currentPage = ref(1);
 const itemsPerPage = 30;
+const sortOrder = ref('desc');
+const sortBy = ref('time_start');
 
-watch(currentPage, () => {
+const toggleSort = (column: string) => {
+  if (sortBy.value === column) {
+    sortOrder.value = sortOrder.value === 'desc' ? 'asc' : 'desc';
+  } else {
+    sortBy.value = column;
+    sortOrder.value = 'desc';
+  }
+};
+
+watch([currentPage, sortOrder, sortBy], () => {
   fetchEras();
 });
 
-const { data: items, error, isFetching, execute: fetchEras } = useApi(() => `/eras?order=desc:time_start&limit=${itemsPerPage}&skip=${(currentPage.value - 1) * itemsPerPage}`).json<{
+const { data: items, error, isFetching, execute: fetchEras } = useApi(() => `/eras?order=${sortOrder.value}:${sortBy.value}&limit=${itemsPerPage}&skip=${(currentPage.value - 1) * itemsPerPage}`).json<{
   data: Row[];
   total: number;
 }>();
@@ -74,7 +85,7 @@ const handleDelete = async (id: number) => {
 <template>
   <div v-if="!!error || !items">{{ error }}</div>
   <div v-else>
-    <div class="flex flex-row items-center justify-between">
+    <div class="flex flex-row items-center justify-between mb-4">
       <UButton icon="i-heroicons-plus">
         <NuxtLink to="/eras/create/new">{{ t('common.create_new') }}</NuxtLink>
       </UButton>
@@ -84,6 +95,27 @@ const handleDelete = async (id: number) => {
       icon: 'i-heroicons-arrow-path-20-solid',
       label: t('common.loading'),
     }">
+      <template #name-header>
+        <div class="flex items-center gap-2 cursor-pointer" @click="toggleSort('name')">
+          <span>{{ t('common.name') }}</span>
+          <UIcon v-if="sortBy === 'name'" :name="sortOrder === 'desc' ? 'i-heroicons-arrow-down' : 'i-heroicons-arrow-up'" class="w-4 h-4" />
+        </div>
+      </template>
+
+      <template #time_start-header>
+        <div class="flex items-center gap-2 cursor-pointer" @click="toggleSort('time_start')">
+          <span>{{ t('common.time_start') }}</span>
+          <UIcon v-if="sortBy === 'time_start'" :name="sortOrder === 'desc' ? 'i-heroicons-arrow-down' : 'i-heroicons-arrow-up'" class="w-4 h-4" />
+        </div>
+      </template>
+
+      <template #time_end-header>
+        <div class="flex items-center gap-2 cursor-pointer" @click="toggleSort('time_end')">
+          <span>{{ t('common.time_end') }}</span>
+          <UIcon v-if="sortBy === 'time_end'" :name="sortOrder === 'desc' ? 'i-heroicons-arrow-down' : 'i-heroicons-arrow-up'" class="w-4 h-4" />
+        </div>
+      </template>
+
       <template #name-data="{ row }">
         <UButton variant="link" @click="router.push(`/eras/${row.id}`)">
           {{ row.name }}

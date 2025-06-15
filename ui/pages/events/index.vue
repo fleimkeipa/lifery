@@ -50,8 +50,19 @@ const columns = [
 const selectedRows = ref<Row[]>([]);
 const currentPage = ref(1);
 const itemsPerPage = 30;
+const sortOrder = ref('desc');
+const sortBy = ref('date');
 
-watch(currentPage, () => {
+const toggleSort = (column: string) => {
+  if (sortBy.value === column) {
+    sortOrder.value = sortOrder.value === 'desc' ? 'asc' : 'desc';
+  } else {
+    sortBy.value = column;
+    sortOrder.value = 'desc';
+  }
+};
+
+watch([currentPage, sortOrder, sortBy], () => {
   fetchEvents();
 });
 
@@ -60,7 +71,7 @@ const {
   error,
   isFetching,
   execute: fetchEvents,
-} = useApi(() => `/events?limit=${itemsPerPage}&skip=${(currentPage.value - 1) * itemsPerPage}`).json();
+} = useApi(() => `/events?limit=${itemsPerPage}&skip=${(currentPage.value - 1) * itemsPerPage}&order=${sortOrder.value}:${sortBy.value}`).json();
 
 const router = useRouter();
 
@@ -89,7 +100,7 @@ const handleDelete = async (uid: number) => {
 <template>
   <div v-if="!!error || !items">{{ error }}</div>
   <div v-else>
-    <div class="flex flex-row items-center justify-between">
+    <div class="flex flex-row items-center justify-between mb-4">
       <UButton icon="i-heroicons-plus">
         <NuxtLink to="/events/create/new">{{ t('common.create_new') }}</NuxtLink>
       </UButton>
@@ -99,6 +110,27 @@ const handleDelete = async (uid: number) => {
       icon: 'i-heroicons-arrow-path-20-solid',
       label: t('common.loading'),
     }" row-selectable v-model:selected="selectedRows" :row-expandable="() => true" show-detail-on-click>
+      <template #name-header>
+        <div class="flex items-center gap-2 cursor-pointer" @click="toggleSort('name')">
+          <span>{{ t('common.name') }}</span>
+          <UIcon v-if="sortBy === 'name'" :name="sortOrder === 'desc' ? 'i-heroicons-arrow-down' : 'i-heroicons-arrow-up'" class="w-4 h-4" />
+        </div>
+      </template>
+
+      <template #date-header>
+        <div class="flex items-center gap-2 cursor-pointer" @click="toggleSort('date')">
+          <span>{{ t('common.date') }}</span>
+          <UIcon v-if="sortBy === 'date'" :name="sortOrder === 'desc' ? 'i-heroicons-arrow-down' : 'i-heroicons-arrow-up'" class="w-4 h-4" />
+        </div>
+      </template>
+
+      <template #visibility-header>
+        <div class="flex items-center gap-2 cursor-pointer" @click="toggleSort('visibility')">
+          <span>{{ t('event.visibility') }}</span>
+          <UIcon v-if="sortBy === 'visibility'" :name="sortOrder === 'desc' ? 'i-heroicons-arrow-down' : 'i-heroicons-arrow-up'" class="w-4 h-4" />
+        </div>
+      </template>
+
       <template #visibility-data="{ row }">
         <span :style="{
           display: 'inline-block',

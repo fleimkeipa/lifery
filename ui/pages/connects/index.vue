@@ -51,12 +51,23 @@ const columns = [
 
 const currentPage = ref(1);
 const itemsPerPage = 30;
+const sortOrder = ref('asc');
+const sortBy = ref('status');
 
-watch(currentPage, () => {
+const toggleSort = (column: string) => {
+  if (sortBy.value === column) {
+    sortOrder.value = sortOrder.value === 'desc' ? 'asc' : 'desc';
+  } else {
+    sortBy.value = column;
+    sortOrder.value = 'desc';
+  }
+};
+
+watch([currentPage, sortOrder, sortBy], () => {
   fetchConnects();
 });
 
-const { data: items, error, isFetching, execute: fetchConnects } = useApi(() => `/connects?limit=${itemsPerPage}&skip=${(currentPage.value - 1) * itemsPerPage}`).json<{
+const { data: items, error, isFetching, execute: fetchConnects } = useApi(() => `/connects?order=${sortOrder.value}:${sortBy.value}&limit=${itemsPerPage}&skip=${(currentPage.value - 1) * itemsPerPage}`).json<{
   data: Row[];
   total: number;
 }>();
@@ -102,6 +113,20 @@ const handleAccept = async (uid: number) => {
       icon: 'i-heroicons-arrow-path-20-solid',
       label: t('common.loading'),
     }">
+      <template #friend.username-header>
+        <div class="flex items-center gap-2 cursor-pointer" @click="toggleSort('friend.username')">
+          <span>{{ t('connect.friend_username') }}</span>
+          <UIcon v-if="sortBy === 'friend.username'" :name="sortOrder === 'desc' ? 'i-heroicons-arrow-down' : 'i-heroicons-arrow-up'" class="w-4 h-4" />
+        </div>
+      </template>
+
+      <template #status-header>
+        <div class="flex items-center gap-2 cursor-pointer" @click="toggleSort('status')">
+          <span>{{ t('connect.status') }}</span>
+          <UIcon v-if="sortBy === 'status'" :name="sortOrder === 'asc' ? 'i-heroicons-arrow-down' : 'i-heroicons-arrow-up'" class="w-4 h-4" />
+        </div>
+      </template>
+
       <template #status-data="{ row }">
         <span
           :style="{
