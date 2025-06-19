@@ -75,20 +75,6 @@ const { data: items, error, isFetching, execute: fetchEras } = useApi(() => `/er
 
 const router = useRouter();
 
-const actions = (row: Row) => [
-  [
-    {
-      label: t('common.edit'),
-      icon: "i-heroicons-pencil-square-20-solid",
-      click: () => router.push(`/eras/${row.id}`),
-    },
-    {
-      label: t('common.delete'),
-      icon: "i-heroicons-trash-20-solid",
-      click: () => handleDelete(row.id),
-    },
-  ],
-];
 
 const handleDelete = async (id: number) => {
   useApi(`/eras/${id}`, {
@@ -152,9 +138,15 @@ const handleDelete = async (id: number) => {
       </template>
 
       <template #actions-data="{ row }">
-        <UDropdown :items="actions(row)">
-          <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" />
-        </UDropdown>
+        <div class="flex justify-end">
+          <UButton 
+            color="red" 
+            variant="ghost" 
+            icon="i-heroicons-trash-20-solid"
+            @click="handleDelete(row.id)"
+            :title="t('common.delete')"
+          />
+        </div>
       </template>
     </UTable>
 

@@ -178,9 +178,23 @@ const handleAccept = async (uid: number) => {
       </template>
 
       <template #actions-data="{ row }">
-        <UDropdown :items="actions(row)">
-          <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" />
-        </UDropdown>
+        <div class="flex gap-2 justify-end">
+          <UButton 
+            v-if="row.status === 100 && row.user_id != user?.id"
+            color="green" 
+            variant="ghost" 
+            icon="i-heroicons-check-circle-20-solid"
+            @click="handleAccept(row.id)"
+            :title="t('common.accept')"
+          />
+          <UButton 
+            color="red" 
+            variant="ghost" 
+            icon="i-heroicons-trash-20-solid"
+            @click="handleDelete(row.id)"
+            :title="t('common.delete')"
+          />
+        </div>
       </template>
     </UTable>
 
