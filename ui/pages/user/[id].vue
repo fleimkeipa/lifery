@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { useAuth } from '../../composables/useAuth';
+
+const { user } = useAuth();
 
 definePageMeta({
-  middleware: "auth",
+  middleware: "custom-layout",
 });
 
 const { t } = useI18n();
@@ -63,15 +66,15 @@ const formatDate = (dateStr: string) => {
 const getTextColor = (hexColor: string) => {
   // Remove # if it exists
   const hex = hexColor.replace('#', '');
-  
+
   // Convert hex to RGB
   const r = parseInt(hex.substring(0, 2), 16);
   const g = parseInt(hex.substring(2, 4), 16);
   const b = parseInt(hex.substring(4, 6), 16);
-  
+
   // Calculate relative luminance
   const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-  
+
   // Return dark text for light backgrounds, light text for dark backgrounds
   return luminance > 0.5 ? 'text-gray-900' : 'text-white';
 };
@@ -157,7 +160,7 @@ const addConnection = async () => {
   <div class="min-h-screen bg-background p-8">
     <div class="max-w-6xl mx-auto">
       <!-- Bağlantı Ekle Butonu -->
-      <div class="mb-8 flex justify-end">
+      <div v-if="user" class="mb-8 flex justify-end">
         <button @click="addConnection"
           class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors">
           {{ t(`connect.add_connection`) }}
