@@ -63,7 +63,11 @@ func GetCacheTestInstance(ctx context.Context) (*redis.Client, func()) {
 
 	// Return the client and a cleanup function
 	return redisClient, func() {
-		redisClient.Close()
-		containerClient.Terminate(ctx)
+		if err := redisClient.Close(); err != nil {
+			log.Printf("Error closing Redis client: %v", err)
+		}
+		if err := containerClient.Terminate(ctx); err != nil {
+			log.Printf("Error terminating Redis container: %v", err)
+		}
 	}
 }

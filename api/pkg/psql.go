@@ -76,7 +76,11 @@ func GetTestInstance(ctx context.Context) (*pg.DB, func()) {
 
 	// Return the client and a cleanup function
 	return client, func() {
-		client.Close()
-		psqlClient.Terminate(ctx)
+		if err := client.Close(); err != nil {
+			log.Printf("Error closing PostgreSQL client: %v", err)
+		}
+		if err := psqlClient.Terminate(ctx); err != nil {
+			log.Printf("Error terminating PostgreSQL container: %v", err)
+		}
 	}
 }
