@@ -7,6 +7,10 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+type contextKey string
+
+const userContextKey contextKey = "user"
+
 // check for valid admin token
 func JWTAuthAdmin(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
@@ -80,14 +84,10 @@ func JWTAuthViewer(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-func setOwnerOnCtx(c echo.Context) error {
-	user, err := GetOwnerFromToken(c)
-	if err != nil {
-		return err
-	}
+func setOwnerOnCtx(c echo.Context) {
+	user, _ := GetOwnerFromToken(c)
 
-	ctx := context.WithValue(c.Request().Context(), "user", user)
+	ctx := context.WithValue(c.Request().Context(), userContextKey, user)
 
 	c.SetRequest(c.Request().WithContext(ctx))
-	return nil
 }
