@@ -6,7 +6,7 @@ const links = computed(() => [
   {
     label: t('common.home'),
     icon: "i-heroicons-home",
-    to: locale.value === 'tr' ? "/" : "/en",
+    to: locale.value === 'tr' ? "/home" : "/en/home",
   },
   {
     label: t('common.events'),
