@@ -56,32 +56,22 @@ const formatDate = (dateStr: string) => {
 const getTextColor = (hexColor: string) => {
   // Remove # if it exists
   const hex = hexColor.replace('#', '');
-  
+
   // Convert hex to RGB
   const r = parseInt(hex.substring(0, 2), 16);
   const g = parseInt(hex.substring(2, 4), 16);
   const b = parseInt(hex.substring(4, 6), 16);
-  
+
   // Calculate relative luminance
   const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-  
+
   // Return dark text for light backgrounds, light text for dark backgrounds
   return luminance > 0.5 ? 'text-gray-900' : 'text-white';
 };
 
-const { data: eventsData, error, isFetching, execute: fetchEvents } = useApi<{
-  data: Row[];
-  total: number;
-  limit: number;
-  skip: number;
-}>("/events?order=desc:date").json();
+const { data: eventsData, error, isFetching, execute: fetchEvents } = useApi(() => "/events?order=desc:date").json();
 
-const { data: erasData, error: errorEras, isFetching: isFetchingEras, execute: fetchEras } = useApi<{
-  data: Row[];
-  total: number;
-  limit: number;
-  skip: number;
-}>("/eras?order=desc:time_start").json();
+const { data: erasData, error: errorEras, isFetching: isFetchingEras, execute: fetchEras } = useApi(() => "/eras?order=desc:time_start").json();
 
 const timelineData = computed<(TimelineItem | TimelineEra)[]>(() => {
   if (!eventsData.value?.data) return [];

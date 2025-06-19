@@ -1,7 +1,7 @@
 <template>
   <div class="flex h-screen w-full flex-col items-center justify-start">
     <div class="w-2/3">
-      <div class="flex justify-between items-center py-4">
+      <div v-if="$route.path !== '/intro'" class="flex justify-between items-center py-4">
         <navigation-menu />
         <div class="flex items-center gap-2">
           <NotificationBell />

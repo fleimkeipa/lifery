@@ -124,5 +124,17 @@
         "title": "Notifications",
         "no_notifications": "No notifications",
         "mark_as_read": "Mark as read"
+    },
+    "intro": {
+        "title": "With Lifery, easily record, manage, and share your important moments, eras, and connections in life. Create your own timeline, interact with friends, and securely store your memories.",
+        "eventTitle": "Add Event",
+        "eventExample": "Example: 'Started University'",
+        "eventDesc": "You can create a new event by adding a name, description, date, and media.",
+        "eraTitle": "Add Era",
+        "eraExample": "Example: 'High School Years (2015-2019)'",
+        "eraDesc": "Select a time range, give it a name and color, and record important eras in your life.",
+        "connectTitle": "Add Connection",
+        "connectExample": "Example: 'your_friend'",
+        "connectDesc": "Search for a username to add friends, send connection requests, and build your social network."
     }
 }

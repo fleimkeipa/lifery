@@ -124,5 +124,17 @@
         "title": "Bildirimler",
         "no_notifications": "Bildirim yok",
         "mark_as_read": "Okundu olarak işaretle"
+    },
+    "intro": {
+        "title": "Lifery ile hayatınızdaki önemli anları, dönemleri ve bağlantıları kolayca kaydedin, yönetin ve paylaşın. Kendi zaman tünelinizi oluşturun, arkadaşlarınızla etkileşime geçin ve anılarınızı güvenle saklayın.",
+        "eventTitle": "Olay Ekleme",
+        "eventExample": "Örneğin: 'Üniversiteye Başladım'",
+        "eventDesc": "Olay adı, açıklama, tarih ve medya ekleyerek yeni bir olay oluşturabilirsiniz.",
+        "eraTitle": "Dönem Ekleme",
+        "eraExample": "Örneğin: 'Lise Yılları (2015-2019)'",
+        "eraDesc": "Bir zaman aralığı seçip, bu döneme isim ve renk vererek hayatınızdaki önemli dönemleri kaydedebilirsiniz.",
+        "connectTitle": "Bağlantı Ekleme",
+        "connectExample": "Örneğin: 'arkadas_adiniz'",
+        "connectDesc": "Kullanıcı adını aratarak arkadaş ekleyebilir, bağlantı isteği gönderebilir ve sosyal ağınızı oluşturabilirsiniz."
     }
 }
