@@ -64,7 +64,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     localStorage.setItem('username', data.value.username);
 
     // Navigate to the events page
-    await navigateTo('/events');
+    await navigateTo('/home');
   }
 }
 </script>
