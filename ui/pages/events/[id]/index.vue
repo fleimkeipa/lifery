@@ -143,15 +143,17 @@ const typeOptions = [
         </div>
         <div class="mb-4 flex flex-col gap-y-4" v-if="state.items.length">
           <div :key="item.key" v-for="(item, idx) in state.items"
-            class="flex flex-row items-start justify-center gap-x-6">
+            class="flex flex-row items-start justify-center gap-x-6 border-b border-gray-200 dark:border-gray-800 pb-4">
             <UFormGroup :label="t('event.item')" :type="`items[${idx}].type`">
               <USelect v-model="item.type" :placeholder="t('event.select_item')" :options="typeOptions"
                 @update:modelValue="(val) => item.type = Number(val)" />
             </UFormGroup>
 
             <UFormGroup :label="t('event.data')" :name="`items[${idx}].data`">
-              <ImageUploader v-if="item.type === 11" @upload-complete="(url) => item.data = url" />
-              <VideoUploader v-else-if="item.type === 12" @upload-complete="(url) => item.data = url" />
+              <ImageUploader v-if="item.type === 11" :modelValue="item.data"
+                @upload-complete="(url) => item.data = url" />
+              <VideoUploader v-else-if="item.type === 12" :modelValue="item.data"
+                @upload-complete="(url) => item.data = url" />
               <UInput v-else type="text" :placeholder="t('event.data_of_item')" v-model="item.data" />
             </UFormGroup>
 
