@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  ui:
+    build: .
+    container_name: lifery-ui
+    volumes:
+      - .env:/app/.env
+    ports:
+      - "8081:8081"
+      - "3000:3000"
+    environment:
+      - NUXT_API_BASE_URL=${NUXT_API_BASE_URL}
+    restart: on-failure 
