@@ -64,12 +64,15 @@ func serveApplication() {
 	notificationUC := initNotificationUC(dbClient)
 	notificationController := controller.NewNotificationHandlers(notificationUC)
 
-	authHandlers := controller.NewAuthHandlers(userUC)
+	emailUC := initEmailUC()
+	authHandlers := controller.NewAuthHandlers(userUC, emailUC)
 
 	// Define authentication routes and handlers
 	authRoutes := e.Group("/auth")
 	authRoutes.POST("/login", authHandlers.Login)
 	authRoutes.POST("/register", authHandlers.Register)
+	authRoutes.POST("/forgot-password", authHandlers.ForgotPassword)
+	authRoutes.POST("/reset-password", authHandlers.ResetPassword)
 
 	// Add JWT authentication and authorization middleware
 	adminRoutes := e.Group("")
@@ -232,4 +235,9 @@ func initEventUC(db *pg.DB) *uc.EventUC {
 func initNotificationUC(db *pg.DB) *uc.NotificationUC {
 	notificationDBRepo := repositories.NewNotificationRepository(db)
 	return uc.NewNotificationUC(notificationDBRepo)
+}
+
+func initEmailUC() *uc.EmailUC {
+	emailRepo := repositories.NewEmailRepository()
+	return uc.NewEmailUC(emailRepo)
 }
