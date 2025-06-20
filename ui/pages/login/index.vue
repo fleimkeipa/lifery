@@ -79,6 +79,12 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
           </UButton>
         </div>
 
+        <div class="flex w-full justify-center">
+          <UButton :to="{ path: '/forgot-password', query: { locale } }" variant="link" class="text-sm">
+            {{ t('login.forgotPassword') }}
+          </UButton>
+        </div>
+
         <div class="flex w-full justify-center mt-4">
           <UButton :to="{ path: '/register', query: { locale } }" variant="link" class="text-sm">
             {{ t('login.noAccount') }}
