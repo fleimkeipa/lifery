@@ -27,7 +27,7 @@ func (rc *UserUC) Create(ctx context.Context, req model.UserCreateInput) (*model
 	}
 
 	if exists {
-		return nil, pkg.NewError(nil, "User already exists", http.StatusBadRequest)
+		return nil, pkg.NewError(nil, "User already exists", http.StatusConflict)
 	}
 
 	if req.Password != req.ConfirmPassword {

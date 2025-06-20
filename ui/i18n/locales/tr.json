@@ -7,6 +7,12 @@
         "confirmPassword": "Şifre Tekrarı",
         "submit": "Kayıt Ol",
         "alreadyHaveAccount": "Zaten bir hesabınız var mı? Giriş yapın",
+        "error": {
+            "general": "Kayıt başarısız. Lütfen tekrar deneyin.",
+            "userExists": "Kullanıcı adı veya e-posta zaten mevcut.",
+            "invalidData": "Bilgilerinizi kontrol edip tekrar deneyin.",
+            "networkError": "Ağ hatası. Bağlantınızı kontrol edip tekrar deneyin."
+        },
         "validation": {
             "required": {
                 "username": "Kullanıcı adı gereklidir",
@@ -29,6 +35,11 @@
         "submit": "Giriş Yap",
         "noAccount": "Hesabınız yok mu? Kayıt olun",
         "forgotPassword": "Şifremi Unuttum",
+        "error": {
+            "general": "Giriş başarısız. Bilgilerinizi kontrol edip tekrar deneyin.",
+            "invalidCredentials": "Geçersiz kullanıcı adı veya şifre.",
+            "networkError": "Ağ hatası. Bağlantınızı kontrol edip tekrar deneyin."
+        },
         "validation": {
             "required": {
                 "username": "Kullanıcı adı gereklidir",

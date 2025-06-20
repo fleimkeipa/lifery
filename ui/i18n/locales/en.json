@@ -7,6 +7,12 @@
         "confirmPassword": "Confirm Password",
         "submit": "Sign Up",
         "alreadyHaveAccount": "Already have an account? Sign in",
+        "error": {
+            "general": "Registration failed. Please try again.",
+            "userExists": "Username or email already exists.",
+            "invalidData": "Please check your information and try again.",
+            "networkError": "Network error. Please check your connection and try again."
+        },
         "validation": {
             "required": {
                 "username": "Username is required",
@@ -29,6 +35,11 @@
         "submit": "Sign In",
         "noAccount": "Don't have an account? Sign up",
         "forgotPassword": "Forgot Password",
+        "error": {
+            "general": "Login failed. Please check your credentials and try again.",
+            "invalidCredentials": "Invalid username or password.",
+            "networkError": "Network error. Please check your connection and try again."
+        },
         "validation": {
             "required": {
                 "username": "Username is required",
