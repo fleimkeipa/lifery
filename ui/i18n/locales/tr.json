@@ -28,6 +28,7 @@
         "password": "Şifre",
         "submit": "Giriş Yap",
         "noAccount": "Hesabınız yok mu? Kayıt olun",
+        "forgotPassword": "Şifremi Unuttum",
         "validation": {
             "required": {
                 "username": "Kullanıcı adı gereklidir",
@@ -124,6 +125,35 @@
         "title": "Bildirimler",
         "no_notifications": "Bildirim yok",
         "mark_as_read": "Okundu olarak işaretle"
+    },
+    "forgotPassword": {
+        "title": "Şifremi Unuttum",
+        "email": "E-posta",
+        "submit": "Şifre Sıfırlama Bağlantısı Gönder",
+        "backToLogin": "Giriş sayfasına dön",
+        "successMessage": "Şifre sıfırlama bağlantısı e-posta adresinize gönderildi",
+        "validation": {
+            "required": {
+                "email": "E-posta adresi gereklidir"
+            },
+            "email": "Geçerli bir e-posta adresi giriniz"
+        }
+    },
+    "resetPassword": {
+        "title": "Şifre Sıfırla",
+        "newPassword": "Yeni Şifre",
+        "confirmPassword": "Şifre Tekrarı",
+        "submit": "Şifreyi Sıfırla",
+        "validation": {
+            "required": {
+                "newPassword": "Yeni şifre gereklidir",
+                "confirmPassword": "Şifre tekrarı gereklidir"
+            },
+            "min": {
+                "newPassword": "Şifre en az 8 karakter olmalıdır"
+            },
+            "passwordsMatch": "Şifreler eşleşmelidir"
+        }
     },
     "intro": {
         "title": "Lifery ile hayatınızdaki önemli anları, dönemleri ve bağlantıları kolayca kaydedin, yönetin ve paylaşın. Kendi zaman tünelinizi oluşturun, arkadaşlarınızla etkileşime geçin ve anılarınızı güvenle saklayın.",

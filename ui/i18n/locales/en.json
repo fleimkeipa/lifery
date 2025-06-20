@@ -28,6 +28,7 @@
         "password": "Password",
         "submit": "Sign In",
         "noAccount": "Don't have an account? Sign up",
+        "forgotPassword": "Forgot Password",
         "validation": {
             "required": {
                 "username": "Username is required",
@@ -124,6 +125,35 @@
         "title": "Notifications",
         "no_notifications": "No notifications",
         "mark_as_read": "Mark as read"
+    },
+    "forgotPassword": {
+        "title": "Forgot Password",
+        "email": "Email",
+        "submit": "Send Reset Link",
+        "backToLogin": "Back to Login",
+        "successMessage": "Password reset link has been sent to your email",
+        "validation": {
+            "required": {
+                "email": "Email is required"
+            },
+            "email": "Please enter a valid email address"
+        }
+    },
+    "resetPassword": {
+        "title": "Reset Password",
+        "newPassword": "New Password",
+        "confirmPassword": "Confirm Password",
+        "submit": "Reset Password",
+        "validation": {
+            "required": {
+                "newPassword": "New password is required",
+                "confirmPassword": "Password confirmation is required"
+            },
+            "min": {
+                "newPassword": "Password must be at least 8 characters"
+            },
+            "passwordsMatch": "Passwords must match"
+        }
     },
     "intro": {
         "title": "With Lifery, easily record, manage, and share your important moments, eras, and connections in life. Create your own timeline, interact with friends, and securely store your memories.",
