@@ -36,7 +36,7 @@ func (rc *UserUC) Create(ctx context.Context, req model.UserCreateInput) (*model
 
 	user := model.User{
 		Username: req.Username,
-		// Email:    req.Email,
+		Email:    req.Email,
 		Password: req.Password,
 	}
 
@@ -88,43 +88,37 @@ func (rc *UserUC) Update(ctx context.Context, userID string, req model.UserCreat
 }
 
 func (rc *UserUC) List(ctx context.Context, opts *model.UserFindOpts) (*model.UserList, error) {
-	list, err := rc.userRepo.List(ctx, opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return list, nil
+	return rc.userRepo.List(ctx, opts)
 }
 
 func (rc *UserUC) GetByID(ctx context.Context, id string) (*model.User, error) {
-	user, err := rc.userRepo.GetByID(ctx, id)
-	if err != nil {
-		return nil, err
-	}
-
-	return user, nil
+	return rc.userRepo.GetByID(ctx, id)
 }
 
 func (rc *UserUC) GetByUsernameOrEmail(ctx context.Context, usernameOrEmail string) (*model.User, error) {
-	user, err := rc.userRepo.GetByUsernameOrEmail(ctx, usernameOrEmail)
-	if err != nil {
-		return nil, err
-	}
-
-	return user, nil
+	return rc.userRepo.GetByUsernameOrEmail(ctx, usernameOrEmail)
 }
 
 func (rc *UserUC) Exists(ctx context.Context, usernameOrEmail string) (bool, error) {
-	exists, err := rc.userRepo.Exists(ctx, usernameOrEmail)
-	if err != nil {
-		return false, err
-	}
-
-	return exists, nil
+	return rc.userRepo.Exists(ctx, usernameOrEmail)
 }
 
 func (rc *UserUC) Delete(ctx context.Context, userID string) error {
-	if err := rc.userRepo.Delete(ctx, userID); err != nil {
+	return rc.userRepo.Delete(ctx, userID)
+}
+
+func (rc *UserUC) GetByEmail(ctx context.Context, email string) (*model.User, error) {
+	return rc.userRepo.GetByEmail(ctx, email)
+}
+
+func (rc *UserUC) UpdatePassword(ctx context.Context, userID string, newPassword string) error {
+	hashedPassword, err := model.HashPassword(newPassword)
+	if err != nil {
+		return pkg.NewError(err, "failed to hash password", http.StatusInternalServerError)
+	}
+
+	err = rc.userRepo.UpdatePassword(ctx, userID, hashedPassword)
+	if err != nil {
 		return err
 	}
 

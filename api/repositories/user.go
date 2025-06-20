@@ -165,6 +165,49 @@ func (rc *UserRepository) Exists(ctx context.Context, usernameOrEmail string) (b
 	return exists, nil
 }
 
+func (rc *UserRepository) GetByEmail(ctx context.Context, email string) (*model.User, error) {
+	if email == "" {
+		return nil, pkg.NewError(nil, "missing email", http.StatusBadRequest)
+	}
+
+	var user user
+
+	query := rc.db.
+		Model(&user).
+		Where("email = ?", email)
+
+	if err := query.Select(); err != nil {
+		return nil, pkg.NewError(err, "failed to get user by email "+email, http.StatusInternalServerError)
+	}
+
+	return rc.sqlToInternal(&user), nil
+}
+
+func (rc *UserRepository) UpdatePassword(ctx context.Context, userID string, hashedPassword string) error {
+	if userID == "" || userID == "0" {
+		return pkg.NewError(nil, "invalid user ID: "+userID, http.StatusBadRequest)
+	}
+
+	if hashedPassword == "" {
+		return pkg.NewError(nil, "missing hashed password", http.StatusBadRequest)
+	}
+
+	result, err := rc.db.
+		Model(&user{}).
+		Set("password = ?", hashedPassword).
+		Where("id = ?", userID).
+		Update()
+	if err != nil {
+		return pkg.NewError(err, "failed to update user password", http.StatusInternalServerError)
+	}
+
+	if result.RowsAffected() == 0 {
+		return pkg.NewError(nil, "no user updated: "+userID, http.StatusBadRequest)
+	}
+
+	return nil
+}
+
 func (rc *UserRepository) fillFilter(tx *orm.Query, opts *model.UserFindOpts) *orm.Query {
 	if opts.Username.IsSended {
 		tx = applyFilterWithOperand(tx, "username", opts.Username)

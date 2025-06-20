@@ -12,6 +12,8 @@ type UserInterfaces interface {
 	List(ctx context.Context, opts *model.UserFindOpts) (*model.UserList, error)
 	GetByID(ctx context.Context, userID string) (*model.User, error)
 	GetByUsernameOrEmail(ctx context.Context, usernameOrEmail string) (*model.User, error)
+	GetByEmail(ctx context.Context, email string) (*model.User, error)
 	Exists(ctx context.Context, usernameOrEmail string) (bool, error)
 	Delete(ctx context.Context, userID string) error
+	UpdatePassword(ctx context.Context, userID string, hashedPassword string) error
 }
