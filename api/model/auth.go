@@ -12,9 +12,19 @@ type Login struct {
 }
 
 type Register struct {
-	Username string `json:"username" validate:"required"`
-	// Email           string `json:"email" validate:"email"`
+	Username        string `json:"username" validate:"required"`
+	Email           string `json:"email" validate:"required,email"`
 	Password        string `json:"password" validate:"required"`
+	ConfirmPassword string `json:"confirm_password" validate:"required"`
+}
+
+type ForgotPassword struct {
+	Email string `json:"email" validate:"required,email"`
+}
+
+type ResetPassword struct {
+	Token           string `json:"token" validate:"required"`
+	NewPassword     string `json:"new_password" validate:"required"`
 	ConfirmPassword string `json:"confirm_password" validate:"required"`
 }
 

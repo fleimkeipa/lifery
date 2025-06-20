@@ -12,12 +12,14 @@ import (
 )
 
 type AuthHandlers struct {
-	userUC *uc.UserUC
+	userUC  *uc.UserUC
+	emailUC *uc.EmailUC
 }
 
-func NewAuthHandlers(uc *uc.UserUC) *AuthHandlers {
+func NewAuthHandlers(uc *uc.UserUC, emailUC *uc.EmailUC) *AuthHandlers {
 	return &AuthHandlers{
-		userUC: uc,
+		userUC:  uc,
+		emailUC: emailUC,
 	}
 }
 
@@ -45,8 +47,8 @@ func (rc *AuthHandlers) Register(c echo.Context) error {
 	}
 
 	newUser := model.UserCreateInput{
-		Username: input.Username,
-		// Email:           input.Email,
+		Username:        input.Username,
+		Email:           input.Email,
 		Password:        input.Password,
 		ConfirmPassword: input.ConfirmPassword,
 	}
@@ -120,5 +122,92 @@ func (rc *AuthHandlers) Login(c echo.Context) error {
 		Type:     "basic",
 		Username: input.Username,
 		Message:  "Successfully logged in",
+	})
+}
+
+// ForgotPassword godoc
+//
+//	@Summary		Forgot password
+//	@Description	This endpoint allows a user to request a password reset by providing their email.
+//	@Tags			auth
+//	@Accept			json
+//	@Produce		json
+//	@Param			body	body		model.ForgotPassword	true	"Forgot password input"
+//	@Success		200		{object}	SuccessResponse			"Password reset email sent"
+//	@Failure		400		{object}	FailureResponse			"Error message including details on failure"
+//	@Failure		500		{object}	FailureResponse			"Internal error"
+//	@Router			/auth/forgot-password [post]
+func (rc *AuthHandlers) ForgotPassword(c echo.Context) error {
+	var input model.ForgotPassword
+
+	if err := c.Bind(&input); err != nil {
+		return handleBindingErrors(c, err)
+	}
+
+	if err := c.Validate(&input); err != nil {
+		return handleValidatingErrors(c, err)
+	}
+
+	user, err := rc.userUC.GetByEmail(c.Request().Context(), input.Email)
+	if err != nil {
+		return handleEchoError(c, err)
+	}
+
+	resetToken, err := util.GenerateResetToken(user)
+	if err != nil {
+		return handleEchoError(c, err)
+	}
+
+	if err := rc.emailUC.SendPasswordResetEmail(user.Email, user.Username, resetToken); err != nil {
+		return handleEchoError(c, err)
+	}
+
+	return c.JSON(http.StatusOK, SuccessResponse{
+		Message: "If the email exists, a password reset link has been sent.",
+	})
+}
+
+// ResetPassword godoc
+//
+//	@Summary		Reset password
+//	@Description	This endpoint allows a user to reset their password using a valid reset token.
+//	@Tags			auth
+//	@Accept			json
+//	@Produce		json
+//	@Param			body	body		model.ResetPassword	true	"Reset password input"
+//	@Success		200		{object}	SuccessResponse		"Password reset successful"
+//	@Failure		400		{object}	FailureResponse		"Error message including details on failure"
+//	@Failure		500		{object}	FailureResponse		"Internal error"
+//	@Router			/auth/reset-password [post]
+func (rc *AuthHandlers) ResetPassword(c echo.Context) error {
+	var input model.ResetPassword
+
+	if err := c.Bind(&input); err != nil {
+		return handleBindingErrors(c, err)
+	}
+
+	if err := c.Validate(&input); err != nil {
+		return handleValidatingErrors(c, err)
+	}
+
+	if input.NewPassword != input.ConfirmPassword {
+		return c.JSON(http.StatusBadRequest, FailureResponse{
+			Error:   "Passwords do not match",
+			Message: "New password and confirmation password must match.",
+		})
+	}
+
+	user, err := util.ValidateResetToken(input.Token)
+	if err != nil {
+		return handleEchoError(c, err)
+	}
+
+	err = rc.userUC.UpdatePassword(c.Request().Context(), user.ID, input.NewPassword)
+	if err != nil {
+		return handleEchoError(c, err)
+	}
+
+	return c.JSON(http.StatusOK, SuccessResponse{
+		Message: "Password reset successfully. You can now login with your new password.",
 	})
 }

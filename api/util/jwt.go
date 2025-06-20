@@ -4,11 +4,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net/http"
 	"os"
 	"strings"
 	"time"
 
 	"github.com/fleimkeipa/lifery/model"
+	"github.com/fleimkeipa/lifery/pkg"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
@@ -263,4 +265,78 @@ func IsUserPublic(c echo.Context) bool {
 	}
 
 	return true
+}
+
+// GenerateResetToken generates a JWT token for password reset
+func GenerateResetToken(user *model.User) (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"id":       user.ID,
+		"username": user.Username,
+		"email":    user.Email,
+		"type":     "password_reset",
+		"iat":      time.Now().Unix(),
+		"eat":      time.Now().Add(time.Hour * 24).Unix(), // 24 hour expiry
+	})
+
+	tokenString, err := token.SignedString(privateKey)
+	if err != nil {
+		return "", pkg.NewError(err, "failed to generate reset token", http.StatusInternalServerError)
+	}
+
+	return tokenString, nil
+}
+
+// ValidateResetToken validates a password reset token and returns the user info
+func ValidateResetToken(tokenString string) (*model.User, error) {
+	jwtParser := func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, pkg.NewError(nil, "unexpected signing method: "+token.Header["alg"].(string), http.StatusBadRequest)
+		}
+		return privateKey, nil
+	}
+
+	token, err := jwt.Parse(tokenString, jwtParser)
+	if err != nil {
+		return nil, pkg.NewError(err, "failed to parse reset token", http.StatusInternalServerError)
+	}
+
+	if !token.Valid {
+		return nil, pkg.NewError(nil, "invalid token", http.StatusBadRequest)
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return nil, pkg.NewError(nil, "invalid token claims", http.StatusBadRequest)
+	}
+
+	// Check if token is expired
+	if claims["eat"].(float64) < float64(time.Now().Unix()) {
+		return nil, pkg.NewError(nil, "token expired", http.StatusBadRequest)
+	}
+
+	// Check if token is for password reset
+	if claims["type"] != "password_reset" {
+		return nil, pkg.NewError(nil, "invalid token type", http.StatusBadRequest)
+	}
+
+	id, ok := claims["id"].(string)
+	if !ok {
+		return nil, pkg.NewError(nil, "invalid id claims", http.StatusBadRequest)
+	}
+
+	username, ok := claims["username"].(string)
+	if !ok {
+		return nil, pkg.NewError(nil, "invalid username claims", http.StatusBadRequest)
+	}
+
+	email, ok := claims["email"].(string)
+	if !ok {
+		return nil, pkg.NewError(nil, "invalid email claims", http.StatusBadRequest)
+	}
+
+	return &model.User{
+		ID:       id,
+		Username: username,
+		Email:    email,
+	}, nil
 }
