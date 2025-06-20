@@ -134,6 +134,13 @@ definitions:
     required:
     - name
     type: object
+  model.ForgotPassword:
+    properties:
+      email:
+        type: string
+    required:
+    - email
+    type: object
   model.Login:
     properties:
       password:
@@ -181,6 +188,19 @@ definitions:
     - RequestStatusPending
     - RequestStatusApproved
     - RequestStatusRejected
+  model.ResetPassword:
+    properties:
+      confirm_password:
+        type: string
+      new_password:
+        type: string
+      token:
+        type: string
+    required:
+    - confirm_password
+    - new_password
+    - token
+    type: object
   model.UserCreateInput:
     properties:
       confirm_password:
@@ -210,6 +230,37 @@ definitions:
 info:
   contact: {}
 paths:
+  /auth/forgot-password:
+    post:
+      consumes:
+      - application/json
+      description: This endpoint allows a user to request a password reset by providing
+        their email.
+      parameters:
+      - description: Forgot password input
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.ForgotPassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Password reset email sent
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "400":
+          description: Error message including details on failure
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      summary: Forgot password
+      tags:
+      - auth
   /auth/login:
     post:
       consumes:
@@ -270,6 +321,37 @@ paths:
           schema:
             $ref: '#/definitions/controller.FailureResponse'
       summary: User register
+      tags:
+      - auth
+  /auth/reset-password:
+    post:
+      consumes:
+      - application/json
+      description: This endpoint allows a user to reset their password using a valid
+        reset token.
+      parameters:
+      - description: Reset password input
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.ResetPassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Password reset successful
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "400":
+          description: Error message including details on failure
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      summary: Reset password
       tags:
       - auth
   /connects:
