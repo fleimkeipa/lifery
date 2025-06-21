@@ -210,8 +210,27 @@ definitions:
     - new_password
     - token
     type: object
+  model.UpdatePasswordRequest:
+    properties:
+      current_password:
+        type: string
+      new_password:
+        type: string
+    required:
+    - current_password
+    - new_password
+    type: object
+  model.UpdateUsernameRequest:
+    properties:
+      username:
+        type: string
+    required:
+    - username
+    type: object
   model.UserCreateInput:
     properties:
+      auth_type:
+        type: string
       confirm_password:
         type: string
       email:
@@ -953,6 +972,71 @@ paths:
       summary: Update updates an existing notification
       tags:
       - notifications
+  /user/password:
+    put:
+      consumes:
+      - application/json
+      description: This endpoint allows a user to update their password by providing
+        their current password.
+      parameters:
+      - description: Password update input
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdatePasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Password updated successfully
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "400":
+          description: Error message including details on failure
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update password
+      tags:
+      - users
+  /user/username:
+    put:
+      consumes:
+      - application/json
+      description: This endpoint allows a user to update their username.
+      parameters:
+      - description: Username update input
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateUsernameRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Username updated successfully
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "400":
+          description: Error message including details on failure
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update username
+      tags:
+      - users
   /users:
     get:
       consumes:
