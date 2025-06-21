@@ -289,58 +289,6 @@ paths:
       summary: Forgot password
       tags:
       - auth
-  /auth/google/callback:
-    post:
-      consumes:
-      - application/json
-      description: This endpoint handles the Google OAuth callback and creates or
-        logs in the user.
-      parameters:
-      - description: Google OAuth code
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/model.GoogleAuthRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Successfully authenticated with JWT token
-          schema:
-            $ref: '#/definitions/controller.AuthResponse'
-        "400":
-          description: Error message including details on failure
-          schema:
-            $ref: '#/definitions/controller.FailureResponse'
-        "500":
-          description: Internal error
-          schema:
-            $ref: '#/definitions/controller.FailureResponse'
-      summary: Google OAuth callback
-      tags:
-      - auth
-  /auth/google/url:
-    get:
-      consumes:
-      - application/json
-      description: This endpoint returns the Google OAuth authorization URL.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Google OAuth URL
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "500":
-          description: Internal error
-          schema:
-            $ref: '#/definitions/controller.FailureResponse'
-      summary: Get Google OAuth URL
-      tags:
-      - auth
   /auth/login:
     post:
       consumes:
@@ -972,6 +920,58 @@ paths:
       summary: Update updates an existing notification
       tags:
       - notifications
+  /oauth/google/callback:
+    post:
+      consumes:
+      - application/json
+      description: This endpoint handles the Google OAuth callback and creates or
+        logs in the user.
+      parameters:
+      - description: Google OAuth code
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.GoogleAuthRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully authenticated with JWT token
+          schema:
+            $ref: '#/definitions/controller.AuthResponse'
+        "400":
+          description: Error message including details on failure
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      summary: Google OAuth callback
+      tags:
+      - auth
+  /oauth/google/url:
+    get:
+      consumes:
+      - application/json
+      description: This endpoint returns the Google OAuth authorization URL.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Google OAuth URL
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      summary: Get Google OAuth URL
+      tags:
+      - auth
   /user/password:
     put:
       consumes:

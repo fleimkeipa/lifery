@@ -30,7 +30,7 @@ func NewOAuthHandlers(googleOAuth *uc.GoogleOAuthUC) *OAuthHandlers {
 //	@Produce		json
 //	@Success		200	{object}	map[string]string	"Google OAuth URL"
 //	@Failure		500	{object}	FailureResponse		"Internal error"
-//	@Router			/auth/google/url [get]
+//	@Router			/oauth/google/url [get]
 func (rc *OAuthHandlers) GoogleAuthURL(c echo.Context) error {
 	authURL := rc.googleOAuth.GetAuthURL()
 
@@ -51,7 +51,7 @@ func (rc *OAuthHandlers) GoogleAuthURL(c echo.Context) error {
 //	@Success		200		{object}	AuthResponse			"Successfully authenticated with JWT token"
 //	@Failure		400		{object}	FailureResponse			"Error message including details on failure"
 //	@Failure		500		{object}	FailureResponse			"Internal error"
-//	@Router			/auth/google/callback [post]
+//	@Router			/oauth/google/callback [post]
 func (rc *OAuthHandlers) GoogleCallback(c echo.Context) error {
 	var input model.GoogleAuthRequest
 

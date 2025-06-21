@@ -61,84 +61,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/auth/google/callback": {
-            "post": {
-                "description": "This endpoint handles the Google OAuth callback and creates or logs in the user.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "auth"
-                ],
-                "summary": "Google OAuth callback",
-                "parameters": [
-                    {
-                        "description": "Google OAuth code",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.GoogleAuthRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successfully authenticated with JWT token",
-                        "schema": {
-                            "$ref": "#/definitions/controller.AuthResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Error message including details on failure",
-                        "schema": {
-                            "$ref": "#/definitions/controller.FailureResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal error",
-                        "schema": {
-                            "$ref": "#/definitions/controller.FailureResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/auth/google/url": {
-            "get": {
-                "description": "This endpoint returns the Google OAuth authorization URL.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "auth"
-                ],
-                "summary": "Get Google OAuth URL",
-                "responses": {
-                    "200": {
-                        "description": "Google OAuth URL",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal error",
-                        "schema": {
-                            "$ref": "#/definitions/controller.FailureResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/auth/login": {
             "post": {
                 "description": "This endpoint allows a user to log in by providing a valid username and password.",
@@ -1088,6 +1010,84 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Notification update failed",
+                        "schema": {
+                            "$ref": "#/definitions/controller.FailureResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/oauth/google/callback": {
+            "post": {
+                "description": "This endpoint handles the Google OAuth callback and creates or logs in the user.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Google OAuth callback",
+                "parameters": [
+                    {
+                        "description": "Google OAuth code",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.GoogleAuthRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully authenticated with JWT token",
+                        "schema": {
+                            "$ref": "#/definitions/controller.AuthResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error message including details on failure",
+                        "schema": {
+                            "$ref": "#/definitions/controller.FailureResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.FailureResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/oauth/google/url": {
+            "get": {
+                "description": "This endpoint returns the Google OAuth authorization URL.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Get Google OAuth URL",
+                "responses": {
+                    "200": {
+                        "description": "Google OAuth URL",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal error",
                         "schema": {
                             "$ref": "#/definitions/controller.FailureResponse"
                         }
