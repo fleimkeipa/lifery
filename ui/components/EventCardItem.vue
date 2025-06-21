@@ -40,28 +40,28 @@ defineProps<{
 </script>
 
 <template>
-    <div class="flex gap-x-2 items-center w-full">
-        <div v-for="item in items" class="w-full flex">
+    <div class="grid grid-cols-3 gap-2 items-center w-full">
+        <div v-for="item in items" :key="item.data" class="flex justify-center items-center">
             <div v-if="item.type===EventType.PHOTO">
                 <img :src="item.data" 
-                     class="max-h-12 max-w-xs object-contain rounded cursor-pointer hover:opacity-90" 
+                     class="max-h-12 w-auto object-contain rounded cursor-pointer hover:opacity-90" 
                      @click="openPopup(item.data, item.type)" />
             </div>
             <div v-if="item.type===EventType.STRING" 
                  :class="color" 
-                 class="w-36 h-12 rounded shadow-lg text-center text-gray-800 cursor-pointer hover:opacity-90 truncate text-wrap"
+                 class="w-full h-12 rounded shadow-lg flex items-center justify-center text-center text-gray-800 cursor-pointer hover:opacity-90 p-2 break-all"
                  @click="openPopup(item.data, item.type)">
-                {{ item.data }}
+                <p class="truncate">{{ item.data }}</p>
             </div>
             <div v-if="item.type===EventType.VIDEO" 
                  :class="color" 
-                 class="w-24 h-12 rounded shadow-lg text-center text-gray-800 cursor-pointer hover:opacity-90 truncate text-wrap relative flex items-center justify-center"
+                 class="w-full h-12 rounded shadow-lg text-center text-gray-800 cursor-pointer hover:opacity-90 relative flex items-center justify-center"
                  @click="openPopup(item.data, item.type)">
-                <div class="flex flex-col items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 24 24" fill="currentColor">
+                <div class="flex flex-col items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M8 5v14l11-7z"/>
                     </svg>
-                    <span class="text-sm">Video</span>
+                    <span class="text-xs">Video</span>
                 </div>
             </div>
         </div>
