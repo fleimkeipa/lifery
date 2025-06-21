@@ -94,6 +94,7 @@
         "item": "Item",
         "data": "Data",
         "no_events": "No events found",
+        "no_more_events": "No more events to load",
         "add_item": "Add item",
         "select_item": "Select item",
         "remove_item": "Remove item",

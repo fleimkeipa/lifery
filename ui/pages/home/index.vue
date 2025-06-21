@@ -39,10 +39,15 @@ interface TimelineEra {
   name: string;
   time_end: string;
   time_start: string;
-  created_at: string;
-  updated_at: string;
   date: string;
   type: 'ERA'
+}
+
+interface ApiResponse {
+  data: Row[];
+  total: number;
+  limit: number;
+  skip: number;
 }
 
 const formatDate = (dateStr: string) => {
@@ -55,32 +60,121 @@ const formatDate = (dateStr: string) => {
 };
 
 const getTextColor = (hexColor: string) => {
-  // Remove # if it exists
   const hex = hexColor.replace('#', '');
-
-  // Convert hex to RGB
   const r = parseInt(hex.substring(0, 2), 16);
   const g = parseInt(hex.substring(2, 4), 16);
   const b = parseInt(hex.substring(4, 6), 16);
-
-  // Calculate relative luminance
   const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-
-  // Return dark text for light backgrounds, light text for dark backgrounds
   return luminance > 0.5 ? 'text-gray-900' : 'text-white';
 };
 
-const { data: eventsData, error, isFetching, execute: fetchEvents } = useApi(() => "/events?order=desc:date").json();
+// Pagination state
+const limit = ref(10);
+const skip = ref(0);
+const total = ref(0);
+const hasMore = ref(true);
+const isLoadingMore = ref(false);
+const error = ref<string | null>(null);
 
-const { data: erasData, error: errorEras, isFetching: isFetchingEras, execute: fetchEras } = useApi(() => "/eras?order=desc:time_start").json();
+// Store all events data
+const allEventsData = ref<Row[]>([]);
+const allErasData = ref<TimelineEra[]>([]);
+
+// Fetch events with pagination
+const fetchEventsWithPagination = async (reset = false) => {
+  if (reset) {
+    skip.value = 0;
+    allEventsData.value = [];
+    hasMore.value = true;
+    error.value = null;
+  }
+
+  if (!hasMore.value || isLoadingMore.value) return;
+
+  isLoadingMore.value = true;
+  
+  try {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+    
+    const response = await $fetch<ApiResponse>(`http://localhost:8080/events?order=desc:date&limit=${limit.value}&skip=${skip.value}`, {
+      headers: {
+        'Authorization': token ? `Bearer ${token}` : '',
+        'Content-Type': 'application/json',
+      }
+    });
+    
+    if (reset) {
+      allEventsData.value = response.data;
+    } else {
+      allEventsData.value = [...allEventsData.value, ...response.data];
+    }
+    
+    total.value = response.total;
+    skip.value += limit.value;
+    hasMore.value = skip.value < total.value;
+  } catch (err) {
+    console.error('Error fetching events:', err);
+    error.value = err instanceof Error ? err.message : 'An error occurred while fetching events';
+  } finally {
+    isLoadingMore.value = false;
+  }
+};
+
+// Fetch eras
+const { data: erasData, execute: fetchEras } = useApi(() => "eras?order=desc:time_start").json();
+
+// Watch eras data and update allErasData
+watch(erasData, (newErasData) => {
+  if (newErasData?.data) {
+    allErasData.value = newErasData.data;
+  }
+});
+
+// Intersection observer for infinite scroll
+const loadMoreTrigger = ref<HTMLElement>();
+let observer: IntersectionObserver | null = null;
+
+const setupIntersectionObserver = () => {
+  if (loadMoreTrigger.value && !observer) {
+    observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && hasMore.value && !isLoadingMore.value) {
+            fetchEventsWithPagination();
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(loadMoreTrigger.value);
+  }
+};
+
+// Initial fetch and setup
+onMounted(() => {
+  fetchEventsWithPagination(true);
+  fetchEras();
+  
+  nextTick(() => {
+    setupIntersectionObserver();
+  });
+});
+
+onUnmounted(() => {
+  if (observer) {
+    observer.disconnect();
+    observer = null;
+  }
+});
 
 const timelineData = computed<(TimelineItem | TimelineEra)[]>(() => {
-  if (!eventsData.value?.data) return [];
+  if (!allEventsData.value.length) return [];
 
   return [
-    ...eventsData.value.data.map((event: Row) => ({
+    ...allEventsData.value.map((event: Row) => ({
       id: event.id.toString(),
-      date: event.date,
+      date: typeof event.date === 'string' ? event.date : new Date(event.date).toISOString(),
       cards: [
         {
           title: event.name,
@@ -89,27 +183,37 @@ const timelineData = computed<(TimelineItem | TimelineEra)[]>(() => {
           items: event.items
         }
       ],
-      type: 'EVENT'
+      type: 'EVENT' as const
     })),
-    ...erasData.value.data.map((event: TimelineEra) => ({
+    ...allErasData.value.map((event: TimelineEra) => ({
       id: event.id,
       color: event.color,
       name: event.name,
+      time_end: event.time_end,
+      time_start: event.time_start,
       date: event.time_start,
-      type: 'ERA'
+      type: 'ERA' as const
     })),
-    ...erasData.value.data.map((event: TimelineEra) => ({
+    ...allErasData.value.map((event: TimelineEra) => ({
       id: event.id,
       color: event.color,
       name: event.name,
+      time_end: event.time_end,
+      time_start: event.time_start,
       date: event.time_end,
-      type: 'ERA'
+      type: 'ERA' as const
     }))
   ].sort((a: TimelineItem | TimelineEra, b: TimelineItem | TimelineEra) => {
-
     return new Date(b.date).getTime() - new Date(a.date).getTime()
   })
 });
+
+// Watch for timelineData changes to setup observer when DOM is ready
+watch(timelineData, () => {
+  nextTick(() => {
+    setupIntersectionObserver();
+  });
+}, { immediate: true });
 
 </script>
 
@@ -117,20 +221,20 @@ const timelineData = computed<(TimelineItem | TimelineEra)[]>(() => {
   <div class="min-h-screen bg-background p-8">
     <div class="max-w-6xl mx-auto">
       <!-- Loading State -->
-      <div v-if="isFetching" class="flex justify-center items-center h-64">
+      <div v-if="isLoadingMore && !allEventsData.length" class="flex justify-center items-center h-64">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
       </div>
 
       <!-- Error State -->
       <div v-else-if="error" class="text-center text-red-600 p-4">
         <p>Error loading events: {{ error }}</p>
-        <button @click="() => fetchEvents()" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+        <button @click="() => fetchEventsWithPagination(true)" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
           Retry
         </button>
       </div>
 
       <!-- Empty State -->
-      <div v-else-if="!timelineData.length" class="text-center text-gray-600 p-4">
+      <div v-else-if="!timelineData.length && !isLoadingMore" class="text-center text-gray-600 p-4">
         <p>{{ $t('event.no_events') }}</p>
       </div>
 
@@ -168,6 +272,14 @@ const timelineData = computed<(TimelineItem | TimelineEra)[]>(() => {
               <div class="font-medium text-xs" :class="getTextColor(item.color)">{{ formatDate(item.date) }}</div>
               <h3 class="font-bold text-sm" :class="getTextColor(item.color)">{{ item.name }}</h3>
             </div>
+          </div>
+        </div>
+
+        <!-- Load More Trigger -->
+        <div ref="loadMoreTrigger" class="h-20 flex items-center justify-center">
+          <div v-if="isLoadingMore" class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+          <div v-else-if="!hasMore && allEventsData.length > 0" class="text-gray-500 text-sm">
+            {{ $t('event.no_more_events') || 'No more events to load' }}
           </div>
         </div>
       </div>
