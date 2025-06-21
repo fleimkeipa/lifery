@@ -93,6 +93,11 @@ func serveApplication() {
 	userRoutes := e.Group("")
 	userRoutes.Use(util.JWTAuthEditor)
 
+	// Define user routes
+	userRoutes = userRoutes.Group("/user")
+	userRoutes.PUT("/username", userController.UpdateUsername)
+	userRoutes.PUT("/password", userController.UpdatePassword)
+
 	// Define events routes
 	eventsRoutes := userRoutes.Group("/events")
 	eventsRoutes.POST("", eventController.Create)
@@ -172,7 +177,7 @@ func configureCORS(e *echo.Echo) {
 		UnsafeWildcardOriginWithAllowCredentials: true,
 		AllowCredentials:                         true,
 		AllowOrigins:                             []string{"*"},
-		AllowMethods:                             []string{echo.GET, echo.POST, echo.PATCH, echo.DELETE},
+		AllowMethods:                             []string{echo.GET, echo.POST, echo.PATCH, echo.PUT, echo.DELETE},
 		AllowHeaders:                             []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization},
 	})
 
