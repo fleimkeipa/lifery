@@ -65,7 +65,9 @@ func serveApplication() {
 	notificationController := controller.NewNotificationHandlers(notificationUC)
 
 	emailUC := initEmailUC()
+	googleOAuthUC := initGoogleOAuthUC(dbClient)
 	authHandlers := controller.NewAuthHandlers(userUC, emailUC)
+	oauthHandlers := controller.NewOAuthHandlers(googleOAuthUC)
 
 	// Define authentication routes and handlers
 	authRoutes := e.Group("/auth")
@@ -73,6 +75,11 @@ func serveApplication() {
 	authRoutes.POST("/register", authHandlers.Register)
 	authRoutes.POST("/forgot-password", authHandlers.ForgotPassword)
 	authRoutes.POST("/reset-password", authHandlers.ResetPassword)
+
+	oauthRoutes := e.Group("/oauth")
+	oauthRoutes.Use(util.JWTAuthViewer)
+	oauthRoutes.GET("/google/url", oauthHandlers.GoogleAuthURL)
+	oauthRoutes.POST("/google/callback", oauthHandlers.GoogleCallback)
 
 	// Add JWT authentication and authorization middleware
 	adminRoutes := e.Group("")
@@ -240,4 +247,10 @@ func initNotificationUC(db *pg.DB) *uc.NotificationUC {
 func initEmailUC() *uc.EmailUC {
 	emailRepo := repositories.NewEmailRepository()
 	return uc.NewEmailUC(emailRepo)
+}
+
+func initGoogleOAuthUC(db *pg.DB) *uc.GoogleOAuthUC {
+	userDBRepo := repositories.NewUserRepository(db)
+	userUC := uc.NewUserUC(userDBRepo)
+	return uc.NewGoogleOAuthUC(userUC)
 }
