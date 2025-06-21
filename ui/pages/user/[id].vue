@@ -104,8 +104,9 @@ const fetchEventsWithPagination = async (reset = false) => {
   
   try {
     const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+    const config = useRuntimeConfig();
     
-    const response = await $fetch<ApiResponse>(`http://localhost:8080/events?user_id=${id}&order=desc:date&limit=${limit.value}&skip=${skip.value}`, {
+    const response = await $fetch<ApiResponse>(`${config.public.apiBase}/events?user_id=${id}&order=desc:date&limit=${limit.value}&skip=${skip.value}`, {
       headers: {
         'Authorization': token ? `Bearer ${token}` : '',
         'Content-Type': 'application/json',
