@@ -2,6 +2,7 @@ package uc
 
 import (
 	"context"
+	"crypto/rand"
 	"fmt"
 	"os"
 
@@ -110,8 +111,22 @@ func generateRandomPassword() string {
 	// Generate a random 32-character password
 	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*"
 	b := make([]byte, 32)
-	for i := range b {
-		b[i] = charset[0] // This is a simplified version, in production use crypto/rand
+
+	// Generate random bytes
+	randomBytes := make([]byte, 32)
+	_, err := rand.Read(randomBytes)
+	if err != nil {
+		// Fallback to a simple random generation if crypto/rand fails
+		for i := range b {
+			b[i] = charset[i%len(charset)]
+		}
+		return string(b)
 	}
+
+	// Map random bytes to charset characters
+	for i := range b {
+		b[i] = charset[randomBytes[i]%byte(len(charset))]
+	}
+
 	return string(b)
 }
