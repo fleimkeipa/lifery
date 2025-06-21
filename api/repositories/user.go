@@ -237,6 +237,7 @@ func (rc *UserRepository) fillFields(tx *orm.Query, opts *model.UserFindOpts) *o
 			"username",
 			"email",
 			"role_id",
+			"auth_type",
 		)
 	}
 
@@ -265,6 +266,7 @@ func (rc *UserRepository) internalToSQL(newUser *model.User) *user {
 		Password:  newUser.Password,
 		ID:        uID,
 		RoleID:    UserRole(newUser.RoleID),
+		AuthType:  string(newUser.AuthType),
 	}
 }
 
@@ -289,6 +291,7 @@ func (rc *UserRepository) sqlToInternal(newUser *user) *model.User {
 		Password:  newUser.Password,
 		ID:        uID,
 		RoleID:    model.UserRole(newUser.RoleID),
+		AuthType:  model.AuthType(newUser.AuthType),
 	}
 }
 

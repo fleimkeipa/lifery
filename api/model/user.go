@@ -4,6 +4,13 @@ import "time"
 
 const ZeroCreds = "zeroCreds"
 
+type AuthType string
+
+const (
+	AuthTypeEmail  AuthType = "email"
+	AuthTypeGoogle AuthType = "google"
+)
+
 type User struct {
 	CreatedAt time.Time  `json:"created_at"`
 	Username  string     `json:"username"`
@@ -12,6 +19,7 @@ type User struct {
 	ID        string     `json:"id"`
 	Connects  []*Connect `json:"connects"`
 	RoleID    UserRole   `json:"role_id"`
+	AuthType  AuthType   `json:"auth_type"`
 }
 
 type UserList struct {
@@ -25,6 +33,7 @@ type UserCreateInput struct {
 	Email           string `json:"email" validate:"required, email"`
 	Password        string `json:"password" validate:"required"`
 	ConfirmPassword string `json:"confirm_password" validate:"required"`
+	AuthType        string `json:"auth_type"`
 }
 
 type UserFindOpts struct {

@@ -60,16 +60,12 @@ func (g *GoogleOAuthUC) HandleCallback(ctx context.Context, code string) (*model
 		return existingUser, nil
 	}
 
-	// User doesn't exist, create new user
-	hashedPassword, err := model.HashPassword(generateRandomPassword())
-	if err != nil {
-		return nil, fmt.Errorf("failed to hash password: %w", err)
-	}
-
 	newUser := model.UserCreateInput{
-		Username: userInfo.GivenName + "_" + userInfo.FamilyName,
-		Email:    userInfo.Email,
-		Password: hashedPassword,
+		Username:        userInfo.GivenName + "_" + userInfo.FamilyName,
+		Email:           userInfo.Email,
+		Password:        generateRandomPassword(),
+		ConfirmPassword: generateRandomPassword(),
+		AuthType:        string(model.AuthTypeGoogle),
 	}
 
 	user, err := g.userUC.Create(ctx, newUser)

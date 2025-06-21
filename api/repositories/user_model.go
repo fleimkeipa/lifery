@@ -10,4 +10,5 @@ type user struct {
 	Connects  []*connect `json:"connects" pg:"rel:has_many,on_delete:CASCADE"`
 	ID        int        `json:"id" pg:",pk"`
 	RoleID    UserRole   `json:"role_id"`
+	AuthType  string     `json:"auth_type"`
 }

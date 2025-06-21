@@ -34,10 +34,15 @@ func (rc *UserUC) Create(ctx context.Context, req model.UserCreateInput) (*model
 		return nil, pkg.NewError(nil, "Password and confirm password do not match", http.StatusBadRequest)
 	}
 
+	if req.AuthType == "" {
+		req.AuthType = string(model.AuthTypeEmail)
+	}
+
 	user := model.User{
 		Username: req.Username,
 		Email:    req.Email,
 		Password: req.Password,
+		AuthType: model.AuthType(req.AuthType),
 	}
 
 	hashedPassword, err := model.HashPassword(req.Password)
@@ -67,10 +72,15 @@ func (rc *UserUC) Update(ctx context.Context, userID string, req model.UserCreat
 		return nil, err
 	}
 
+	if req.AuthType == "" {
+		req.AuthType = string(model.AuthTypeEmail)
+	}
+
 	user := model.User{
 		Username: req.Username,
 		Email:    req.Email,
 		Password: req.Password,
+		AuthType: model.AuthType(req.AuthType),
 	}
 
 	hashedPassword, err := model.HashPassword(req.Password)
