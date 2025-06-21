@@ -61,11 +61,13 @@ func (g *GoogleOAuthUC) HandleCallback(ctx context.Context, code string) (*model
 		return existingUser, nil
 	}
 
+	generatedPassword := generateRandomPassword()
+
 	newUser := model.UserCreateInput{
 		Username:        userInfo.GivenName + "_" + userInfo.FamilyName,
 		Email:           userInfo.Email,
-		Password:        generateRandomPassword(),
-		ConfirmPassword: generateRandomPassword(),
+		Password:        generatedPassword,
+		ConfirmPassword: generatedPassword,
 		AuthType:        string(model.AuthTypeGoogle),
 	}
 
