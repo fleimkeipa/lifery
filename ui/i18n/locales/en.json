@@ -200,5 +200,25 @@
         "connectTitle": "Add Connection",
         "connectExample": "Example: 'your_friend'",
         "connectDesc": "Search for a username to add friends, send connection requests, and build your social network."
+    },
+    "settings": {
+        "title": "User Settings",
+        "change_username": "Change Username",
+        "change_password": "Change Password",
+        "current_password": "Current Password",
+        "new_password": "New Password",
+        "confirm_new_password": "Confirm New Password",
+        "update_username": "Update Username",
+        "update_password": "Update Password",
+        "username_required": "Username is required",
+        "all_fields_required": "All fields are required",
+        "passwords_not_match": "Passwords do not match",
+        "password_min_length": "Password must be at least 8 characters",
+        "username_updated": "Username updated successfully",
+        "password_updated": "Password updated successfully",
+        "username_update_error": "Failed to update username",
+        "password_update_error": "Failed to update password",
+        "google_account_info": "Google Account Information",
+        "google_account_message": "Password change is not available for Google accounts. Please use your Google account settings to change your password."
     }
 }

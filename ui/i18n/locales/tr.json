@@ -200,5 +200,25 @@
         "connectTitle": "Bağlantı Ekleme",
         "connectExample": "Örneğin: 'arkadas_adiniz'",
         "connectDesc": "Kullanıcı adını aratarak arkadaş ekleyebilir, bağlantı isteği gönderebilir ve sosyal ağınızı oluşturabilirsiniz."
+    },
+    "settings": {
+        "title": "Kullanıcı Ayarları",
+        "change_username": "Kullanıcı Adını Değiştir",
+        "change_password": "Şifreyi Değiştir",
+        "current_password": "Mevcut Şifre",
+        "new_password": "Yeni Şifre",
+        "confirm_new_password": "Yeni Şifreyi Tekrarla",
+        "update_username": "Kullanıcı Adını Güncelle",
+        "update_password": "Şifreyi Güncelle",
+        "username_required": "Kullanıcı adı gereklidir",
+        "all_fields_required": "Tüm alanlar gereklidir",
+        "passwords_not_match": "Şifreler eşleşmiyor",
+        "password_min_length": "Şifre en az 8 karakter olmalıdır",
+        "username_updated": "Kullanıcı adı başarıyla güncellendi",
+        "password_updated": "Şifre başarıyla güncellendi",
+        "username_update_error": "Kullanıcı adı güncellenirken hata oluştu",
+        "password_update_error": "Şifre güncellenirken hata oluştu",
+        "google_account_info": "Google Hesap Bilgisi",
+        "google_account_message": "Google hesabınızla giriş yaptığınız için şifre değiştirme özelliği mevcut değildir. Şifrenizi değiştirmek için Google hesap ayarlarınızı kullanın."
     }
 }
