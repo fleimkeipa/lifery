@@ -49,7 +49,7 @@ function checkForErrors(code: string | null, error: string | null) {
 async function sendGoogleRequest(code: string): Promise<GoogleCallbackResponse> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 saniye timeout
-  
+
   try {
     const response = await fetch(`${useRuntimeConfig().public.apiBase}/oauth/google/callback`, {
       method: 'POST',
@@ -77,7 +77,8 @@ function handleSuccessfulLogin(data: GoogleCallbackResponse) {
   // Kullanıcı bilgilerini kaydet
   localStorage.setItem('auth_token', data.token);
   localStorage.setItem('username', data.username);
-  
+  localStorage.setItem('auth_type', data.type);
+
   isLoading.value = false;
   successMessage.value = t('login.success.googleAuth');
 
@@ -90,12 +91,12 @@ function handleSuccessfulLogin(data: GoogleCallbackResponse) {
 // Hata durumlarını işle
 function handleError(err: any) {
   console.error('Google callback hatası:', err);
-  
+
   if (err instanceof Error) {
     if (err.name === 'AbortError') {
       return; // Timeout durumunda hata gösterme
     }
-    
+
     if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
       errorMessage.value = t('login.error.networkError');
     } else {
@@ -104,14 +105,14 @@ function handleError(err: any) {
   } else {
     errorMessage.value = t('login.error.general');
   }
-  
+
   isLoading.value = false;
 }
 
 onMounted(async () => {
   // 1. URL'den parametreleri al
   const { code, error } = getUrlParams();
-  
+
   // 2. Hata kontrolü yap
   if (checkForErrors(code, error)) {
     return;
@@ -120,7 +121,7 @@ onMounted(async () => {
   try {
     // 3. Google API'sine istek gönder
     const response = await sendGoogleRequest(code!);
-    
+
     // 4. Yanıtı kontrol et
     if (response.type === 'error') {
       errorMessage.value = response.message || t('login.error.general');

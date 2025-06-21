@@ -80,6 +80,7 @@ async function onSubmit(event: any) {
     }
     
     localStorage.setItem('auth_token', data.value.token);
+    localStorage.setItem('auth_type', data.value.type);
     localStorage.setItem('username', data.value.username);
     await navigateTo('/home');
   }
