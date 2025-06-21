@@ -51,3 +51,12 @@ type UserConnectsFindOpts struct {
 	FieldsOpts
 	PaginationOpts
 }
+
+type UpdateUsernameRequest struct {
+	Username string `json:"username" validate:"required"`
+}
+
+type UpdatePasswordRequest struct {
+	CurrentPassword string `json:"current_password" validate:"required"`
+	NewPassword     string `json:"new_password" validate:"required"`
+}

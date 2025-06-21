@@ -228,3 +228,71 @@ func (rc *UserHandlers) getUsersSearchOpts(c echo.Context, fields ...string) mod
 		},
 	}
 }
+
+// UpdateUsername godoc
+//
+//	@Summary		Update username
+//	@Description	This endpoint allows a user to update their username.
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Security		ApiKeyAuth
+//	@Param			body	body		model.UpdateUsernameRequest	true	"Username update input"
+//	@Success		200		{object}	SuccessResponse				"Username updated successfully"
+//	@Failure		400		{object}	FailureResponse				"Error message including details on failure"
+//	@Failure		500		{object}	FailureResponse				"Internal error"
+//	@Router			/user/username [put]
+func (rc *UserHandlers) UpdateUsername(c echo.Context) error {
+	var input model.UpdateUsernameRequest
+
+	if err := c.Bind(&input); err != nil {
+		return handleBindingErrors(c, err)
+	}
+
+	if err := c.Validate(&input); err != nil {
+		return handleValidatingErrors(c, err)
+	}
+
+	err := rc.userUC.UpdateUsername(c.Request().Context(), input.Username)
+	if err != nil {
+		return handleEchoError(c, err)
+	}
+
+	return c.JSON(http.StatusOK, SuccessResponse{
+		Message: "Username updated successfully",
+	})
+}
+
+// UpdatePassword godoc
+//
+//	@Summary		Update password
+//	@Description	This endpoint allows a user to update their password by providing their current password.
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Security		ApiKeyAuth
+//	@Param			body	body		model.UpdatePasswordRequest	true	"Password update input"
+//	@Success		200		{object}	SuccessResponse				"Password updated successfully"
+//	@Failure		400		{object}	FailureResponse				"Error message including details on failure"
+//	@Failure		500		{object}	FailureResponse				"Internal error"
+//	@Router			/user/password [put]
+func (rc *UserHandlers) UpdatePassword(c echo.Context) error {
+	var input model.UpdatePasswordRequest
+
+	if err := c.Bind(&input); err != nil {
+		return handleBindingErrors(c, err)
+	}
+
+	if err := c.Validate(&input); err != nil {
+		return handleValidatingErrors(c, err)
+	}
+
+	err := rc.userUC.UpdatePasswordWithCurrent(c.Request().Context(), input.CurrentPassword, input.NewPassword)
+	if err != nil {
+		return handleEchoError(c, err)
+	}
+
+	return c.JSON(http.StatusOK, SuccessResponse{
+		Message: "Password updated successfully",
+	})
+}
