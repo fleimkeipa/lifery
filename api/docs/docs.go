@@ -61,6 +61,84 @@ const docTemplate = `{
                 }
             }
         },
+        "/auth/google/callback": {
+            "post": {
+                "description": "This endpoint handles the Google OAuth callback and creates or logs in the user.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Google OAuth callback",
+                "parameters": [
+                    {
+                        "description": "Google OAuth code",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.GoogleAuthRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully authenticated with JWT token",
+                        "schema": {
+                            "$ref": "#/definitions/controller.AuthResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error message including details on failure",
+                        "schema": {
+                            "$ref": "#/definitions/controller.FailureResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.FailureResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/google/url": {
+            "get": {
+                "description": "This endpoint returns the Google OAuth authorization URL.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Get Google OAuth URL",
+                "responses": {
+                    "200": {
+                        "description": "Google OAuth URL",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.FailureResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/auth/login": {
             "post": {
                 "description": "This endpoint allows a user to log in by providing a valid username and password.",
@@ -1549,6 +1627,17 @@ const docTemplate = `{
                 }
             }
         },
+        "model.GoogleAuthRequest": {
+            "type": "object",
+            "required": [
+                "code"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string"
+                }
+            }
+        },
         "model.Login": {
             "type": "object",
             "required": [
@@ -1587,6 +1676,7 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "confirm_password",
+                "email",
                 "password",
                 "username"
             ],
@@ -1594,8 +1684,10 @@ const docTemplate = `{
                 "confirm_password": {
                     "type": "string"
                 },
+                "email": {
+                    "type": "string"
+                },
                 "password": {
-                    "description": "Email           string ` + "`" + `json:\"email\" validate:\"email\"` + "`" + `",
                     "type": "string"
                 },
                 "username": {

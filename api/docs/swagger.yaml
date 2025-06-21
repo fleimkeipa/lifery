@@ -141,6 +141,13 @@ definitions:
     required:
     - email
     type: object
+  model.GoogleAuthRequest:
+    properties:
+      code:
+        type: string
+    required:
+    - code
+    type: object
   model.Login:
     properties:
       password:
@@ -168,13 +175,15 @@ definitions:
     properties:
       confirm_password:
         type: string
+      email:
+        type: string
       password:
-        description: Email           string `json:"email" validate:"email"`
         type: string
       username:
         type: string
     required:
     - confirm_password
+    - email
     - password
     - username
     type: object
@@ -259,6 +268,58 @@ paths:
           schema:
             $ref: '#/definitions/controller.FailureResponse'
       summary: Forgot password
+      tags:
+      - auth
+  /auth/google/callback:
+    post:
+      consumes:
+      - application/json
+      description: This endpoint handles the Google OAuth callback and creates or
+        logs in the user.
+      parameters:
+      - description: Google OAuth code
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.GoogleAuthRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully authenticated with JWT token
+          schema:
+            $ref: '#/definitions/controller.AuthResponse'
+        "400":
+          description: Error message including details on failure
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      summary: Google OAuth callback
+      tags:
+      - auth
+  /auth/google/url:
+    get:
+      consumes:
+      - application/json
+      description: This endpoint returns the Google OAuth authorization URL.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Google OAuth URL
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      summary: Get Google OAuth URL
       tags:
       - auth
   /auth/login:
