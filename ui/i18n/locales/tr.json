@@ -35,10 +35,20 @@
         "submit": "Giriş Yap",
         "noAccount": "Hesabınız yok mu? Kayıt olun",
         "forgotPassword": "Şifremi Unuttum",
+        "googleLogin": "Google ile Devam Et",
+        "or": "veya",
+        "processing": "İşleniyor...",
+        "backToLogin": "Giriş Sayfasına Dön",
+        "redirecting": "Ana sayfaya yönlendiriliyor...",
         "error": {
             "general": "Giriş başarısız. Bilgilerinizi kontrol edip tekrar deneyin.",
             "invalidCredentials": "Geçersiz kullanıcı adı veya şifre.",
-            "networkError": "Ağ hatası. Bağlantınızı kontrol edip tekrar deneyin."
+            "networkError": "Ağ hatası. Bağlantınızı kontrol edip tekrar deneyin.",
+            "googleAuthFailed": "Google kimlik doğrulaması başarısız. Lütfen tekrar deneyin.",
+            "noCode": "Google'dan yetkilendirme kodu alınamadı."
+        },
+        "success": {
+            "googleAuth": "Google ile başarıyla giriş yapıldı!"
         },
         "validation": {
             "required": {
