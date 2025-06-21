@@ -93,10 +93,10 @@ func serveApplication() {
 	userRoutes := e.Group("")
 	userRoutes.Use(util.JWTAuthEditor)
 
-	// Define user routes
-	userRoutes = userRoutes.Group("/user")
-	userRoutes.PUT("/username", userController.UpdateUsername)
-	userRoutes.PUT("/password", userController.UpdatePassword)
+	// Define user update routes
+	userUpdateRoutes := userRoutes.Group("/user")
+	userUpdateRoutes.PUT("/username", userController.UpdateUsername)
+	userUpdateRoutes.PUT("/password", userController.UpdatePassword)
 
 	// Define events routes
 	eventsRoutes := userRoutes.Group("/events")
