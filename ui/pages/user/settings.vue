@@ -11,9 +11,9 @@ definePageMeta({
 const { t, locale } = useI18n();
 
 // Check if user is authenticated via Google
-const isGoogleUser = computed(() => {
+const isOAuthUser = computed(() => {
   if (process.client) {
-    return localStorage.getItem('auth_type') === 'google';
+    return localStorage.getItem('auth_type') === 'google' || localStorage.getItem('auth_type') === 'linkedin';
   }
   return false;
 });
@@ -181,7 +181,7 @@ const updatePassword = async () => {
         </div>
 
         <!-- Password Section -->
-        <div v-if="!isGoogleUser">
+        <div v-if="!isOAuthUser">
           <h2 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
             {{ t('settings.change_password') }}
           </h2>
@@ -230,13 +230,13 @@ const updatePassword = async () => {
         </div>
 
         <!-- Google User Info -->
-        <div v-if="isGoogleUser" class="mb-8">
+        <div v-if="isOAuthUser" class="mb-8">
           <h2 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
-            {{ t('settings.google_account_info') }}
+            {{ t('settings.oauth_account_info') }}
           </h2>
           <div class="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md">
             <p class="text-blue-800 dark:text-blue-200 text-sm">
-              {{ t('settings.google_account_message') }}
+              {{ t('settings.oauth_account_message') }}
             </p>
           </div>
         </div>
