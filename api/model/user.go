@@ -7,8 +7,9 @@ const ZeroCreds = "zeroCreds"
 type AuthType string
 
 const (
-	AuthTypeEmail  AuthType = "email"
-	AuthTypeGoogle AuthType = "google"
+	AuthTypeEmail    AuthType = "email"
+	AuthTypeGoogle   AuthType = "google"
+	AuthTypeLinkedIn AuthType = "linkedin"
 )
 
 type User struct {
