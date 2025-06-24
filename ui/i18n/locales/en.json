@@ -36,6 +36,7 @@
         "noAccount": "Don't have an account? Sign up",
         "forgotPassword": "Forgot Password",
         "googleLogin": "Continue with Google",
+        "linkedinLogin": "Continue with LinkedIn",
         "or": "or",
         "processing": "Processing...",
         "backToLogin": "Back to Login",
@@ -45,10 +46,13 @@
             "invalidCredentials": "Invalid username or password.",
             "networkError": "Network error. Please check your connection and try again.",
             "googleAuthFailed": "Google authentication failed. Please try again.",
-            "noCode": "No authorization code received from Google."
+            "linkedinAuthFailed": "LinkedIn authentication failed. Please try again.",
+            "noCode": "No authorization code received from Google.",
+            "noCodeLinkedIn": "No authorization code received from LinkedIn."
         },
         "success": {
-            "googleAuth": "Successfully authenticated with Google!"
+            "googleAuth": "Successfully authenticated with Google!",
+            "linkedinAuth": "Successfully authenticated with LinkedIn!"
         },
         "validation": {
             "required": {
@@ -219,7 +223,7 @@
         "password_updated": "Password updated successfully",
         "username_update_error": "Failed to update username",
         "password_update_error": "Failed to update password",
-        "google_account_info": "Google Account Information",
-        "google_account_message": "Password change is not available for Google accounts. Please use your Google account settings to change your password."
+        "oauth_account_info": "No password is used for this account",
+        "oauth_account_message": "Since you signed in using a service like Google or LinkedIn, you can't change your password here. To change your password, please use the settings of your connected account (e.g., Google)"
     }
 }

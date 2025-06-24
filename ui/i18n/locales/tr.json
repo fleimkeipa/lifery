@@ -36,6 +36,7 @@
         "noAccount": "Hesabınız yok mu? Kayıt olun",
         "forgotPassword": "Şifremi Unuttum",
         "googleLogin": "Google ile Devam Et",
+        "linkedinLogin": "LinkedIn ile Devam Et",
         "or": "veya",
         "processing": "İşleniyor...",
         "backToLogin": "Giriş Sayfasına Dön",
@@ -45,10 +46,13 @@
             "invalidCredentials": "Geçersiz kullanıcı adı veya şifre.",
             "networkError": "Ağ hatası. Bağlantınızı kontrol edip tekrar deneyin.",
             "googleAuthFailed": "Google kimlik doğrulaması başarısız. Lütfen tekrar deneyin.",
-            "noCode": "Google'dan yetkilendirme kodu alınamadı."
+            "linkedinAuthFailed": "LinkedIn kimlik doğrulaması başarısız. Lütfen tekrar deneyin.",
+            "noCode": "Google'dan yetkilendirme kodu alınamadı.",
+            "noCodeLinkedIn": "LinkedIn'den yetkilendirme kodu alınamadı."
         },
         "success": {
-            "googleAuth": "Google ile başarıyla giriş yapıldı!"
+            "googleAuth": "Google ile başarıyla giriş yapıldı!",
+            "linkedinAuth": "LinkedIn ile başarıyla giriş yapıldı!"
         },
         "validation": {
             "required": {
@@ -219,7 +223,7 @@
         "password_updated": "Şifre başarıyla güncellendi",
         "username_update_error": "Kullanıcı adı güncellenirken hata oluştu",
         "password_update_error": "Şifre güncellenirken hata oluştu",
-        "google_account_info": "Google Hesap Bilgisi",
-        "google_account_message": "Google hesabınızla giriş yaptığınız için şifre değiştirme özelliği mevcut değildir. Şifrenizi değiştirmek için Google hesap ayarlarınızı kullanın."
+        "oauth_account_info": "Bu hesapla giriş yaparken şifre kullanılmaz",
+        "oauth_account_message": "Giriş için Google, LinkedIn gibi bir hizmeti kullandığınız için şifrenizi buradan değiştiremezsiniz. Şifreyi değiştirmek için bağlı olduğunuz hesabın (örneğin Google) ayarlarını kullanmanız gerekir."
     }
 }
