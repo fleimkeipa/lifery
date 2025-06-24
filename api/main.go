@@ -64,10 +64,11 @@ func serveApplication() {
 	notificationUC := initNotificationUC(dbClient)
 	notificationController := controller.NewNotificationHandlers(notificationUC)
 
+	oauthUC := initOAuthUC(dbClient)
+	oauthHandlers := controller.NewOAuthHandlers(oauthUC)
+
 	emailUC := initEmailUC()
-	googleOAuthUC := initGoogleOAuthUC(dbClient)
 	authHandlers := controller.NewAuthHandlers(userUC, emailUC)
-	oauthHandlers := controller.NewOAuthHandlers(googleOAuthUC)
 
 	// Define authentication routes and handlers
 	authRoutes := e.Group("/auth")
@@ -80,6 +81,8 @@ func serveApplication() {
 	oauthRoutes.Use(util.JWTAuthViewer)
 	oauthRoutes.GET("/google/url", oauthHandlers.GoogleAuthURL)
 	oauthRoutes.POST("/google/callback", oauthHandlers.GoogleCallback)
+	oauthRoutes.GET("/linkedin/url", oauthHandlers.LinkedInAuthURL)
+	oauthRoutes.POST("/linkedin/callback", oauthHandlers.LinkedInCallback)
 
 	// Add JWT authentication and authorization middleware
 	adminRoutes := e.Group("")
@@ -254,8 +257,10 @@ func initEmailUC() *uc.EmailUC {
 	return uc.NewEmailUC(emailRepo)
 }
 
-func initGoogleOAuthUC(db *pg.DB) *uc.GoogleOAuthUC {
+func initOAuthUC(db *pg.DB) *uc.OAuthUC {
 	userDBRepo := repositories.NewUserRepository(db)
 	userUC := uc.NewUserUC(userDBRepo)
-	return uc.NewGoogleOAuthUC(userUC)
+	googleOAuthUC := repositories.NewGoogleOAuthRepository()
+	linkedinOAuthUC := repositories.NewLinkedInOAuthRepository()
+	return uc.NewOAuthUC(googleOAuthUC, linkedinOAuthUC, userUC)
 }
