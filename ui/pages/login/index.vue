@@ -99,7 +99,35 @@ async function handleGoogleLogin() {
     }
   } catch (err) {
     console.error('Google login error:', err);
-    errorMessage.value = t('login.error.networkError');
+    errorMessage.value = t('login.error.googleAuthFailed');
+  } finally {
+    isLoading.value = false;
+  }
+}
+
+async function handleLinkedInLogin() {
+  isLoading.value = true;
+  errorMessage.value = '';
+
+  try {
+    const { data, error } = await useFetch<GoogleAuthURLResponse>("/oauth/linkedin/url", {
+      method: "GET",
+      baseURL: useRuntimeConfig().public.apiBase,
+    });
+
+    if (error.value) {
+      console.error(error.value);
+      errorMessage.value = t('login.error.networkError');
+      return;
+    }
+
+    if (data.value && data.value.auth_url) {
+      // Redirect to LinkedIn OAuth
+      window.location.href = data.value.auth_url;
+    }
+  } catch (err) {
+    console.error('LinkedIn login error:', err);
+    errorMessage.value = t('login.error.linkedinAuthFailed');
   } finally {
     isLoading.value = false;
   }
@@ -124,13 +152,13 @@ async function handleGoogleLogin() {
       </div>
 
       <!-- Google Login Button -->
-      <div class="mb-6">
+      <div class="mb-2">
         <UButton 
           @click="handleGoogleLogin" 
           :loading="isLoading"
           color="white" 
           variant="outline" 
-          class="w-full mb-4"
+          class="w-full mb-2"
           :disabled="isLoading"
         >
           <template #leading>
@@ -142,6 +170,25 @@ async function handleGoogleLogin() {
             </svg>
           </template>
           {{ t('login.googleLogin') }}
+        </UButton>
+      </div>
+
+      <!-- LinkedIn Login Button -->
+      <div class="mb-6">
+        <UButton 
+          @click="handleLinkedInLogin" 
+          :loading="isLoading"
+          color="white" 
+          variant="outline" 
+          class="w-full mb-4"
+          :disabled="isLoading"
+        >
+          <template #leading>
+            <svg class="w-5 h-5" viewBox="0 0 24 24">
+              <path fill="#0077B5" d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-9h3v9zm-1.5-10.28c-.97 0-1.75-.79-1.75-1.75s.78-1.75 1.75-1.75 1.75.79 1.75 1.75-.78 1.75-1.75 1.75zm13.5 10.28h-3v-4.5c0-1.08-.02-2.47-1.5-2.47-1.5 0-1.73 1.17-1.73 2.39v4.58h-3v-9h2.89v1.23h.04c.4-.75 1.38-1.54 2.84-1.54 3.04 0 3.6 2 3.6 4.59v4.72z"/>
+            </svg>
+          </template>
+          {{ t('login.linkedinLogin') }}
         </UButton>
       </div>
 
