@@ -26,7 +26,7 @@ type SuccessResponse struct {
 }
 
 type AuthResponse struct {
-	Type     string `json:"type" example:"basic,oauth2"`
+	Type     string `json:"type" example:"basic,google,linkedin"`
 	Token    string `json:"token"`
 	Username string `json:"username"`
 	Message  string `json:"message"`
