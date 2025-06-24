@@ -52,8 +52,6 @@ func (l *LinkedInOAuthRepository) GetUserInfo(ctx context.Context, code string) 
 	userInfoReq.Header.Set("Authorization", "Bearer "+token.AccessToken)
 	userInfoReq.Header.Set("X-Restli-Protocol-Version", "2.0.0")
 
-	fmt.Printf("Making userinfo request to: %s\n", userInfoReq.URL.String())
-
 	userInfoResp, err := client.Do(userInfoReq)
 	if err != nil {
 		return nil, fmt.Errorf("userinfo request failed: %w", err)

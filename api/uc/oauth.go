@@ -58,11 +58,15 @@ func (o *OAuthUC) HandleCallback(ctx context.Context, provider model.OAuthProvid
 		return existingUser, nil
 	}
 
+	password := util.GenerateRandomPassword()
+
 	// User does not exist, create new user
 	newUser := model.UserCreateInput{
-		Username: userInfo.Name,
-		Email:    userInfo.Email,
-		Password: util.GenerateRandomPassword(),
+		Username:        userInfo.Name,
+		Email:           userInfo.Email,
+		Password:        password,
+		ConfirmPassword: password,
+		AuthType:        string(provider),
 	}
 
 	user, err := o.userUC.Create(ctx, newUser)
