@@ -6,7 +6,7 @@ definitions:
       token:
         type: string
       type:
-        example: basic,oauth2
+        example: basic,google,linkedin
         type: string
       username:
         type: string
@@ -142,6 +142,13 @@ definitions:
     - email
     type: object
   model.GoogleAuthRequest:
+    properties:
+      code:
+        type: string
+    required:
+    - code
+    type: object
+  model.LinkedInAuthRequest:
     properties:
       code:
         type: string
@@ -970,6 +977,58 @@ paths:
           schema:
             $ref: '#/definitions/controller.FailureResponse'
       summary: Get Google OAuth URL
+      tags:
+      - auth
+  /oauth/linkedin/callback:
+    post:
+      consumes:
+      - application/json
+      description: This endpoint handles the LinkedIn OAuth callback and creates or
+        logs in the user.
+      parameters:
+      - description: LinkedIn OAuth code
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.LinkedInAuthRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully authenticated with JWT token
+          schema:
+            $ref: '#/definitions/controller.AuthResponse'
+        "400":
+          description: Error message including details on failure
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      summary: LinkedIn OAuth callback
+      tags:
+      - auth
+  /oauth/linkedin/url:
+    get:
+      consumes:
+      - application/json
+      description: This endpoint returns the LinkedIn OAuth authorization URL.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: LinkedIn OAuth URL
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      summary: Get LinkedIn OAuth URL
       tags:
       - auth
   /user/password:

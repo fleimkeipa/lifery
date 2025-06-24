@@ -1084,6 +1084,84 @@
                 }
             }
         },
+        "/oauth/linkedin/callback": {
+            "post": {
+                "description": "This endpoint handles the LinkedIn OAuth callback and creates or logs in the user.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "LinkedIn OAuth callback",
+                "parameters": [
+                    {
+                        "description": "LinkedIn OAuth code",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.LinkedInAuthRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully authenticated with JWT token",
+                        "schema": {
+                            "$ref": "#/definitions/controller.AuthResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error message including details on failure",
+                        "schema": {
+                            "$ref": "#/definitions/controller.FailureResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.FailureResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/oauth/linkedin/url": {
+            "get": {
+                "description": "This endpoint returns the LinkedIn OAuth authorization URL.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Get LinkedIn OAuth URL",
+                "responses": {
+                    "200": {
+                        "description": "LinkedIn OAuth URL",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.FailureResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/user/password": {
             "put": {
                 "security": [
@@ -1514,7 +1592,7 @@
                 },
                 "type": {
                     "type": "string",
-                    "example": "basic,oauth2"
+                    "example": "basic,google,linkedin"
                 },
                 "username": {
                     "type": "string"
@@ -1719,6 +1797,17 @@
             }
         },
         "model.GoogleAuthRequest": {
+            "type": "object",
+            "required": [
+                "code"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.LinkedInAuthRequest": {
             "type": "object",
             "required": [
                 "code"
