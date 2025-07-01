@@ -1,4 +1,13 @@
 <script setup lang="ts">
+// Debounce utility function
+function debounce<T extends (...args: any[]) => any>(func: T, wait: number): (...args: Parameters<T>) => void {
+  let timeout: NodeJS.Timeout;
+  return (...args: Parameters<T>) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
+}
+
 definePageMeta({
   middleware: "auth",
 });
@@ -63,10 +72,6 @@ const toggleSort = (column: string) => {
   }
 };
 
-watch([currentPage, sortOrder, sortBy, searchQuery], () => {
-  fetchEvents();
-});
-
 const getQueryParams = () => {
   const params = new URLSearchParams({
     limit: itemsPerPage.toString(),
@@ -88,18 +93,60 @@ const {
   execute: fetchEvents,
 } = useApi(() => `/events?${getQueryParams()}`).json();
 
+// Watch for errors
+watch(error, (newError) => {
+  if (newError) {
+    console.error('API Error:', newError);
+    showToast(newError.message || t('common.error_occurred'), 'error');
+  }
+});
+
+const toast = ref<{ show: boolean; message: string; type: 'success' | 'error' }>({
+  show: false,
+  message: '',
+  type: 'success'
+});
+
+function showToast(message: string, type: 'success' | 'error' = 'success') {
+  toast.value = { show: true, message, type };
+  setTimeout(() => {
+    toast.value.show = false;
+  }, 3000);
+}
+
+// Debounced fetch function
+const debouncedFetch = debounce(async () => {
+  try {
+    await fetchEvents();
+  } catch (err: any) {
+    console.error('Fetch error:', err);
+    showToast(err.message || t('common.error_occurred'), 'error');
+  }
+}, 300); // 300ms delay
+
+// Watch for search query changes
+watch([searchQuery, currentPage, sortOrder, sortBy], () => {
+  debouncedFetch();
+});
+
 const router = useRouter();
 
-
 const handleDelete = async (uid: number) => {
-  useApi(`/events/${uid}`, {
-    afterFetch: () => fetchEvents(),
-  }).delete();
+  try {
+    await useApi(`/events/${uid}`).delete();
+    showToast(t('common.deleted_successfully'), 'success');
+    await fetchEvents();
+  } catch (error: any) {
+    console.error('Delete error:', error);
+    showToast(error.message || t('common.error_occurred'), 'error');
+  }
 };
 </script>
 
 <template>
-  <div v-if="!!error || !items">{{ error }}</div>
+  <div v-if="error" class="p-4 bg-red-100 text-red-700 rounded-lg mb-4">
+    {{ error.message || t('common.error_occurred') }}
+  </div>
   <div v-else>
     <div class="flex flex-row items-center justify-between mb-4">
       <UButton icon="i-heroicons-plus">
@@ -115,7 +162,7 @@ const handleDelete = async (uid: number) => {
         <UButton icon="i-heroicons-arrow-path" :loading="isFetching" @click="fetchEvents"></UButton>
       </div>
     </div>
-    <UTable :columns="columns" :rows="items.data" :loading="isFetching" :loading-state="{
+    <UTable :columns="columns" :rows="items?.data || []" :loading="isFetching" :loading-state="{
       icon: 'i-heroicons-arrow-path-20-solid',
       label: t('common.loading'),
     }" row-selectable v-model:selected="selectedRows" :row-expandable="() => true" show-detail-on-click>
@@ -157,9 +204,15 @@ const handleDelete = async (uid: number) => {
       </template>
 
       <template #name-data="{ row }">
-        <UButton variant="link" @click="router.push(`/events/${row.id}`)">
-          {{ row.name }}
+        <UButton variant="link" @click="router.push(`/events/${row.id}`)" :title="row.name">
+          {{ row.name.length > 30 ? row.name.substring(0, 30) + '...' : row.name }}
         </UButton>
+      </template>
+
+      <template #description-data="{ row }">
+        <span :title="row.description">
+          {{ row.description && row.description.length > 30 ? row.description.substring(0, 30) + '...' : row.description || '-' }}
+        </span>
       </template>
 
       <template #row-details="{ row }">
@@ -204,6 +257,13 @@ const handleDelete = async (uid: number) => {
           }
         }
       }" />
+    </div>
+
+    <div v-if="toast.show" :class="[
+      'fixed top-6 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg z-50 transition-all',
+      toast.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+    ]">
+      {{ toast.message }}
     </div>
   </div>
 </template>

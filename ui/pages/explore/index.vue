@@ -2,6 +2,15 @@
 import { ref, computed } from 'vue';
 import jwtDecode from 'jwt-decode';
 
+// Debounce utility function
+function debounce<T extends (...args: any[]) => any>(func: T, wait: number): (...args: Parameters<T>) => void {
+  let timeout: NodeJS.Timeout;
+  return (...args: Parameters<T>) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
+}
+
 definePageMeta({
   middleware: "auth",
 });
@@ -101,14 +110,19 @@ const handleAddConnection = async (id: string) => {
   }
 };
 
-// Watch for search query changes
-watch([searchQuery, currentPage], async () => {
+// Debounced fetch function
+const debouncedFetch = debounce(async () => {
   try {
     await fetchUsers();
   } catch (err: any) {
     console.error('Fetch error:', err);
     showToast(err.message || t('common.error_occurred'), 'error');
   }
+}, 300); // 300ms delay
+
+// Watch for search query changes
+watch([searchQuery, currentPage], () => {
+  debouncedFetch();
 });
 
 </script>

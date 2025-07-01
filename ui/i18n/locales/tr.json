@@ -89,7 +89,9 @@
         "logout": "Çıkış Yap",
         "username": "Kullanıcı Adı",
         "search": "Ara...",
-        "no_description": "Açıklama yok"
+        "no_description": "Açıklama yok",
+        "deleted_successfully": "Başarıyla silindi",
+        "error_occurred": "Bir hata oluştu"
     },
     "event": {
         "visibility": "Görünürlük",

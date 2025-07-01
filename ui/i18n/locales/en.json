@@ -89,7 +89,9 @@
         "logout": "Logout",
         "username": "Username",
         "search": "Search...",
-        "no_description": "No description available"
+        "no_description": "No description available",
+        "deleted_successfully": "Deleted successfully",
+        "error_occurred": "An error occurred"
     },
     "event": {
         "visibility": "Visibility",
