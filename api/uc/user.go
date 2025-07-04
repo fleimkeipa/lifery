@@ -44,6 +44,7 @@ func (rc *UserUC) Create(ctx context.Context, req model.UserCreateInput) (*model
 		Email:    req.Email,
 		Password: req.Password,
 		AuthType: model.AuthType(req.AuthType),
+		RoleID:   model.EditorRole,
 	}
 
 	hashedPassword, err := model.HashPassword(req.Password)
@@ -53,10 +54,6 @@ func (rc *UserUC) Create(ctx context.Context, req model.UserCreateInput) (*model
 	user.Password = hashedPassword
 
 	user.CreatedAt = time.Now()
-
-	if user.RoleID <= 0 {
-		user.RoleID = model.EditorRole
-	}
 
 	newUser, err := rc.userRepo.Create(ctx, &user)
 	if err != nil {
