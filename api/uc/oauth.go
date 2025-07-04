@@ -2,7 +2,6 @@ package uc
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/fleimkeipa/lifery/model"
 	"github.com/fleimkeipa/lifery/repositories"
@@ -51,18 +50,16 @@ func (o *OAuthUC) HandleCallback(ctx context.Context, provider model.OAuthProvid
 		}
 	}
 
-	// Check if user exists
 	existingUser, err := o.userUC.GetByEmail(ctx, userInfo.Email)
 	if err == nil {
-		// User exists, return existing user
 		return existingUser, nil
 	}
 
+	username := util.GenerateUsername(userInfo.GivenName, userInfo.FamilyName)
 	password := util.GenerateRandomPassword()
 
-	// User does not exist, create new user
 	newUser := model.UserCreateInput{
-		Username:        userInfo.Name,
+		Username:        username,
 		Email:           userInfo.Email,
 		Password:        password,
 		ConfirmPassword: password,
@@ -71,7 +68,7 @@ func (o *OAuthUC) HandleCallback(ctx context.Context, provider model.OAuthProvid
 
 	user, err := o.userUC.Create(ctx, newUser)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create user: %w", err)
+		return nil, err
 	}
 
 	return user, nil

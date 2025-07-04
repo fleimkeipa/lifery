@@ -2,7 +2,6 @@ package util
 
 import (
 	"context"
-	"crypto/rand"
 	"errors"
 	"fmt"
 	"net/http"
@@ -340,28 +339,4 @@ func ValidateResetToken(tokenString string) (*model.User, error) {
 		Username: username,
 		Email:    email,
 	}, nil
-}
-
-func GenerateRandomPassword() string {
-	// Generate a random 32-character password
-	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*"
-	b := make([]byte, 32)
-
-	// Generate random bytes
-	randomBytes := make([]byte, 32)
-	_, err := rand.Read(randomBytes)
-	if err != nil {
-		// Fallback to a simple random generation if crypto/rand fails
-		for i := range b {
-			b[i] = charset[i%len(charset)]
-		}
-		return string(b)
-	}
-
-	// Map random bytes to charset characters
-	for i := range b {
-		b[i] = charset[randomBytes[i]%byte(len(charset))]
-	}
-
-	return string(b)
 }
