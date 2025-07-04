@@ -1016,7 +1016,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "oauth"
                 ],
                 "summary": "Google OAuth callback",
                 "parameters": [
@@ -1062,7 +1062,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "oauth"
                 ],
                 "summary": "Get Google OAuth URL",
                 "responses": {
@@ -1094,7 +1094,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "oauth"
                 ],
                 "summary": "LinkedIn OAuth callback",
                 "parameters": [
@@ -1140,7 +1140,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "oauth"
                 ],
                 "summary": "Get LinkedIn OAuth URL",
                 "responses": {

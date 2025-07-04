@@ -25,7 +25,7 @@ func NewOAuthHandlers(oauthUC *uc.OAuthUC) *OAuthHandlers {
 //
 //	@Summary		Get Google OAuth URL
 //	@Description	This endpoint returns the Google OAuth authorization URL.
-//	@Tags			auth
+//	@Tags			oauth
 //	@Accept			json
 //	@Produce		json
 //	@Success		200	{object}	map[string]string	"Google OAuth URL"
@@ -44,7 +44,7 @@ func (rc *OAuthHandlers) GoogleAuthURL(c echo.Context) error {
 //
 //	@Summary		Google OAuth callback
 //	@Description	This endpoint handles the Google OAuth callback and creates or logs in the user.
-//	@Tags			auth
+//	@Tags			oauth
 //	@Accept			json
 //	@Produce		json
 //	@Param			body	body		model.GoogleAuthRequest	true	"Google OAuth code"
@@ -88,7 +88,7 @@ func (rc *OAuthHandlers) GoogleCallback(c echo.Context) error {
 //
 //	@Summary		Get LinkedIn OAuth URL
 //	@Description	This endpoint returns the LinkedIn OAuth authorization URL.
-//	@Tags			auth
+//	@Tags			oauth
 //	@Accept			json
 //	@Produce		json
 //	@Success		200	{object}	map[string]string	"LinkedIn OAuth URL"
@@ -106,7 +106,7 @@ func (rc *OAuthHandlers) LinkedInAuthURL(c echo.Context) error {
 //
 //	@Summary		LinkedIn OAuth callback
 //	@Description	This endpoint handles the LinkedIn OAuth callback and creates or logs in the user.
-//	@Tags			auth
+//	@Tags			oauth
 //	@Accept			json
 //	@Produce		json
 //	@Param			body	body		model.LinkedInAuthRequest	true	"LinkedIn OAuth code"

@@ -1027,7 +1027,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "oauth"
                 ],
                 "summary": "Google OAuth callback",
                 "parameters": [
@@ -1073,7 +1073,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "oauth"
                 ],
                 "summary": "Get Google OAuth URL",
                 "responses": {
@@ -1105,7 +1105,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "oauth"
                 ],
                 "summary": "LinkedIn OAuth callback",
                 "parameters": [
@@ -1151,7 +1151,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "oauth"
                 ],
                 "summary": "Get LinkedIn OAuth URL",
                 "responses": {

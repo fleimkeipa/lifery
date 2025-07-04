@@ -957,7 +957,7 @@ paths:
             $ref: '#/definitions/controller.FailureResponse'
       summary: Google OAuth callback
       tags:
-      - auth
+      - oauth
   /oauth/google/url:
     get:
       consumes:
@@ -978,7 +978,7 @@ paths:
             $ref: '#/definitions/controller.FailureResponse'
       summary: Get Google OAuth URL
       tags:
-      - auth
+      - oauth
   /oauth/linkedin/callback:
     post:
       consumes:
@@ -1009,7 +1009,7 @@ paths:
             $ref: '#/definitions/controller.FailureResponse'
       summary: LinkedIn OAuth callback
       tags:
-      - auth
+      - oauth
   /oauth/linkedin/url:
     get:
       consumes:
@@ -1030,7 +1030,7 @@ paths:
             $ref: '#/definitions/controller.FailureResponse'
       summary: Get LinkedIn OAuth URL
       tags:
-      - auth
+      - oauth
   /user/password:
     put:
       consumes:
