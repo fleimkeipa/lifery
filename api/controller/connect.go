@@ -132,6 +132,7 @@ func (rc *ConnectHandlers) Delete(c echo.Context) error {
 //	@Param			skip	query		string			false	"Number of connects to skip for pagination"
 //	@Success		200		{object}	SuccessResponse	"Successful response containing the list of connects"
 //	@Failure		500		{object}	FailureResponse	"Internal error"
+//	@Router			/connects [get]
 func (rc *ConnectHandlers) ConnectsRequests(c echo.Context) error {
 	opts := rc.getConnectsFindOpts(c, model.ZeroCreds)
 
