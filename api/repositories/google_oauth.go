@@ -2,10 +2,11 @@ package repositories
 
 import (
 	"context"
-	"fmt"
+	"net/http"
 	"os"
 
 	"github.com/fleimkeipa/lifery/model"
+	"github.com/fleimkeipa/lifery/pkg"
 	"google.golang.org/api/option"
 
 	"golang.org/x/oauth2"
@@ -35,26 +36,22 @@ func (l *GoogleOAuthRepository) GetAuthURL() string {
 	return l.config.AuthCodeURL("state")
 }
 
-func (l *GoogleOAuthRepository) ExchangeCodeForToken(ctx context.Context, code string) (*oauth2.Token, error) {
-	return l.config.Exchange(ctx, code)
-}
-
 func (l *GoogleOAuthRepository) GetUserInfo(ctx context.Context, code string) (*model.OAuthUserInfo, error) {
 	token, err := l.config.Exchange(ctx, code)
 	if err != nil {
-		return nil, fmt.Errorf("failed to exchange code for token: %w", err)
+		return nil, pkg.NewError(err, "failed to exchange code for token", http.StatusInternalServerError)
 	}
 
 	client := l.config.Client(ctx, token)
 
 	service, err := googleoauth2.NewService(ctx, option.WithHTTPClient(client))
 	if err != nil {
-		return nil, fmt.Errorf("failed to create oauth2 service: %w", err)
+		return nil, pkg.NewError(err, "failed to create oauth2 service", http.StatusInternalServerError)
 	}
 
 	userInfo, err := service.Userinfo.Get().Do()
 	if err != nil {
-		return nil, fmt.Errorf("failed to get user info: %w", err)
+		return nil, pkg.NewError(err, "failed to get user info", http.StatusInternalServerError)
 	}
 
 	return &model.OAuthUserInfo{
