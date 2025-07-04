@@ -390,6 +390,44 @@ paths:
       tags:
       - auth
   /connects:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a filtered and paginated list of connects requests based
+        on query parameters.
+      parameters:
+      - description: Filter connects by status
+        in: query
+        name: status
+        type: string
+      - description: Filter connects by user id if you are admin
+        in: query
+        name: user_id
+        type: string
+      - description: Limit the number of connects returned
+        in: query
+        name: limit
+        type: string
+      - description: Number of connects to skip for pagination
+        in: query
+        name: skip
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response containing the list of connects
+          schema:
+            $ref: '#/definitions/controller.SuccessResponse'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/controller.FailureResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: ConnectsRequests list all connects requests
+      tags:
+      - connects
     post:
       consumes:
       - application/json
