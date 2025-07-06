@@ -6,6 +6,8 @@ The frontend is implemented using Vue.js and Nuxt.js, leveraging server-side ren
 
 Overall, Lifery combines thoughtful user experience design with modern, scalable software architecture to provide a private and meaningful space for storytelling and memory archiving—bridging the gap between personal journaling and social sharing.
 
+<div style="text-align: center;">
 <img width="466" alt="Ekran Resmi 2025-07-06 19 10 17" src="https://github.com/user-attachments/assets/4ee1a138-0c73-4cf3-8180-93db9b412401" />
+</div>
 
 Swagger docs: https://lifery-production.up.railway.app/swagger/index.html#/
