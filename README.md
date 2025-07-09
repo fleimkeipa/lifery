@@ -60,23 +60,23 @@ Lifery is a comprehensive full-stack web platform that enables users to record, 
 
 ```
 lifery/
-├── api/                    # Backend Go application
-│   ├── controller/         # HTTP handlers and request/response logic
-│   ├── model/             # Data models and validation schemas
-│   ├── repositories/      # Data access layer with interfaces
-│   ├── uc/               # Use cases (business logic)
-│   ├── pkg/              # Shared utilities and configurations
-│   ├── util/             # Helper functions and utilities
-│   ├── tests/            # Test suites and test utilities
-│   ├── docs/             # Swagger documentation
-│   └── docker-compose.yaml # Local development environment
-├── ui/                    # Frontend Nuxt.js application
-│   ├── components/        # Vue components
-│   ├── pages/            # Application pages and routing
-│   ├── composables/      # Vue composables for state management
-│   ├── middleware/       # Nuxt middleware
-│   ├── layouts/          # Page layouts
-│   └── i18n/             # Internationalization files
+├── api/                      # Backend Go application
+│   ├── controller/           # HTTP handlers and request/response logic
+│   ├── model/                # Data models and validation schemas
+│   ├── repositories/         # Data access layer with interfaces
+│   ├── uc/                   # Use cases (business logic)
+│   ├── pkg/                  # Shared utilities and configurations
+│   ├── util/                 # Helper functions and utilities
+│   ├── tests/                # Test suites and test utilities
+│   ├── docs/                 # Swagger documentation
+│   └── docker-compose.yaml   # Local development environment
+├── ui/                       # Frontend Nuxt.js application
+│   ├── components/           # Vue components
+│   ├── pages/                # Application pages and routing
+│   ├── composables/          # Vue composables for state management
+│   ├── middleware/           # Nuxt middleware
+│   ├── layouts/              # Page layouts
+│   └── i18n/                 # Internationalization files
 └── README.md
 ```
 
