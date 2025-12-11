@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	"log"
 	"os"
@@ -17,16 +18,31 @@ func NewPSQLClient() *pg.DB {
 	port := "5432"
 
 	// Determine if we are on local or cluster
-	if stage := os.Getenv("STAGE"); stage == "prod" {
+	stage := os.Getenv("STAGE")
+	if stage == "prod" {
 		host = os.Getenv("DB_HOST")
 		port = os.Getenv("DB_PORT")
+	}
+
+	addr := ""
+	if strings.Contains(host, ":") {
+		addr = host
+	} else {
+		addr = fmt.Sprintf("%s:%s", host, port)
 	}
 
 	opts := pg.Options{
 		Database: os.Getenv("DB_NAME"),
 		User:     os.Getenv("DB_USER"),
 		Password: os.Getenv("DB_PASSWORD"),
-		Addr:     fmt.Sprintf("%s:%s", host, port),
+		Addr:     addr,
+	}
+
+	if stage == "prod" && os.Getenv("DB_SSL") == "true" {
+		opts.TLSConfig = &tls.Config{
+			InsecureSkipVerify:     true,
+			SessionTicketsDisabled: true,
+		}
 	}
 
 	db := pg.Connect(&opts)
