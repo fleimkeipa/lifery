@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"context"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -23,7 +22,7 @@ func NewNotificationRepository(db *pg.DB) *NotificationRepository {
 	}
 
 	if err := rc.createSchema(db); err != nil {
-		log.Fatalf("failed to create schema: %v", err)
+		pkg.Logger.Fatalf("failed to create schema: %v", err)
 	}
 
 	return rc

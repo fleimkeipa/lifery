@@ -6,6 +6,8 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
+var Logger *zap.SugaredLogger
+
 func ZapLogger(log *zap.Logger) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {

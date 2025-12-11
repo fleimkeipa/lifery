@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -147,7 +148,8 @@ func serveApplication() {
 	usersRoutes.PATCH("/:id", userController.Update)
 	usersRoutes.DELETE("/:id", userController.DeleteUser)
 
-	e.Logger.Fatal(e.Start(":8080"))
+	pkg.Logger.Infoln("Server started on :" + os.Getenv("SERVER_PORT"))
+	e.Logger.Fatal(e.Start(fmt.Sprintf(":%s", os.Getenv("SERVER_PORT"))))
 }
 
 func loadConfig() {
@@ -200,6 +202,7 @@ func configureLogger(e *echo.Echo) *zap.SugaredLogger {
 	loggerHandler := controller.NewLogger(sugar)
 	e.Use(loggerHandler.LoggerMiddleware)
 
+	pkg.Logger = sugar
 	return sugar
 }
 
@@ -207,10 +210,10 @@ func configureLogger(e *echo.Echo) *zap.SugaredLogger {
 func initDB() *pg.DB {
 	db := pkg.NewPSQLClient()
 	if db == nil {
-		log.Fatal("Failed to initialize PostgreSQL client")
+		pkg.Logger.Fatal("Failed to initialize PostgreSQL client")
 	}
 
-	log.Println("PostgreSQL client initialized successfully")
+	pkg.Logger.Info("PostgreSQL client initialized successfully")
 	return db
 }
 

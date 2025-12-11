@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"context"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -24,7 +23,7 @@ func NewConnectRepository(db *pg.DB) *ConnectRepository {
 	}
 
 	if err := rc.createSchema(db); err != nil {
-		log.Fatalf("failed to create schema: %v", err)
+		pkg.Logger.Fatalf("failed to create schema: %v", err)
 	}
 
 	return rc
