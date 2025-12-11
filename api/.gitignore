@@ -3,3 +3,6 @@
 */.env
 /config.yaml
 todo
+.local.infos.md
+.DS_Store
+trust.json
