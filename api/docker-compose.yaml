@@ -7,10 +7,9 @@ services:
     volumes:
       - .env:/app/.env
     ports:
-      - "8080:8080" 
+      - "8080:8080"
     depends_on:
       - postgres
-      # - redis
     restart: on-failure
 
   postgres:
@@ -22,10 +21,3 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
     ports:
       - "5432:5432"
-
-  # redis:
-  #   image: redis:latest
-  #   container_name: redis
-  #   ports:
-  #     - "6379:6379"
-  #   restart: always
