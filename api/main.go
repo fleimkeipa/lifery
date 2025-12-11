@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/fleimkeipa/lifery/controller"
@@ -148,8 +149,21 @@ func serveApplication() {
 	usersRoutes.PATCH("/:id", userController.Update)
 	usersRoutes.DELETE("/:id", userController.DeleteUser)
 
-	pkg.Logger.Infoln("Server started on :" + os.Getenv("SERVER_PORT"))
-	e.Logger.Fatal(e.Start(fmt.Sprintf(":%s", os.Getenv("SERVER_PORT"))))
+	port := os.Getenv("SERVER_PORT")
+	if port == "" {
+		port = "8080"
+	}
+	addr := fmt.Sprintf(":%s", port)
+
+	pkg.Logger.Infof("Server starting on %s", addr)
+
+	if err := e.Start(addr); err != nil {
+		if err == http.ErrServerClosed {
+			pkg.Logger.Info("Server gracefully shut down")
+		} else {
+			pkg.Logger.Fatalf("Server failed to start: %v", err)
+		}
+	}
 }
 
 func loadConfig() {
