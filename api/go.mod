@@ -1,6 +1,6 @@
 module github.com/fleimkeipa/lifery
 
-go 1.25.3
+go 1.25.0
 
 require (
 	github.com/anandvarma/namegen v1.1.1
