@@ -6,3 +6,7 @@ todo
 .local.infos.md
 .DS_Store
 trust.json
+encore.gen.go
+encore.gen.cue
+/.encore
+/encore.gen
