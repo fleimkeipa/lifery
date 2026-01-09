@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -13,7 +14,7 @@ import (
 	"github.com/fleimkeipa/lifery/uc"
 	"github.com/fleimkeipa/lifery/util"
 
-	"github.com/go-pg/pg"
+	"github.com/go-pg/pg/v10"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -222,12 +223,24 @@ func configureLogger(e *echo.Echo) *zap.SugaredLogger {
 
 // Initializes the PostgreSQL client
 func initDB() *pg.DB {
+	defer func() {
+		if r := recover(); r != nil {
+			pkg.Logger.Error(r)
+			os.Exit(1)
+		}
+	}()
+
 	db := pkg.NewPSQLClient()
 	if db == nil {
-		pkg.Logger.Fatal("Failed to initialize PostgreSQL client")
+		panic("Failed to initialize PostgreSQL client")
 	}
 
-	pkg.Logger.Info("PostgreSQL client initialized successfully")
+	if err := db.Ping(context.Background()); err != nil {
+		panic(err)
+	}
+
+	pkg.Logger.Infoln("PostgreSQL client initialized successfully")
+
 	return db
 }
 
