@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"github.com/go-pg/pg"
+	"github.com/go-pg/pg/v10"
 )
 
 var (

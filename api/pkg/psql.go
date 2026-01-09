@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/go-pg/pg"
+	"github.com/go-pg/pg/v10"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/wait"
 )

@@ -6,7 +6,7 @@ import (
 
 	"github.com/fleimkeipa/lifery/model"
 
-	"github.com/go-pg/pg/orm"
+	"github.com/go-pg/pg/v10/orm"
 )
 
 func applyStandardQueries(tx *orm.Query, pagination model.PaginationOpts) *orm.Query {

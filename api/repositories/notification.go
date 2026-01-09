@@ -8,8 +8,8 @@ import (
 
 	"github.com/fleimkeipa/lifery/model"
 	"github.com/fleimkeipa/lifery/pkg"
-	"github.com/go-pg/pg"
-	"github.com/go-pg/pg/orm"
+	"github.com/go-pg/pg/v10"
+	"github.com/go-pg/pg/v10/orm"
 )
 
 type NotificationRepository struct {
@@ -71,7 +71,8 @@ func (rc *NotificationRepository) GetByID(ctx context.Context, notificationID st
 		ID: id,
 	}
 
-	if err := rc.db.Select(internalNotification); err != nil {
+	query := rc.db.Model(internalNotification).Where("id = ?", id)
+	if err := query.Select(); err != nil {
 		return nil, pkg.NewError(err, "failed to get notification", http.StatusInternalServerError)
 	}
 
@@ -119,8 +120,13 @@ func (rc *NotificationRepository) Delete(ctx context.Context, notificationID str
 		ID: id,
 	}
 
-	if err := rc.db.Delete(internalNotification); err != nil {
+	result, err := rc.db.Model(internalNotification).Where("id = ?", id).Delete()
+	if err != nil {
 		return pkg.NewError(err, "failed to delete notification", http.StatusInternalServerError)
+	}
+
+	if result.RowsAffected() == 0 {
+		return pkg.NewError(nil, "no notification deleted", http.StatusBadRequest)
 	}
 
 	return nil
