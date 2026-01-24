@@ -10,6 +10,7 @@ import (
 	"github.com/fleimkeipa/lifery/controller"
 	_ "github.com/fleimkeipa/lifery/docs" // which is the generated folder after swag init
 	"github.com/fleimkeipa/lifery/pkg"
+	"github.com/fleimkeipa/lifery/pkg/logger"
 	"github.com/fleimkeipa/lifery/repositories"
 	"github.com/fleimkeipa/lifery/uc"
 	"github.com/fleimkeipa/lifery/util"
@@ -19,7 +20,6 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	echoSwagger "github.com/swaggo/echo-swagger"
-	"go.uber.org/zap"
 )
 
 // @securityDefinitions.apikey	ApiKeyAuth
@@ -45,8 +45,8 @@ func serveApplication() {
 	configureCORS(e)
 
 	// Configure the logger
-	sugar := configureLogger(e)
-	defer sugar.Sync() // Clean up logger at the end
+	configureLogger(e)
+	defer logger.Sync() // Clean up logger at the end
 
 	// Initialize PostgreSQL client
 	dbClient := initDB()
@@ -156,13 +156,13 @@ func serveApplication() {
 	}
 	addr := fmt.Sprintf(":%s", port)
 
-	pkg.Logger.Infof("Server starting on %s", addr)
+	logger.Log.Infof("Server starting on %s", addr)
 
 	if err := e.Start(addr); err != nil {
 		if err == http.ErrServerClosed {
-			pkg.Logger.Info("Server gracefully shut down")
+			logger.Log.Info("Server gracefully shut down")
 		} else {
-			pkg.Logger.Fatalf("Server failed to start: %v", err)
+			logger.Log.Fatalf("Server failed to start: %v", err)
 		}
 	}
 }
@@ -205,27 +205,16 @@ func configureCORS(e *echo.Echo) {
 }
 
 // Configures the logger and adds it as middleware
-func configureLogger(e *echo.Echo) *zap.SugaredLogger {
-	logger, err := zap.NewProduction()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	e.Use(pkg.ZapLogger(logger))
-
-	sugar := logger.Sugar()
-	loggerHandler := controller.NewLogger(sugar)
-	e.Use(loggerHandler.LoggerMiddleware)
-
-	pkg.Logger = sugar
-	return sugar
+func configureLogger(e *echo.Echo) {
+	logger.Init()
+	e.Use(logger.Middleware())
 }
 
 // Initializes the PostgreSQL client
 func initDB() *pg.DB {
 	defer func() {
 		if r := recover(); r != nil {
-			pkg.Logger.Error(r)
+			logger.Log.Error(r)
 			os.Exit(1)
 		}
 	}()
@@ -239,7 +228,7 @@ func initDB() *pg.DB {
 		panic(err)
 	}
 
-	pkg.Logger.Infoln("PostgreSQL client initialized successfully")
+	logger.Log.Infoln("PostgreSQL client initialized successfully")
 
 	return db
 }

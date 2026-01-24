@@ -8,6 +8,8 @@ import (
 	"os"
 	"strings"
 
+	"github.com/fleimkeipa/lifery/model"
+
 	"github.com/go-pg/pg/v10"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/wait"
@@ -38,7 +40,7 @@ func NewPSQLClient() *pg.DB {
 		Addr:     addr,
 	}
 
-	if stage == "prod" && os.Getenv("DB_SSL") == "true" {
+	if stage == model.StageProd && os.Getenv("DB_SSL") == "true" {
 		opts.TLSConfig = &tls.Config{
 			InsecureSkipVerify:     true,
 			SessionTicketsDisabled: true,

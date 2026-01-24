@@ -7,6 +7,7 @@ import (
 
 	"github.com/fleimkeipa/lifery/model"
 	"github.com/fleimkeipa/lifery/pkg"
+	"github.com/fleimkeipa/lifery/pkg/logger"
 
 	"github.com/go-pg/pg/v10"
 	"github.com/go-pg/pg/v10/orm"
@@ -22,7 +23,7 @@ func NewUserRepository(db *pg.DB) *UserRepository {
 	}
 
 	if err := rc.createSchema(db); err != nil {
-		pkg.Logger.Fatalf("failed to create schema: %v", err)
+		logger.Log.Fatalf("failed to create schema: %v", err)
 	}
 
 	return rc
